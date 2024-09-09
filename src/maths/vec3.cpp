@@ -2,7 +2,7 @@
 // Created by theo on 02/09/2024.
 //
 
-#include <maths/vec3.h>
+#include "vec3.h"
 
 #include <cmath>
 #include <stdexcept>

@@ -2,7 +2,7 @@
 // Created by theo on 02/09/2024.
 //
 
-#include <maths/mat3.h>
+#include "mat3.h"
 
 namespace maths
 {
