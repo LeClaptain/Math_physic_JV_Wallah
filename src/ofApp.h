@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ofMain.h"
+#include "Particle.h"
 
 class ofApp : public ofBaseApp{
 
@@ -20,5 +21,11 @@ class ofApp : public ofBaseApp{
 		void windowResized(int w, int h);
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
-		
+
+		//a changer
+		Particle particle = Particle(maths::vec3(-100,-100,0),maths::vec3(),maths::vec3()
+			,0.0, ofColor::blue, 30);
+
+private:
+		void drawDebug();
 };

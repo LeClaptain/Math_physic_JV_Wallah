@@ -4,9 +4,12 @@
 
 #pragma once
 
+#include <string>
 #include <glm/vec3.hpp>
+#include <string>
 
 namespace maths {
+    //Class is named vec3 and is from maths, not to be confused with glm::vec3 :)
     class vec3 {
     public:
         vec3();
@@ -69,7 +72,9 @@ namespace maths {
 
         float z() const;
 
-        operator glm::vec3() const;
+        operator glm::vec3() const; //Allows to be converted to a glm::vec3 when necessary (ex : function call)
+
+        operator std::string() const;
 
         float _x, _y, _z;
     };

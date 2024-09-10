@@ -6,6 +6,7 @@
 
 #include <cmath>
 #include <stdexcept>
+#include <string>
 
 namespace maths
 {
@@ -205,6 +206,11 @@ namespace maths
 	vec3::operator glm::vec3() const
 	{
 		return {_x, _y, _z};
+	}
+
+	vec3::operator std::string() const
+	{
+		return "(" +std::to_string(_x) + ", " + std::to_string(_y) + ", " + std::to_string(_z) + ")";
 	}
 
 	vec3 operator+(const float& lhs, const vec3& rhs)
