@@ -47,22 +47,27 @@ namespace maths
 		return *this;
 	}
 
-	bool vec3::operator==(const vec3& other)
+	bool vec3::operator==(const vec3& other) const
 	{
 		return _x == other._x && _y == other._y && _z == other._z;
 	}
 
-	vec3 vec3::operator+(const vec3& other)
+	bool vec3::operator!=(const vec3& other) const
+	{
+		return _x != other._x || _y != other._y || _z != other._z;
+	}
+
+	vec3 vec3::operator+(const vec3& other) const
 	{
 		return vec3(_x + other._x, _y + other._y, _z + other._z);
 	}
 
-	vec3 vec3::operator-(const vec3& other)
+	vec3 vec3::operator-(const vec3& other) const
 	{
 		return vec3(_x - other._x, _y - other._y, _z - other._z);
 	}
 
-	vec3 vec3::operator-()
+	vec3 vec3::operator-() const
 	{
 		return vec3(-_x, -_y, -_z);
 	}
@@ -203,33 +208,15 @@ namespace maths
 		return _z;
 	}
 
+#ifndef IGNORE_GLM
 	vec3::operator glm::vec3() const
 	{
 		return {_x, _y, _z};
 	}
+#endif
 
 	vec3::operator std::string() const
 	{
 		return "(" +std::to_string(_x) + ", " + std::to_string(_y) + ", " + std::to_string(_z) + ")";
-	}
-
-	vec3 operator+(const float& lhs, const vec3& rhs)
-	{
-		return vec3(lhs + rhs.x(), lhs + rhs.y(), lhs + rhs.z());
-	}
-
-	vec3 operator-(const float& lhs, const vec3& rhs)
-	{
-		return vec3(lhs - rhs.x(), lhs - rhs.y(), lhs - rhs.z());
-	}
-
-	vec3 operator*(const float& lhs, const vec3& rhs)
-	{
-		return vec3(lhs * rhs.x(), lhs * rhs.y(), lhs * rhs.z());
-	}
-
-	vec3 operator/(const float& lhs, const vec3& rhs)
-	{
-		return vec3(lhs / rhs.x(), lhs / rhs.y(), lhs / rhs.z());
 	}
 } // maths

@@ -5,7 +5,9 @@
 #pragma once
 
 #include <string>
+#ifndef IGNORE_GLM
 #include <glm/vec3.hpp>
+#endif
 #include <string>
 
 namespace maths {
@@ -23,13 +25,15 @@ namespace maths {
         // op against other vec3
         vec3 &operator=(const vec3 &other);
 
-        bool operator==(const vec3 &other);
+        bool operator==(const vec3 &other) const;
+        
+        bool operator!=(const vec3 &other) const;
 
-        vec3 operator+(const vec3 &other);
+        vec3 operator+(const vec3 &other) const;
 
-        vec3 operator-(const vec3 &other);
+        vec3 operator-(const vec3 &other) const;
 
-        vec3 operator-();
+        vec3 operator-() const;
 
         vec3 &operator+=(const vec3 &other);
 
@@ -72,18 +76,12 @@ namespace maths {
 
         float z() const;
 
+#ifndef IGNORE_GLM
         operator glm::vec3() const; //Allows to be converted to a glm::vec3 when necessary (ex : function call)
-
+#endif
+        
         operator std::string() const;
 
         float _x, _y, _z;
     };
-
-    vec3 operator+(const float &lhs, const vec3 &rhs);
-
-    vec3 operator-(const float &lhs, const vec3 &rhs);
-
-    vec3 operator*(const float &lhs, const vec3 &rhs);
-
-    vec3 operator/(const float &lhs, const vec3 &rhs);
 } // maths
