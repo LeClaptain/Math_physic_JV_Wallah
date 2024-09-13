@@ -1,7 +1,9 @@
 #pragma once
 
 #include "ofMain.h"
+#include "ofEvents.h"
 #include "Particle.h"
+#include "vector"
 
 class ofApp : public ofBaseApp{
 
@@ -28,4 +30,5 @@ class ofApp : public ofBaseApp{
 
 private:
 		void drawDebug();
+		vector<std::pair<std::pair<maths::vec3,maths::vec3>, int>> listOfLines;
 };

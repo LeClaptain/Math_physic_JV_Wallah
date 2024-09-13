@@ -1,6 +1,5 @@
 #include "ofApp.h"
 
-
 //--------------------------------------------------------------
 void ofApp::setup(){
     ofBackground(150, 150, 150, 255);
@@ -9,6 +8,15 @@ void ofApp::setup(){
 void ofApp::update(){
     //double lastFrame = ofGetLastFrameTime(); //gets Δt since last frame
     particle.update();
+
+    // update lines to draw
+    for (int i = 0; i < listOfLines.size(); i++){
+		listOfLines[i].second -= ofGetLastFrameTime();
+		if (listOfLines[i].second <= 0){
+			listOfLines.erase(listOfLines.begin() + i);
+		}
+	}
+   
 }
 
 //--------------------------------------------------------------
@@ -16,6 +24,13 @@ void ofApp::draw(){
 
     //To do HERE: Drawing everything
     particle.draw();
+
+    //draw lines
+    ofSetColor(ofColor::black);
+    ofSetLineWidth(10);
+    for (int i = 0; i < listOfLines.size(); i++) {
+        ofDrawLine(listOfLines[i].first.first, listOfLines[i].first.second);
+    }
     
     //Has to be last so it is drawn above everything else
     drawDebug();
@@ -50,6 +65,12 @@ void ofApp::mousePressed(int x, int y, int button){
 
     particle.setVelocity(maths::vec3(-15, -15, 0));
     particle.setAcceleration(maths::vec3(0, 9.81, 0));
+
+    //draw a vector
+    float mousex = ofGetMouseX();
+    float mousey = ofGetMouseY();
+    listOfLines.push_back(std::make_pair(std::make_pair(maths::vec3(ofGetWidth() - radius, ofGetHeight() - radius, 0), maths::vec3(mousex, mousey, 0)), 300));
+    ofDrawLine(maths::vec3(ofGetWidth() - radius, ofGetHeight() - radius, 0), maths::vec3(mousex, mousey, 0));
 }
 
 //--------------------------------------------------------------
