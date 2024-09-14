@@ -147,22 +147,22 @@ namespace maths
 		return *this;
 	}
 
-	float vec3::dot(const vec3& other)
+	float vec3::dot(const vec3& other) const
 	{
 		return _x * other._x + _y * other._y + _z * other._z;
 	}
 
-	vec3 vec3::cross(const vec3& other)
+	vec3 vec3::cross(const vec3& other) const
 	{
 		return vec3(_y * other._z - _z * other._y, _z * other._x - _x * other._z, _x * other._y - _y * other._x);
 	}
 
-	float vec3::magnitude()
+	float vec3::magnitude() const
 	{
 		return sqrt(_x * _x + _y * _y + _z * _z);
 	}
 
-	vec3 vec3::normalized()
+	vec3 vec3::normalized() const
 	{
 		return *this / magnitude();
 	}
@@ -173,7 +173,7 @@ namespace maths
 		return *this;
 	}
 
-	vec3 vec3::reflect(const vec3& normal)
+	vec3 vec3::reflect(const vec3& normal) const
 	{
 		return *this - normal * 2.0f * dot(normal);
 	}
@@ -192,6 +192,12 @@ namespace maths
 			throw std::out_of_range("Index out of range");
 		}
 	}
+
+	float vec3::distance(const vec3& other) const
+	{
+		return (other - *this).magnitude();
+	}
+
 
 	float vec3::x() const
 	{
