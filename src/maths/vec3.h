@@ -56,19 +56,21 @@ namespace maths {
 
         vec3 &operator/=(const float &other);
 
-        float dot(const vec3 &other);
+        float dot(const vec3 &other) const;
 
-        vec3 cross(const vec3 &other);
+        vec3 cross(const vec3 &other) const;
 
-        float magnitude();
+        float magnitude() const;
 
-        vec3 normalized();
+        vec3 normalized() const;
 
         vec3 &normalize();
 
-        vec3 reflect(const vec3 &normal);
+        vec3 reflect(const vec3 &normal) const;
 
         float operator[](const int &index) const;
+
+        float distance(const vec3 &other) const;
 
         float x() const;
 

@@ -66,6 +66,8 @@ void ofApp::mousePressed(int x, int y, int button){
     particle.setVelocity(maths::vec3(-15, -15, 0));
     particle.setAcceleration(maths::vec3(0, 9.81, 0));
 
+    particle.clearTrail();
+
     //draw a vector
     float mousex = ofGetMouseX();
     float mousey = ofGetMouseY();
