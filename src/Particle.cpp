@@ -9,8 +9,14 @@ void Particle::update()
 	this->position += velocity;
 	velocity += acceleration * dt;
 
-	// Update trail
-	if (hasTrail)
+	// Update trail if still in view
+	if (position.y() >= ofGetHeight()+ radius || position.y() <= 0- radius)
+	{
+		position = {-100,-100,0};
+		velocity = {0,0,0};
+		acceleration = {0,0,0};
+	}
+	else if (hasTrail)
 	{
 		if (segmentPoints.empty())
 		{
@@ -27,6 +33,8 @@ void Particle::update()
 			segmentPoints.pop_back();
 		}
 	}
+
+
 }
 
 void Particle::draw() const
