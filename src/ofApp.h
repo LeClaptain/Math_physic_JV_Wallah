@@ -3,7 +3,6 @@
 #include "ofMain.h"
 #include "ofEvents.h"
 #include "Particle.h"
-#include "vector"
 
 class ofApp : public ofBaseApp{
 
@@ -28,7 +27,12 @@ class ofApp : public ofBaseApp{
 		Particle particle = Particle(maths::vec3(-100,-100,0),maths::vec3(),maths::vec3()
 			,0.0, ofColor::blue, 30, true, 10, 0);
 
-private:
+	private:
+	
 		void drawDebug();
-		vector<std::pair<std::pair<maths::vec3,maths::vec3>, int>> listOfLines;
+		bool isLineDrawable = false;
+		std::pair<maths::vec3,maths::vec3> initialVelocity;
+		ofTrueTypeFont vectorFont;
+
+		void drawArrow();
 };
