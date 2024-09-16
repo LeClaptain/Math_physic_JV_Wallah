@@ -4,6 +4,7 @@
 #include "ofEvents.h"
 #include "Particle.h"
 #include "vector"
+#include "particlesTypes/bullet.h"
 
 class ofApp : public ofBaseApp{
 
@@ -27,6 +28,7 @@ class ofApp : public ofBaseApp{
 		//a changer
 		Particle particle = Particle(maths::vec3(-100,-100,0),maths::vec3(),maths::vec3()
 			,0.0, ofColor::blue, 30);
+		Bullet bullet = Bullet(maths::vec3(-100, 100, 0));
 
 private:
 		void drawDebug();

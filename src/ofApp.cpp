@@ -8,6 +8,7 @@ void ofApp::setup(){
 void ofApp::update(){
     //double lastFrame = ofGetLastFrameTime(); //gets Δt since last frame
     particle.update();
+    bullet.update();
 
     // update lines to draw
     for (int i = 0; i < listOfLines.size(); i++){
@@ -24,6 +25,7 @@ void ofApp::draw(){
 
     //To do HERE: Drawing everything
     particle.draw();
+    bullet.draw();
 
     //draw lines
     ofSetColor(ofColor::black);
@@ -63,8 +65,13 @@ void ofApp::mousePressed(int x, int y, int button){
     float radius = particle.getRadius();
     particle.setPosition(maths::vec3(ofGetWidth() - radius, ofGetHeight() -radius, 0));
 
-    particle.setVelocity(maths::vec3(-15, -15, 0));
+    particle.setVelocity(maths::vec3(-5, -7, 0));
     particle.setAcceleration(maths::vec3(0, 9.81, 0));
+
+    // spawn a bullet
+    bullet.setPosition(maths::vec3(ofGetWidth() - radius, ofGetHeight() - radius, 0));
+    bullet.setVelocity(maths::vec3(-7, -7, 0));
+    bullet.setAcceleration(maths::vec3(0, 9.81, 0));
 
     //draw a vector
     float mousex = ofGetMouseX();
