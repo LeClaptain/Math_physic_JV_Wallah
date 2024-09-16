@@ -66,9 +66,9 @@ void ofApp::mousePressed(int x, int y, int button){
     float mousex = ofGetMouseX();
     float mousey = ofGetMouseY();
     
-    particle.setPosition(maths::vec3(ofGetWidth() - radius, ofGetHeight() -radius, 0));
-    particle.setVelocity(maths::vec3(-100, -100, 0));
-    particle.setAcceleration(maths::vec3(0, 9.81*50, 0));
+    particle.setPosition(maths::vec3(ofGetWidth(), ofGetHeight(), 0));
+    particle.setVelocity(maths::vec3(mousex-ofGetWidth(), mousey-ofGetHeight(), 0));
+    particle.setAcceleration(maths::vec3(0, 9.81*100, 0));
 
     particle.clearTrail();
 
