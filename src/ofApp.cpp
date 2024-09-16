@@ -6,12 +6,17 @@ void ofApp::setup()
     ofBackground(150, 150, 150, 255);
     initialVelocity.first = maths::vec3(ofGetWidth(), ofGetHeight(), 0);
 
+    //GUI
+    setupControlGui();
+    setupDebugGui();
+    debugGui.setWidthElements(400);
+
     //Font related shenaningans for displaying vectors
     string path = ofFilePath::getEnclosingDirectory(ofFilePath::getCurrentWorkingDirectory())+
-        "src/externalressources/Fonts/LatinModern.otf";
+        "src/externalressources/Fonts/LatinModern.otf"; // TODO : find a font that supports the characters mentioned bellow
     ofTrueTypeFontSettings settings(path, 32);
-    ofUnicode::range vectorArrow(0x20D7, 0x20D7);
-    ofUnicode::range underZero(0x2080, 0x2089);
+    ofUnicode::range vectorArrow(0x20D7, 0x20D7); //adds the unicode character for a vector
+    ofUnicode::range underZero(0x2080, 0x2089); //adds the unicode charactor for all numbers as indexes
     settings.addRange(vectorArrow);
     settings.addRange(underZero);
     settings.addRanges(ofAlphabet::Latin);
@@ -35,9 +40,12 @@ void ofApp::draw(){
     //draw lines
     drawArrow();
     
-    //Has to be last so it is drawn above everything else
-    drawDebug();
-    
+    controlGui.draw();
+
+    if(isDebugEnabled)
+    {
+        drawDebugGui();
+    }
 }
 
 //--------------------------------------------------------------
@@ -66,9 +74,9 @@ void ofApp::mousePressed(int x, int y, int button){
     float mousex = ofGetMouseX();
     float mousey = ofGetMouseY();
     
-    particle.setPosition(maths::vec3(ofGetWidth(), ofGetHeight(), 0));
-    particle.setVelocity(maths::vec3(mousex-ofGetWidth(), mousey-ofGetHeight(), 0));
-    particle.setAcceleration(maths::vec3(0, 9.81*100, 0));
+    particle.setPosition(maths::vec3(ofGetWidth() - radius, ofGetHeight() -radius, 0));
+    particle.setVelocity(maths::vec3(-500, -500, 0));
+    particle.setAcceleration(maths::vec3(0, 9.81*50, 0));
 
     particle.clearTrail();
 
@@ -94,6 +102,8 @@ void ofApp::mouseExited(int x, int y){
 //--------------------------------------------------------------
 void ofApp::windowResized(int w, int h){
     initialVelocity.first = maths::vec3(ofGetWidth(), ofGetHeight(), 0);
+    controlGui.setPosition(10,ofGetHeight()-100);
+    debugGui.setPosition(10,10);
 }
 
 //--------------------------------------------------------------
@@ -101,7 +111,14 @@ void ofApp::gotMessage(ofMessage msg){
 
 }
 
-void ofApp::drawDebug(){
+void ofApp::drawDebugGui(){
+    debugGui.draw();
+    fpsLabel.setName("FPS: " + std::to_string(ofGetFrameRate()));
+    frameDurationLabel.setName("Frame Duration: " + std::to_string(ofGetFrameRate()));
+    positionLabel.setName("Position: " + particle.getPositionAsString());
+    velocityLabel.setName("Velocity: " + particle.getVelocityAsString());
+    accelerationLabel.setName("Acceleration: " + particle.getAccelerationAsString());
+    /*
     ofSetColor(ofColor(255,255,255, 25));
     ofDrawRectangle(5, 5, 400, 90);
     ofSetColor(ofColor::black);
@@ -109,7 +126,52 @@ void ofApp::drawDebug(){
     ofDrawBitmapString("Frame duration : " + std::to_string(ofGetLastFrameTime()*1000)+ " ms", 10, 37) ;
     ofDrawBitmapString("Position : " + particle.getPositionAsString(), 10, 51);
     ofDrawBitmapString("Acceleration : " + particle.getAccelerationAsString(), 10, 65);
-    ofDrawBitmapString("Velocity : " + particle.getVelocityAsString(), 10, 79);
+    ofDrawBitmapString("Velocity : " + particle.getVelocityAsString(), 10, 79);*/
+}
+
+void ofApp::setupControlGui(){
+    controlGui.setup("",  ofxPanelDefaultFilename, 10,  ofGetHeight()-100);
+    controlGui.add(launchButton.setup("Launch projectile"));
+    controlGui.add(nextProjectileButton.setup("Next projectile"));
+    controlGui.add(resetButton.setup("Reset the scene"));
+    controlGui.add(debugToggle.setup("Debug Toggle", false));
+
+    launchButton.addListener(this, &ofApp::onLaunchButtonPressed);
+    nextProjectileButton.addListener(this, &ofApp::onNextProjectileButtonPressed);
+    resetButton.addListener(this, &ofApp::onResetButtonPressed);
+    debugToggle.addListener(this, &ofApp::onToggleChanged);
+
+}
+
+void ofApp::setupDebugGui()
+{
+    debugGui.setup();
+    debugGui.add(fpsLabel.setup("fpsLabel", ""));
+    debugGui.add(frameDurationLabel.setup("frameDurationLabel", ""));
+    debugGui.add(positionLabel.setup("positionLabel", ""));
+    debugGui.add(velocityLabel.setup("velocityLabel", ""));
+    debugGui.add(accelerationLabel.setup("accelerationLabel", ""));
+}
+
+
+void ofApp::onToggleChanged(bool& value)
+{
+    isDebugEnabled = value;
+}
+
+void ofApp::onNextProjectileButtonPressed()
+{
+    std :: cout << "Next projectile" << std :: endl;
+}
+
+void ofApp::onLaunchButtonPressed()
+{
+    std :: cout << "Launch projectile" << std :: endl;
+}
+
+void ofApp::onResetButtonPressed()
+{
+    std :: cout << "Reset projectile" << std :: endl;
 }
 
 void ofApp::drawArrow(){

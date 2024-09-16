@@ -3,7 +3,6 @@
 #include "ofMain.h"
 #include "ofEvents.h"
 #include "Particle.h"
-#include "particlesTypes/bullet.h"
 
 class ofApp : public ofBaseApp
 {
@@ -29,11 +28,31 @@ public:
                                  , 0.0, ofColor::blue, 30, true, 10, 0);
     Bullet bullet = Bullet(maths::vec3(-100, 100, 0));
 
-private:
-    void drawDebug();
-    bool isLineDrawable = false;
-    std::pair<maths::vec3, maths::vec3> initialVelocity;
-    ofTrueTypeFont vectorFont;
+	private:	
+		bool isLineDrawable = false;
+		bool isDebugEnabled = false;
+		std::pair<maths::vec3,maths::vec3> initialVelocity;
+		ofTrueTypeFont vectorFont;
+		ofxPanel controlGui;
+		ofxPanel debugGui;
+		ofxToggle debugToggle;
+		ofxButton nextProjectileButton;
+		ofxButton launchButton;
+		ofxButton resetButton;
+		ofxLabel nextProjectileLabel;
+		ofxLabel fpsLabel;
+		ofxLabel frameDurationLabel;
+		ofxLabel positionLabel;
+		ofxLabel accelerationLabel;
+		ofxLabel velocityLabel;
 
-    void drawArrow();
+		void onToggleChanged(bool & value);
+		void onNextProjectileButtonPressed();
+		void onLaunchButtonPressed();
+		void onResetButtonPressed();
+	
+		void drawArrow();
+		void drawDebugGui();
+		void setupControlGui();
+		void setupDebugGui();
 };
