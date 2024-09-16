@@ -3,6 +3,8 @@
 #include "ofUtils.h"
 #include "maths/mat3.h"
 
+#include <deque>
+
 using namespace maths;
 
 class Particle
@@ -14,11 +16,16 @@ private :
     float mass = 0.0;
     float radius = 0.0;
     ofColor color = ofColor::white;
+    bool hasTrail;
+    float trailSegmentLength;
+    int trailSegmentCount;
+
+    std::deque<vec3> segmentPoints;
     
 public:
 
     Particle() = default;
-    Particle(vec3 position, vec3 velocity, vec3 acceleration, float mass, ofColor color = ofColor::blue, float radius = 10)
+    Particle(vec3 position, vec3 velocity, vec3 acceleration, float mass, ofColor color = ofColor::blue, float radius = 10, bool hasTrail = false, float segmentLength = 10.0f, int segmentCount = 10)
     {
         this->position = position;
         this->velocity = velocity;
@@ -26,7 +33,10 @@ public:
         this->mass = mass;
         this->radius = radius;
         this->color = color;
-    };
+        this->hasTrail = hasTrail;
+        this->trailSegmentLength = segmentCount;
+        this->trailSegmentCount = segmentCount;
+    }
     
     //Getters
     vec3 getPosition() { return position; }
@@ -51,4 +61,5 @@ public:
 
     void update();    
     void draw() const;
+    void clearTrail();
 };
