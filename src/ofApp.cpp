@@ -27,7 +27,6 @@ void ofApp::update(){
     //double lastFrame = ofGetLastFrameTime(); //gets Δt since last frame
     particle.update();
     bullet.update();
-   
 }
 
 //--------------------------------------------------------------
@@ -39,7 +38,8 @@ void ofApp::draw(){
 
     //draw lines
     drawArrow();
-    
+
+    nextProjectileLabel.setName("Feur ! " + std::to_string(ofGetFrameRate()));
     controlGui.draw();
 
     if(isDebugEnabled)
@@ -75,7 +75,7 @@ void ofApp::mousePressed(int x, int y, int button){
     float mousey = ofGetMouseY();
     
     particle.setPosition(maths::vec3(ofGetWidth() - radius, ofGetHeight() -radius, 0));
-    particle.setVelocity(maths::vec3(-500, -500, 0));
+    particle.setVelocity(maths::vec3(mousex-ofGetWidth(), mousey-ofGetHeight(), 0));
     particle.setAcceleration(maths::vec3(0, 9.81*50, 0));
 
     particle.clearTrail();
@@ -102,7 +102,7 @@ void ofApp::mouseExited(int x, int y){
 //--------------------------------------------------------------
 void ofApp::windowResized(int w, int h){
     initialVelocity.first = maths::vec3(ofGetWidth(), ofGetHeight(), 0);
-    controlGui.setPosition(10,ofGetHeight()-100);
+    controlGui.setPosition(10,ofGetHeight()-120);
     debugGui.setPosition(10,10);
 }
 
@@ -113,11 +113,11 @@ void ofApp::gotMessage(ofMessage msg){
 
 void ofApp::drawDebugGui(){
     debugGui.draw();
-    fpsLabel.setName("FPS: " + std::to_string(ofGetFrameRate()));
-    frameDurationLabel.setName("Frame Duration: " + std::to_string(ofGetFrameRate()));
-    positionLabel.setName("Position: " + particle.getPositionAsString());
-    velocityLabel.setName("Velocity: " + particle.getVelocityAsString());
-    accelerationLabel.setName("Acceleration: " + particle.getAccelerationAsString());
+    fpsLabel.setup("FPS", std::to_string(ofGetFrameRate()));
+    frameDurationLabel.setup("Frame Duration",std::to_string(ofGetFrameRate()));
+    positionLabel.setup("Position", particle.getPositionAsString());
+    velocityLabel.setup("Velocity: ", particle.getVelocityAsString());
+    accelerationLabel.setup("Acceleration: ",particle.getAccelerationAsString());
     /*
     ofSetColor(ofColor(255,255,255, 25));
     ofDrawRectangle(5, 5, 400, 90);
@@ -130,12 +130,14 @@ void ofApp::drawDebugGui(){
 }
 
 void ofApp::setupControlGui(){
-    controlGui.setup("",  ofxPanelDefaultFilename, 10,  ofGetHeight()-100);
+    controlGui.setup();
+    controlGui.setPosition(10,ofGetHeight()-120);
+    controlGui.add(nextProjectileLabel.setup("Next projectile is :", "stanbul"));
     controlGui.add(launchButton.setup("Launch projectile"));
     controlGui.add(nextProjectileButton.setup("Next projectile"));
     controlGui.add(resetButton.setup("Reset the scene"));
     controlGui.add(debugToggle.setup("Debug Toggle", false));
-
+    
     launchButton.addListener(this, &ofApp::onLaunchButtonPressed);
     nextProjectileButton.addListener(this, &ofApp::onNextProjectileButtonPressed);
     resetButton.addListener(this, &ofApp::onResetButtonPressed);
@@ -146,11 +148,19 @@ void ofApp::setupControlGui(){
 void ofApp::setupDebugGui()
 {
     debugGui.setup();
+    debugGui.setDefaultWidth(400);
     debugGui.add(fpsLabel.setup("fpsLabel", ""));
     debugGui.add(frameDurationLabel.setup("frameDurationLabel", ""));
     debugGui.add(positionLabel.setup("positionLabel", ""));
     debugGui.add(velocityLabel.setup("velocityLabel", ""));
     debugGui.add(accelerationLabel.setup("accelerationLabel", ""));
+    
+    fpsLabel.setSize(debugGui.getWidth(), fpsLabel.getHeight());
+    frameDurationLabel.setSize(debugGui.getWidth(), frameDurationLabel.getHeight());
+    positionLabel.setSize(debugGui.getWidth(), positionLabel.getHeight());
+    velocityLabel.setSize(debugGui.getWidth(), velocityLabel.getHeight());
+    accelerationLabel.setSize(debugGui.getWidth(), accelerationLabel.getHeight());
+    
 }
 
 

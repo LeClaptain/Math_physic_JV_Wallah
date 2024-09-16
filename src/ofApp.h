@@ -3,6 +3,12 @@
 #include "ofMain.h"
 #include "ofEvents.h"
 #include "Particle.h"
+#include "ofxGui.h"
+#include "particlesTypes/bullet.h"
+#include "particlesTypes/canonBall.h"
+#include "particlesTypes/fireBall.h"
+
+
 
 class ofApp : public ofBaseApp
 {
