@@ -2,3 +2,6 @@
 
 !src/**
 !*/
+.vs/
+.idea/
+.vscode/
