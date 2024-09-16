@@ -21,7 +21,8 @@ void ofApp::setup()
 void ofApp::update(){
     //double lastFrame = ofGetLastFrameTime(); //gets Δt since last frame
     particle.update();
-    
+    bullet.update();
+   
 }
 
 //--------------------------------------------------------------
@@ -29,6 +30,7 @@ void ofApp::draw(){
 
     //To do HERE: Drawing everything
     particle.draw();
+    bullet.draw();
 
     //draw lines
     drawArrow();
@@ -66,7 +68,7 @@ void ofApp::mousePressed(int x, int y, int button){
     
     particle.setPosition(maths::vec3(ofGetWidth() - radius, ofGetHeight() -radius, 0));
     particle.setVelocity(maths::vec3(-100, -100, 0));
-    particle.setAcceleration(maths::vec3(0, 9.81*10, 0));
+    particle.setAcceleration(maths::vec3(0, 9.81*50, 0));
 
     particle.clearTrail();
 

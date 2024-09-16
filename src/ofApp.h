@@ -3,6 +3,7 @@
 #include "ofMain.h"
 #include "ofEvents.h"
 #include "Particle.h"
+#include "particlesTypes/bullet.h"
 
 class ofApp : public ofBaseApp{
 
@@ -25,6 +26,8 @@ class ofApp : public ofBaseApp{
 
 		//a changer
 		Particle particle = Particle(maths::vec3(-100,-100,0),maths::vec3(),maths::vec3()
+			,0.0, ofColor::blue, 30);
+		Bullet bullet = Bullet(maths::vec3(-100, 100, 0));
 			,0.0, ofColor::blue, 30, true, 10, 0);
 
 	private:
