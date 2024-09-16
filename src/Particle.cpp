@@ -5,9 +5,13 @@
 
 void Particle::update()
 {
+	//Euler Integration
 	double dt = ofGetLastFrameTime();
+	velocity += acceleration*dt;
+	this->position += velocity*dt;
+	/*
 	this->position += velocity;
-	velocity += acceleration * dt;
+	velocity += acceleration * dt;*/
 
 	// Update trail if still in view
 	if (position.y() >= ofGetHeight()+ radius || position.y() <= 0- radius)
