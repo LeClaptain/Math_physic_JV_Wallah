@@ -9,18 +9,10 @@ void Particle::update()
 	double dt = ofGetLastFrameTime();
 	velocity += acceleration*dt;
 	this->position += velocity*dt;
-	/*
-	this->position += velocity;
-	velocity += acceleration * dt;*/
 
-	// Update trail if still in view
-	if (position.y() >= ofGetHeight()+ radius || position.y() <= 0- radius)
-	{
-		position = {-100,-100,0};
-		velocity = {0,0,0};
-		acceleration = {0,0,0};
-	}
-	else if (hasTrail)
+	// Update trail
+
+	if (hasTrail)
 	{
 		if (segmentPoints.empty())
 		{
