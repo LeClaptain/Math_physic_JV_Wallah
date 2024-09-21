@@ -13,7 +13,7 @@ You can then run the project.
 
 ## Tests
 
-Create a new Visual Studio c++ console project, and add all files from `src/maths` and `src/tests`. You can then run the project, and it will print results in the console.
+Create a new Visual Studio c++ console project, and add all files from `src/maths` and `src/tests`. You will also need to set the define flag `IGNORE_GLM`. You can then run the project, and it will print results in the console. 
 
 # Using the project
 
