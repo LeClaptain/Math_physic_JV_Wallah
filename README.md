@@ -7,6 +7,7 @@ Git repository for the physics engine of Oscar Cizeron, Maëlle Juilliot, Ghali 
 ## Setup
 - Create a new open frameworks project with ofxGui enabled.
 - Copy the content of the git src folder and paste it in the src of the newly created project.
+- Exclude all files under `src\externalressources`
 
 You can then run the project.
 
