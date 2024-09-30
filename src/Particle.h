@@ -14,6 +14,7 @@ private :
     vec3 velocity = vec3(0);
     vec3 defaultVelocity = vec3(0);
     vec3 acceleration = vec3(0);
+    vec3 forces = vec3(0);
     float mass = 0.0;
     float radius = 0.0;
     ofColor color = ofColor::white;
@@ -54,6 +55,7 @@ public:
     float getRadius() { return radius; }
     ofColor getColor() { return color; }
     std::string getName() { return name; }
+    vec3 getForces() { return forces; }
 
     std::string getVelocityAsString() { return std::string(velocity) + "\n"; }
     std::string getAccelerationAsString() { return std::string(acceleration) + "\n"; }
@@ -68,8 +70,10 @@ public:
     void setColor(ofColor c) { color = c; }
     void setName(std::string n) { name = n; }
     void setDefaultVelocity(vec3 v) { defaultVelocity = v; }
+    void addForce(vec3 f) { forces += f; }
 
     void update();
     void draw() const;
     void clearTrail();
+    void clearForces() { forces = vec3(0); }
 };
