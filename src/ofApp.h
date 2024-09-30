@@ -29,40 +29,23 @@ public:
     void dragEvent(ofDragInfo dragInfo);
     void gotMessage(ofMessage msg);
 
-    //a changer
-	Particle* activeProjectile = nullptr;
-    Particle projectile = Particle(maths::vec3(-100, -100, 0), maths::vec3(), maths::vec3()
-                                 , 0.0, ofColor::blue, 30, "Particle" , true, 10, 0);
-    Bullet bullet = Bullet(maths::vec3(-100, 100, 0));
-
 private:
-	vector<Particle*> projectiles;
 	bool isLineDrawable = false;
 	bool isParticleMoovable = false;
 	bool isDebugEnabled = false;
-	std::pair<maths::vec3,maths::vec3> initialVelocity;
 	ofTrueTypeFont vectorFont;
 	ofxPanel controlGui;
 	ofxPanel debugGui;
 	ofxToggle debugToggle;
-	ofxButton nextProjectileButton;
-	ofxButton launchButton;
 	ofxButton resetButton;
-	ofxLabel nextProjectileLabel;
 	ofxLabel fpsLabel;
 	ofxLabel frameDurationLabel;
-	ofxLabel positionLabel;
-	ofxLabel accelerationLabel;
-	ofxLabel velocityLabel;
 
 	void onToggleChanged(bool & value);
-	void onNextProjectileButtonPressed();
-	void onLaunchButtonPressed();
 	void onResetButtonPressed();
 
 	void drawArrow();
 	void drawDebugGui();
 	void setupControlGui();
 	void setupDebugGui();
-	void setupProjecticles();
 };
