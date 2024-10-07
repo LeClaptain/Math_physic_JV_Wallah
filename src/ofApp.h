@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ForceRegistry.h"
 #include "ofMain.h"
 #include "ofEvents.h"
 #include "Particle.h"
@@ -17,6 +18,8 @@ public:
     void update();
     void draw();
 
+	~ofApp();
+
     void keyPressed(int key);
     void keyReleased(int key);
     void mouseMoved(int x, int y);
@@ -30,8 +33,15 @@ public:
     void gotMessage(ofMessage msg);
 
 private:
-	bool isLineDrawable = false;
-	bool isParticleMoovable = false;
+	// Particles
+	std::vector<Particle*> particles;
+	std::vector<ForceGenerator*> forces;
+	ForceRegistry registry;
+
+	// Display
+	ofCamera camera;
+	
+	// UI STUFF
 	bool isDebugEnabled = false;
 	ofTrueTypeFont vectorFont;
 	ofxPanel controlGui;

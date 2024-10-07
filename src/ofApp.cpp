@@ -1,5 +1,7 @@
 #include "ofApp.h"
 
+#include "forces/GravityForceGenerator.h"
+
 vec3 defaultGravity = vec3(0, 9.81 * 50, 0);
 //--------------------------------------------------------------
 void ofApp::setup()
@@ -22,14 +24,30 @@ void ofApp::setup()
     settings.addRange(underZero);
     settings.addRanges(ofAlphabet::Latin);
     vectorFont.load(settings);
+
+    // Setup the scene
+    particles.push_back(new Particle(vec3(0, 0, 0)));
+    forces.emplace_back(new GravityForceGenerator());
+
+    registry.add(particles[0], forces[0]);
+
+    camera.setPosition(vec3(0, 0, 500));
+    
+    camera.lookAt(vec3(0));
 }
 
 //--------------------------------------------------------------
 void ofApp::update()
 {
-    //double lastFrame = ofGetLastFrameTime(); //gets Δt since last frame
-
+    double lastFrame = ofGetLastFrameTime(); //gets Δt since last frame
     
+    registry.updateForces(lastFrame);
+
+    for (auto & particle : particles)
+    {
+        particle->update();
+        particle->clearForces();
+    }
 }
 
 //--------------------------------------------------------------
@@ -37,13 +55,36 @@ void ofApp::draw()
 {
     //Arrow to symbolize the initial velocity
     drawArrow();
-
+    
     //Drawing UI
     controlGui.draw();
     if (isDebugEnabled)
     {
         drawDebugGui();
     }
+
+    // Draw scene
+
+    camera.begin();
+    
+    for (const auto & particle : particles)
+    {
+        particle->draw();
+    }
+
+    camera.end();
+}
+
+ofApp::~ofApp()
+{
+    for (auto particle : particles)
+    {
+        delete particle;
+    } 
+    for (auto force : forces)
+    {
+        delete force;
+    } 
 }
 
 //--------------------------------------------------------------
@@ -72,9 +113,6 @@ void ofApp::mousePressed(int x, int y, int button)
     //Called to specify special angle and velocity for a projectile
     float mousex = ofGetMouseX();
     float mousey = ofGetMouseY();
-
-    isLineDrawable = true;
-    isParticleMoovable = true;
 }
 
 //--------------------------------------------------------------

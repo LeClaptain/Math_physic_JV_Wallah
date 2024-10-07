@@ -7,6 +7,7 @@ void Particle::update()
 {
 	//Euler Integration
 	double dt = ofGetLastFrameTime();
+	acceleration = forces / mass;
 	velocity += acceleration*dt;
 	this->position += velocity*dt;
 

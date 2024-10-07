@@ -17,7 +17,6 @@ public:
 		this->setRadius(radius);
 		this->setColor(color);
 		this->setName("Canonball");
-		this->setDefaultVelocity(velocity);
 
 	};
 

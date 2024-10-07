@@ -17,7 +17,6 @@ class Bullet : public Particle
 		this->setRadius(radius);
 		this->setColor(color);
 		this->setName("Bullet");
-		this->setDefaultVelocity(velocity);
 	};
 
 };

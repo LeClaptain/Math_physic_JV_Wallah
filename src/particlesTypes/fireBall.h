@@ -18,7 +18,6 @@ public:
 		this->setRadius(radius);
 		this->setColor(color);
 		this->setName("Fireball");
-		this->setDefaultVelocity(velocity);
 	};
 
 };

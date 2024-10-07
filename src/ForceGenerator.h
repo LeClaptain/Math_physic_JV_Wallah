@@ -4,7 +4,7 @@
 class ForceGenerator
 {
 public:
-    virtual ~ForceGenerator() = 0;
+    virtual ~ForceGenerator() = default;
 
     virtual void updateForce(Particle *particle, float duration) = 0;
 };

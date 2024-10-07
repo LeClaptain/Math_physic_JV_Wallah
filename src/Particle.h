@@ -12,7 +12,6 @@ class Particle
 private :
     vec3 position = vec3(0);
     vec3 velocity = vec3(0);
-    vec3 defaultVelocity = vec3(0);
     vec3 acceleration = vec3(0);
     vec3 forces = vec3(0);
     float mass = 0.0;
@@ -28,13 +27,12 @@ private :
 public:
     Particle() = default;
 
-    Particle(vec3 position, vec3 velocity, vec3 acceleration, float mass, ofColor color = ofColor::blue,
+    Particle(vec3 position, vec3 velocity = vec3(0), vec3 acceleration = vec3(0), float mass = 1, ofColor color = ofColor::blue,
              float radius = 10, std::string name = "", bool hasTrail = false, float segmentLength = 10.0f,
              int segmentCount = 10)
     {
         this->position = position;
         this->velocity = velocity;
-        this->defaultVelocity = velocity;
         this->acceleration = acceleration;
         this->mass = mass;
         this->radius = radius;
@@ -48,7 +46,6 @@ public:
     //Getters
     vec3 getPosition() { return position; }
     vec3 getVelocity() { return velocity; }
-    vec3 getDefaultVelocity() { return defaultVelocity; }
     vec3 getAcceleration() { return acceleration; }
     float getMass() { return mass; }
     float getInverseMass() { return 1 / mass; }
@@ -69,7 +66,6 @@ public:
     void setRadius(float r) { radius = r; }
     void setColor(ofColor c) { color = c; }
     void setName(std::string n) { name = n; }
-    void setDefaultVelocity(vec3 v) { defaultVelocity = v; }
     void addForce(vec3 f) { forces += f; }
 
     void update();
