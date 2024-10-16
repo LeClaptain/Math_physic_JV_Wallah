@@ -26,24 +26,41 @@ void ofApp::setup()
     vectorFont.load(settings);
 
     // Setup the scene
-    particles.push_back(new Particle(vec3(0, 0, 0)));
-    forces.emplace_back(new GravityForceGenerator());
+    addParticleForce(new Particle(vec3(0, 20, 0), 0, 0, 1, ofColor::blue), new GravityForceGenerator());
+    addParticleForce(new Particle(vec3(0, 10, 0), 0, 0, 1, ofColor::red), new GravityForceGenerator());
+    addParticle(new Particle(vec3(0, 0, 0), 0, 0, 10000000000.f, ofColor::green));
 
-    registry.add(particles[0], forces[0]);
+    collisionSolver.addParticle(particles[0]);
+    collisionSolver.addParticle(particles[1]);
+    collisionSolver.addParticle(particles[2]);
 
     camera.setPosition(vec3(0, 0, 500));
-    
+
     camera.lookAt(vec3(0));
+}
+
+void ofApp::addParticleForce(Particle* p, ForceGenerator* generator)
+{
+    particles.emplace_back(p);
+    forces.emplace(generator);
+    registry.add(p, generator);
+}
+
+void ofApp::addParticle(Particle* p)
+{
+    particles.emplace_back(p);
 }
 
 //--------------------------------------------------------------
 void ofApp::update()
 {
     double lastFrame = ofGetLastFrameTime(); //gets Δt since last frame
-    
+
     registry.updateForces(lastFrame);
 
-    for (auto & particle : particles)
+    auto collisions = collisionSolver.solve();
+
+    for (auto& particle : particles)
     {
         particle->update();
         particle->clearForces();
@@ -55,7 +72,7 @@ void ofApp::draw()
 {
     //Arrow to symbolize the initial velocity
     drawArrow();
-    
+
     //Drawing UI
     controlGui.draw();
     if (isDebugEnabled)
@@ -66,12 +83,13 @@ void ofApp::draw()
     // Draw scene
 
     camera.begin();
-    
-    for (const auto & particle : particles)
+    ofEnableDepthTest();
+    for (const auto& particle : particles)
     {
         particle->draw();
     }
-
+    ofDrawGrid(10.f, 10, false, false, true, false);
+    ofDisableDepthTest();
     camera.end();
 }
 
@@ -80,11 +98,11 @@ ofApp::~ofApp()
     for (auto particle : particles)
     {
         delete particle;
-    } 
+    }
     for (auto force : forces)
     {
         delete force;
-    } 
+    }
 }
 
 //--------------------------------------------------------------
@@ -189,7 +207,6 @@ void ofApp::onToggleChanged(bool& value)
 
 void ofApp::onResetButtonPressed()
 {
-
 }
 
 void ofApp::drawArrow()

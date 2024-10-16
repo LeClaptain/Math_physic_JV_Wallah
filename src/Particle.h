@@ -10,11 +10,10 @@ using namespace maths;
 class Particle
 {
 private :
-    vec3 position = vec3(0);
     vec3 velocity = vec3(0);
     vec3 acceleration = vec3(0);
     vec3 forces = vec3(0);
-    float mass = 0.0;
+    float oneOverMass = 0.0;
     float radius = 0.0;
     ofColor color = ofColor::white;
     bool hasTrail;
@@ -27,14 +26,17 @@ private :
 public:
     Particle() = default;
 
-    Particle(vec3 position, vec3 velocity = vec3(0), vec3 acceleration = vec3(0), float mass = 1, ofColor color = ofColor::blue,
+    vec3 position = vec3(0);
+
+    Particle(vec3 position, vec3 velocity = vec3(0), vec3 acceleration = vec3(0), float mass = 1,
+             ofColor color = ofColor::blue,
              float radius = 10, std::string name = "", bool hasTrail = false, float segmentLength = 10.0f,
              int segmentCount = 10)
     {
         this->position = position;
         this->velocity = velocity;
         this->acceleration = acceleration;
-        this->mass = mass;
+        this->oneOverMass = 1.0f / mass;
         this->radius = radius;
         this->color = color;
         this->hasTrail = hasTrail;
@@ -47,8 +49,8 @@ public:
     vec3 getPosition() { return position; }
     vec3 getVelocity() { return velocity; }
     vec3 getAcceleration() { return acceleration; }
-    float getMass() { return mass; }
-    float getInverseMass() { return 1 / mass; }
+    float getMass() { return 1.0f / oneOverMass; }
+    float getInverseMass() { return oneOverMass; }
     float getRadius() { return radius; }
     ofColor getColor() { return color; }
     std::string getName() { return name; }
@@ -62,7 +64,7 @@ public:
     void setPosition(vec3 p) { position = p; }
     void setVelocity(vec3 v) { velocity = v; }
     void setAcceleration(vec3 a) { acceleration = a; }
-    void setMass(float m) { mass = m; }
+    void setMass(float m) { oneOverMass = 1.0f/m; }
     void setRadius(float r) { radius = r; }
     void setColor(ofColor c) { color = c; }
     void setName(std::string n) { name = n; }

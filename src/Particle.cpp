@@ -1,5 +1,6 @@
 ﻿#include "Particle.h"
 
+#include "of3dGraphics.h"
 #include "ofAppRunner.h"
 #include "ofGraphics.h"
 
@@ -7,7 +8,7 @@ void Particle::update()
 {
 	//Euler Integration
 	double dt = ofGetLastFrameTime();
-	acceleration = forces / mass;
+	acceleration = forces * oneOverMass;
 	velocity += acceleration*dt;
 	this->position += velocity*dt;
 
@@ -52,9 +53,9 @@ void Particle::draw() const
 	}
 
 	ofSetColor(ofColor::black);
-	ofDrawCircle(position, radius + 2);
+	// ofDrawSphere(position, radius + 2);
 	ofSetColor(color);
-	ofDrawCircle(position, radius);
+	ofDrawSphere(position, radius);
 }
 
 void Particle::clearTrail()

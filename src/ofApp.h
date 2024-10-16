@@ -1,5 +1,8 @@
 #pragma once
 
+#include <unordered_set>
+
+#include "CollisionSolver.h"
 #include "ForceRegistry.h"
 #include "ofMain.h"
 #include "ofEvents.h"
@@ -32,14 +35,18 @@ public:
     void dragEvent(ofDragInfo dragInfo);
     void gotMessage(ofMessage msg);
 
+	void addParticleForce(Particle* p, ForceGenerator* generator);
+	void addParticle(Particle* p);
+
 private:
 	// Particles
 	std::vector<Particle*> particles;
-	std::vector<ForceGenerator*> forces;
+	std::unordered_set<ForceGenerator*> forces;
 	ForceRegistry registry;
+	CollisionSolver collisionSolver;
 
 	// Display
-	ofCamera camera;
+	ofEasyCam camera;
 	
 	// UI STUFF
 	bool isDebugEnabled = false;
