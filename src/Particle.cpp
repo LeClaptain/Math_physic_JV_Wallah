@@ -4,10 +4,9 @@
 #include "ofAppRunner.h"
 #include "ofGraphics.h"
 
-void Particle::update()
+void Particle::update(double dt)
 {
 	//Euler Integration
-	double dt = ofGetLastFrameTime();
 	acceleration = forces * oneOverMass;
 	velocity += acceleration*dt;
 	this->position += velocity*dt;
@@ -31,8 +30,6 @@ void Particle::update()
 			segmentPoints.pop_back();
 		}
 	}
-
-
 }
 
 void Particle::draw() const

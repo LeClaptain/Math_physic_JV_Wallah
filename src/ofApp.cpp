@@ -26,9 +26,9 @@ void ofApp::setup()
     vectorFont.load(settings);
 
     // Setup the scene
-    addParticleForce(new Particle(vec3(0, 20, 0), 0, 0, 1, ofColor::blue), new GravityForceGenerator());
-    addParticleForce(new Particle(vec3(0, 10, 0), 0, 0, 1, ofColor::red), new GravityForceGenerator());
-    addParticle(new Particle(vec3(0, 0, 0), 0, 0, 10000000000.f, ofColor::green));
+    addParticleForce(new Particle(vec3(0, 20, 0), 1, ofColor::green), new GravityForceGenerator());
+    addParticleForce(new Particle(vec3(0, 10, 0), 1, ofColor::red), new GravityForceGenerator());
+    addParticle(new Particle(vec3(0, 0, 0)));
 
     collisionSolver.addParticle(particles[0]);
     collisionSolver.addParticle(particles[1]);
@@ -62,7 +62,7 @@ void ofApp::update()
 
     for (auto& particle : particles)
     {
-        particle->update();
+        particle->update(lastFrame);
         particle->clearForces();
     }
 }
@@ -72,13 +72,6 @@ void ofApp::draw()
 {
     //Arrow to symbolize the initial velocity
     drawArrow();
-
-    //Drawing UI
-    controlGui.draw();
-    if (isDebugEnabled)
-    {
-        drawDebugGui();
-    }
 
     // Draw scene
 
@@ -91,6 +84,13 @@ void ofApp::draw()
     ofDrawGrid(10.f, 10, false, false, true, false);
     ofDisableDepthTest();
     camera.end();
+
+    //Drawing UI
+    controlGui.draw();
+    if (isDebugEnabled)
+    {
+        drawDebugGui();
+    }
 }
 
 ofApp::~ofApp()
