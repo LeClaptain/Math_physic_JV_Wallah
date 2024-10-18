@@ -57,6 +57,8 @@ private:
 	ofxButton resetButton;
 	ofxLabel fpsLabel;
 	ofxLabel frameDurationLabel;
+	ofxLabel particlePosition;
+	ofxLabel particleVelocity;
 
 	void onToggleChanged(bool & value);
 	void onResetButtonPressed();

@@ -2,11 +2,15 @@
 
 void TwoParticleSpringForceGenerator::updateForce(Particle* particle, float duration)
 {
-	vec3 length = p1->getPosition() - p2->getPosition();
-	vec3 force = length.normalize() * ( k * ( l0 - length.magnitude() ) );
+	vec3 distance = p1->getPosition() - p2->getPosition();
+	float length = distance.magnitude();
+	vec3 force = vec3(0);
+
+	if (length != 0)
+		force = distance.normalized() * (k * (l0 - length));
 
 	if (particle == p1)
-		particle->addForce(-force);
-	else
 		particle->addForce(force);
+	else
+		particle->addForce(-force);
 }
