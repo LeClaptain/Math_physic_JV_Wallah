@@ -1,6 +1,8 @@
 #include "ofApp.h"
 
 #include "forces/GravityForceGenerator.h"
+#include "forces/Ressort1.h"
+#include "forces/Bungee.h"
 
 vec3 defaultGravity = vec3(0, 9.81 * 50, 0);
 //--------------------------------------------------------------
@@ -30,9 +32,20 @@ void ofApp::setup()
     addParticleForce(new Particle(vec3(0, 10, 0), 1, ofColor::red), new GravityForceGenerator());
     addParticle(new Particle(vec3(0, 0, 0)));
 
+    Particle* visuAncre = new Particle(vec3(80, -40, 0), 1, ofColor::black);
+    addParticle(visuAncre);
+    Particle* particle = new Particle(vec3(120, -80, 0), 1, ofColor::black);
+    addParticleForce(particle, new Ressort1(10, 100, particle, vec3(80,-40,0)));
+
+    Particle* bungeeParticle1 = new Particle(vec3(-50, 100, 0), 1, ofColor::black);
+    Particle* bungeeParticle2 = new Particle(vec3(50, 100, 0), 1, ofColor::black);
+    addParticleForce(bungeeParticle1, new Bungee(10, 50, bungeeParticle1, bungeeParticle2));
+    addParticleForce(bungeeParticle2, new Bungee(10, 50, bungeeParticle2, bungeeParticle1));
+
     collisionSolver.addParticle(particles[0]);
     collisionSolver.addParticle(particles[1]);
     collisionSolver.addParticle(particles[2]);
+    collisionSolver.addParticle(particle);
 
     camera.setPosition(vec3(0, 0, 500));
 
