@@ -3,6 +3,7 @@
 #include "forces/GravityForceGenerator.h"
 #include "forces/TwoParticleSpringForceGenerator.h"
 #include "forces/FrictionForceGenerator.h"
+#include "forces/RodForceGenerator.h"
 
 vec3 defaultGravity = vec3(0, 9.81 * 50, 0);
 //--------------------------------------------------------------
@@ -30,10 +31,12 @@ void ofApp::setup()
     // Setup the scene
     addParticle(new Particle(vec3(30, 0, 30), 0, 0, 1, ofColor::blue));
     addParticle(new Particle(vec3(-30, 0, -30), 0, 0, 1, ofColor::red));
-    addParticleForce(particles[0], new TwoParticleSpringForceGenerator(particles[0], particles[1], 100, 75));
-    addParticleForce(particles[1], forces[0]);
+    addParticleForce(particles[0], new GravityForceGenerator());
+    addParticleForce(particles[1], new GravityForceGenerator());
     addParticleForce(particles[0], new FrictionForceGenerator(2, 0.03));
     addParticleForce(particles[1], new FrictionForceGenerator(2, 0.03));
+    addParticleForce(particles[0], new RodForceGenerator(particles[0], particles[1]));
+    addParticleForce(particles[1], forces[forces.size()-1]);
     /*addParticleForce(new Particle(vec3(0, 20, 0), 0, 0, 1, ofColor::blue), new GravityForceGenerator());
     addParticleForce(new Particle(vec3(0, 10, 0), 0, 0, 1, ofColor::red), new GravityForceGenerator());
     addParticle(new Particle(vec3(0, 0, 0), 0, 0, 10000000000.f, ofColor::green));
