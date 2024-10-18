@@ -1,6 +1,8 @@
 #include "ofApp.h"
 
 #include "forces/GravityForceGenerator.h"
+#include "forces/TwoParticleSpringForceGenerator.h"
+#include "forces/FrictionForceGenerator.h"
 
 vec3 defaultGravity = vec3(0, 9.81 * 50, 0);
 //--------------------------------------------------------------
@@ -26,13 +28,19 @@ void ofApp::setup()
     vectorFont.load(settings);
 
     // Setup the scene
-    addParticleForce(new Particle(vec3(0, 20, 0), 0, 0, 1, ofColor::blue), new GravityForceGenerator());
+    addParticle(new Particle(vec3(30, 0, 30), 0, 0, 1, ofColor::blue));
+    addParticle(new Particle(vec3(-30, 0, -30), 0, 0, 1, ofColor::red));
+    addParticleForce(particles[0], new TwoParticleSpringForceGenerator(particles[0], particles[1], 5, 10));
+    addParticleForce(particles[1], forces[0]);
+    addParticleForce(particles[0], new FrictionForceGenerator(1, 0.5));
+    addParticleForce(particles[1], new FrictionForceGenerator(1, 0.5));
+    /*addParticleForce(new Particle(vec3(0, 20, 0), 0, 0, 1, ofColor::blue), new GravityForceGenerator());
     addParticleForce(new Particle(vec3(0, 10, 0), 0, 0, 1, ofColor::red), new GravityForceGenerator());
     addParticle(new Particle(vec3(0, 0, 0), 0, 0, 10000000000.f, ofColor::green));
 
     collisionSolver.addParticle(particles[0]);
     collisionSolver.addParticle(particles[1]);
-    collisionSolver.addParticle(particles[2]);
+    collisionSolver.addParticle(particles[2]);*/
 
     camera.setPosition(vec3(0, 0, 500));
 
@@ -42,7 +50,7 @@ void ofApp::setup()
 void ofApp::addParticleForce(Particle* p, ForceGenerator* generator)
 {
     particles.emplace_back(p);
-    forces.emplace(generator);
+    forces.emplace_back(generator);
     registry.add(p, generator);
 }
 

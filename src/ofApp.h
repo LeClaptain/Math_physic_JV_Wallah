@@ -41,7 +41,7 @@ public:
 private:
 	// Particles
 	std::vector<Particle*> particles;
-	std::unordered_set<ForceGenerator*> forces;
+	std::vector<ForceGenerator*> forces;
 	ForceRegistry registry;
 	CollisionSolver collisionSolver;
 
