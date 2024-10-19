@@ -56,7 +56,7 @@ void ofApp::setup()
     //add other forces
     addParticleForce(spring1, new Ressort1(2, 50, spring1, vec3(0, 80, 0)));
     addParticleForce(bungee1, new Bungee(2, 150, bungee1, bungee2));
-    addParticleForce(bungee2, new Bungee(2, 150, bungee2, bungee1));
+    //addParticleForce(bungee2, new Bungee(2, 150, bungee2, bungee1));
     
     /*addParticleForce(new Particle(vec3(-19, 100, 0), 1, ofColor::green), new GravityForceGenerator());
     addParticleForce(new Particle(vec3(20, 50, 0), 1, ofColor::red), new GravityForceGenerator());
@@ -74,7 +74,7 @@ void ofApp::setup()
     addParticleForce(bungeeParticle2, new Bungee(10, 50, bungeeParticle2, bungeeParticle1));*/
 
     
-    collisionResolver.setElasticity(0.01f);
+    collisionResolver.setElasticity(0.5f);
     camera.setPosition(vec3(0, 0, 500));
 
     camera.lookAt(vec3(0));
