@@ -33,6 +33,15 @@ namespace maths
 		_z = other._z;
 	}
 
+#ifndef IGNORE_GLM
+	vec3::vec3(const glm::vec3& other)
+	{
+		_x = other.x;
+		_y = other.y;
+		_z = other.z;
+	}
+#endif
+
 	// op against other vec3
 	vec3& vec3::operator=(const vec3& other)
 	{

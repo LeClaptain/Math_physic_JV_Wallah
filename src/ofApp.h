@@ -49,6 +49,9 @@ private:
 	ForceRegistry registry;
 	CollisionDetector collisionDetector;
 	CollisionResolver collisionResolver;
+	Particle* selectedParticle = nullptr;
+	vec3 selectionPlaneNormal = vec3(0, 1, 0);
+	vec3 selectionPlanePoint = vec3(0, 0, 0);
 
 	// Display
 	ofEasyCam camera;
