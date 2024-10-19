@@ -39,6 +39,8 @@ public:
 
 	void addParticleForce(Particle* p, ForceGenerator* generator);
 	void addParticle(Particle* p);
+	void setDetectorList();
+	void addGravityToParticles();
 
 private:
 	// Particles

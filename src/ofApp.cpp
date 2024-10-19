@@ -28,27 +28,57 @@ void ofApp::setup()
     vectorFont.load(settings);
 
     // Setup the scene
-    addParticleForce(new Particle(vec3(-20, 100, 0), 1, ofColor::green), new GravityForceGenerator());
+    // Create particles and add them to the vector
+    
+    //basics
+    Particle* basic1 = new Particle(vec3(-19, 100, 0), 2, ofColor::green);
+    addParticle(basic1);
+    Particle* basic2 = new Particle(vec3(20, 80, 0), 1, ofColor::red);
+    addParticle(basic2);
+    Particle * basic3 = new Particle(vec3(0, 20, 0), 1, ofColor::blue);
+    addParticle(basic3);
+
+    //Springs
+    Particle* spring1 = new Particle(vec3(80, 20, 0), 2, ofColor::blue);
+    addParticle(spring1);
+
+    //Bungee
+    Particle* bungee1 = new Particle(vec3(50, 100, 0), 3, ofColor::pink);
+    addParticle(bungee1);
+
+    Particle* bungee2 = new Particle(vec3(100, 250, 0), 3, ofColor::black);
+    addParticle(bungee2);
+    
+    // Add gravity and track their collisions
+    addGravityToParticles();
+    setDetectorList();
+
+    //add other forces
+    addParticleForce(spring1, new Ressort1(2, 50, spring1, vec3(0, 80, 0)));
+    addParticleForce(bungee1, new Bungee(2, 150, bungee1, bungee2));
+    addParticleForce(bungee2, new Bungee(2, 150, bungee2, bungee1));
+    
+    /*addParticleForce(new Particle(vec3(-19, 100, 0), 1, ofColor::green), new GravityForceGenerator());
     addParticleForce(new Particle(vec3(20, 50, 0), 1, ofColor::red), new GravityForceGenerator());
     addParticleForce(new Particle(vec3(0, 20, 0), 1, ofColor::blue), new GravityForceGenerator());
 
-    Particle* visuAncre = new Particle(vec3(80, -40, 0), 1, ofColor::black);
+    Particle* visuAncre = new Particle(vec3(0, 80, 0), 1, ofColor::red);
     addParticle(visuAncre);
-    Particle* particle = new Particle(vec3(120, -80, 0), 1, ofColor::black);
-    addParticleForce(particle, new Ressort1(10, 100, particle, vec3(80,-40,0)));
+    Particle* particle = new Particle(vec3(50, 30, 0), 1, ofColor::black);
+    addParticleForce(particle, new Ressort1(2, 50, particle, vec3(0, 80, 0)));
+    addParticleForce(particle, new GravityForceGenerator());*/
 
-    Particle* bungeeParticle1 = new Particle(vec3(-50, 100, 0), 1, ofColor::black);
+    /*Particle* bungeeParticle1 = new Particle(vec3(-50, 100, 0), 1, ofColor::red);
     Particle* bungeeParticle2 = new Particle(vec3(50, 100, 0), 1, ofColor::black);
     addParticleForce(bungeeParticle1, new Bungee(10, 50, bungeeParticle1, bungeeParticle2));
-    addParticleForce(bungeeParticle2, new Bungee(10, 50, bungeeParticle2, bungeeParticle1));
+    addParticleForce(bungeeParticle2, new Bungee(10, 50, bungeeParticle2, bungeeParticle1));*/
 
-    collisionDetector.addParticle(particles[0]);
-    collisionDetector.addParticle(particles[1]);
-    collisionDetector.addParticle(particles[2]);
-    collisionDetector.addParticle(particle);
+    
+
+    //collisionDetector.addParticle(visuAncre);
+    //collisionDetector.addParticle(particle);
     collisionResolver.setElasticity(0.01f);
-
- 
+    
     camera.setPosition(vec3(0, 0, 500));
 
     camera.lookAt(vec3(0));
@@ -56,7 +86,7 @@ void ofApp::setup()
 
 void ofApp::addParticleForce(Particle* p, ForceGenerator* generator)
 {
-    particles.emplace_back(p);
+    //particles.emplace_back(p);
     forces.emplace(generator);
     registry.add(p, generator);
 }
@@ -64,6 +94,22 @@ void ofApp::addParticleForce(Particle* p, ForceGenerator* generator)
 void ofApp::addParticle(Particle* p)
 {
     particles.emplace_back(p);
+}
+
+void ofApp::setDetectorList()
+{
+    for (auto& particle : particles)
+    {
+        collisionDetector.addParticle(particle);
+    }
+}
+
+void ofApp::addGravityToParticles()
+{
+    for (auto& particle : particles)
+    {
+        addParticleForce(particle, new GravityForceGenerator());
+    }
 }
 
 //--------------------------------------------------------------
