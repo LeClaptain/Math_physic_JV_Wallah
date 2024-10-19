@@ -54,7 +54,7 @@ void ofApp::setup()
     //basics
     Particle* basic1 = new Particle(vec3(-19, 100, 0), 2, ofColor::green);
     addParticle(basic1);
-    Particle* basic2 = new Particle(vec3(20, 80, 0), 1, ofColor::red);
+    Particle* basic2 = new Particle(vec3(20, 80, 0), 2, ofColor::red);
     addParticle(basic2);
     Particle * basic3 = new Particle(vec3(0, 20, 0), 1, ofColor::blue);
     addParticle(basic3);
@@ -66,9 +66,24 @@ void ofApp::setup()
     //Bungee
     Particle* bungee1 = new Particle(vec3(50, 100, 0), 3, ofColor::pink);
     addParticle(bungee1);
-
     Particle* bungee2 = new Particle(vec3(100, 250, 0), 3, ofColor::black);
     addParticle(bungee2);
+
+    //Rod
+    Particle* rod1 = new Particle(vec3(-50, 100, 0), 3, ofColor::purple);
+    Particle* rod2 = new Particle(vec3(-100, 100, 0), 3, ofColor::purple);
+    addParticle(rod2);
+    addParticle(rod1);
+    addParticleForce(particles[0], new RodForceGenerator(particles[0], particles[1]));
+
+    //Double Spring
+    Particle* dSpring1 = new Particle(vec3(-150, 100, 0), 3, ofColor::orangeRed);
+    Particle* dSpring2 = new Particle(vec3(-200, 100, 0), 3, ofColor::yellow);
+    addParticle(dSpring1);
+    addParticle(dSpring2);
+    TwoParticleSpringForceGenerator * twoSideSpring = new TwoParticleSpringForceGenerator(dSpring1, dSpring2, 3, 50);
+    addParticleForce(dSpring1, twoSideSpring);
+    addParticleForce(dSpring2, twoSideSpring);
     
     // Add gravity and track their collisions
     addGravityToParticles();
@@ -78,6 +93,8 @@ void ofApp::setup()
     addParticleForce(spring1, new Ressort1(2, 50, spring1, vec3(0, 80, 0)));
     addParticleForce(bungee1, new Bungee(2, 150, bungee1, bungee2));
     //addParticleForce(bungee2, new Bungee(2, 150, bungee2, bungee1));
+    addParticleForce(rod1, new RodForceGenerator(rod1, rod2));
+
     
     /*addParticleForce(new Particle(vec3(-19, 100, 0), 1, ofColor::green), new GravityForceGenerator());
     addParticleForce(new Particle(vec3(20, 50, 0), 1, ofColor::red), new GravityForceGenerator());
@@ -104,7 +121,7 @@ void ofApp::setup()
 void ofApp::addParticleForce(Particle* p, ForceGenerator* generator)
 {
     //particles.emplace_back(p);
-    forces.emplace(generator);
+    forces.emplace_back(generator);
     registry.add(p, generator);
 }
 
@@ -126,6 +143,14 @@ void ofApp::addGravityToParticles()
     for (auto& particle : particles)
     {
         addParticleForce(particle, new GravityForceGenerator());
+    }
+}
+
+void ofApp::addFrictionToParticles()
+{
+    for (auto& particle : particles)
+    {
+        addParticleForce(particle, new FrictionForceGenerator(5, 0.03));
     }
 }
 
