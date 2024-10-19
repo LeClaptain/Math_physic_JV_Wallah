@@ -1,8 +1,13 @@
 #include "ofApp.h"
 
 #include "forces/GravityForceGenerator.h"
+
+#include "forces/TwoParticleSpringForceGenerator.h"
+#include "forces/FrictionForceGenerator.h"
+#include "forces/RodForceGenerator.h"
 #include "forces/Ressort1.h"
 #include "forces/Bungee.h"
+
 
 vec3 defaultGravity = vec3(0, 9.81 * 50, 0);
 //--------------------------------------------------------------
@@ -28,6 +33,22 @@ void ofApp::setup()
     vectorFont.load(settings);
 
     // Setup the scene
+
+    /*addParticle(new Particle(vec3(30, 0, 30), 0, 0, 1, ofColor::blue));
+    addParticle(new Particle(vec3(-30, 0, -30), 0, 0, 1, ofColor::red));
+    addParticleForce(particles[0], new GravityForceGenerator());
+    addParticleForce(particles[1], new GravityForceGenerator());
+    addParticleForce(particles[0], new FrictionForceGenerator(2, 0.03));
+    addParticleForce(particles[1], new FrictionForceGenerator(2, 0.03));
+    addParticleForce(particles[0], new RodForceGenerator(particles[0], particles[1]));
+    addParticleForce(particles[1], forces[forces.size()-1]);*/
+    /*addParticleForce(new Particle(vec3(0, 20, 0), 0, 0, 1, ofColor::blue), new GravityForceGenerator());
+    addParticleForce(new Particle(vec3(0, 10, 0), 0, 0, 1, ofColor::red), new GravityForceGenerator());
+    addParticle(new Particle(vec3(0, 0, 0), 0, 0, 10000000000.f, ofColor::green));
+
+    collisionSolver.addParticle(particles[0]);
+    collisionSolver.addParticle(particles[1]);
+    collisionSolver.addParticle(particles[2]);*/
     // Create particles and add them to the vector
     
     //basics
@@ -266,6 +287,8 @@ void ofApp::drawDebugGui()
     debugGui.draw();
     fpsLabel.setup("FPS", std::to_string(ofGetFrameRate()));
     frameDurationLabel.setup("Frame Duration", std::to_string(ofGetLastFrameTime() * 1000) + " ms");
+    particlePosition.setup("Particle Position", particles[0]->getPositionAsString());
+    particleVelocity.setup("Particle Velocity", particles[0]->getVelocityAsString());
     // positionLabel.setup("Position", activeProjectile->getPositionAsString());
     // velocityLabel.setup("Velocity: ", activeProjectile->getVelocityAsString());
     // accelerationLabel.setup("Acceleration: ", activeProjectile->getAccelerationAsString());
@@ -295,11 +318,15 @@ void ofApp::setupDebugGui()
     debugGui.setWidthElements(400);
     debugGui.add(fpsLabel.setup("fpsLabel", ""));
     debugGui.add(frameDurationLabel.setup("frameDurationLabel", ""));
+    debugGui.add(particlePosition.setup("Particle Position", ""));
+    debugGui.add(particleVelocity.setup("Particle Velocity", ""));
     debugGui.add(speedLabel.setup("greenParticleSpeedLabel", ""));
 
     //Listeners
     fpsLabel.setSize(debugGui.getWidth(), fpsLabel.getHeight());
     frameDurationLabel.setSize(debugGui.getWidth(), frameDurationLabel.getHeight());
+    particlePosition.setSize(debugGui.getWidth(), frameDurationLabel.getHeight());
+    particleVelocity.setSize(debugGui.getWidth(), frameDurationLabel.getHeight());
 }
 
 void ofApp::onToggleChanged(bool& value)
