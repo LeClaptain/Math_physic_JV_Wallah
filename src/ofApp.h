@@ -45,7 +45,7 @@ public:
 private:
 	// Particles
 	std::vector<Particle*> particles;
-	std::unordered_set<ForceGenerator*> forces;
+	std::vector<ForceGenerator*> forces;
 	ForceRegistry registry;
 	CollisionDetector collisionDetector;
 	CollisionResolver collisionResolver;
@@ -65,6 +65,9 @@ private:
 	ofxButton resetButton;
 	ofxLabel fpsLabel;
 	ofxLabel frameDurationLabel;
+
+	ofxLabel particlePosition;
+	ofxLabel particleVelocity;
 	ofxLabel speedLabel;
 
 	void onToggleChanged(bool & value);
