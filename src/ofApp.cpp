@@ -32,13 +32,13 @@ void ofApp::setup()
     addParticleForce(new Particle(vec3(20, 50, 0), 1, ofColor::red), new GravityForceGenerator());
     addParticleForce(new Particle(vec3(0, 20, 0), 1, ofColor::blue), new GravityForceGenerator());
 
-    Particle* visuAncre = new Particle(vec3(80, -40, 0), 1, ofColor::black);
+    Particle* visuAncre = new Particle(vec3(80, -40, 0), 1, ofColor::white);
     addParticle(visuAncre);
-    Particle* particle = new Particle(vec3(120, -80, 0), 1, ofColor::black);
+    Particle* particle = new Particle(vec3(120, -80, 0), 1, ofColor::yellow);
     addParticleForce(particle, new Ressort1(10, 100, particle, vec3(80,-40,0)));
 
-    Particle* bungeeParticle1 = new Particle(vec3(-50, 100, 0), 1, ofColor::black);
-    Particle* bungeeParticle2 = new Particle(vec3(50, 100, 0), 1, ofColor::black);
+    Particle* bungeeParticle1 = new Particle(vec3(-50, 100, 0), 1, ofColor::cyan);
+    Particle* bungeeParticle2 = new Particle(vec3(50, 100, 0), 1, ofColor::gray);
     addParticleForce(bungeeParticle1, new Bungee(10, 50, bungeeParticle1, bungeeParticle2));
     addParticleForce(bungeeParticle2, new Bungee(10, 50, bungeeParticle2, bungeeParticle1));
 
