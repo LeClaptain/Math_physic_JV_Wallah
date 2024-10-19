@@ -7,16 +7,29 @@ Git repository for the physics engine of Oscar Cizeron, Maëlle Juilliot, Ghali 
 ## Setup
 - Create a new open frameworks project with ofxGui enabled.
 - Copy the content of the git src folder and paste it in the src of the newly created project.
-- Exclude all files under `src\externalressources`
+- Exclude all files under `src\externalressources` and under `src\tests`
+
+You can then run the project.
+
+# How to build - tag `phase2`
+
+## Setup
+- Create a new open frameworks project with ofxGui enabled.
+- Copy the content of the git src folder and paste it in the src of the newly created project.
+- Exclude all files under `src\externalressources` and under `src\tests`
 
 You can then run the project.
 
 ## Tests
 
-Create a new Visual Studio c++ console project, and add all files from `src/maths` and `src/tests`. You will also need to set the define flag `IGNORE_GLM`. You can then run the project, and it will print results in the console. 
+Create a new Visual Studio c++ console project, and add all files from `src/maths` and `src/tests`. You will also need to set the define flag `IGNORE_GLM`. You can then run the project, and it will print results in the console.
 
-# Using the project
+# Using the project - tag `phase1`
 
 Click on the screen to spawn a particle. The distance to the bottom right corner and the orientation matters, as it will change the initial velocity of the particle.
 
 Use the on screen controls on the bottom left to change settings such as the particle type, or show debug info.
+
+# Using the project - tag `phase2`
+
+TODO

@@ -1,6 +1,6 @@
-﻿#include "CollisionSolver.h"
+﻿#include "CollisionDetector.h"
 
-std::vector<CollisionSolver::CollisionData> CollisionSolver::solve()
+std::vector<CollisionData> CollisionDetector::detectAllCollisions()
 {
     std::vector<CollisionData> collisions;
 
@@ -13,18 +13,11 @@ std::vector<CollisionSolver::CollisionData> CollisionSolver::solve()
 
             float distance = (p1->getPosition() - p2->getPosition()).magnitude();
             float sumRadius = p1->getRadius() + p2->getRadius();
-            float sumMass = p1->getMass() + p2->getMass();
-            float oneOverSumMass = 1.0f / sumMass;
 
             if (distance < sumRadius)
             {
-                // Collision detected
                 vec3 normal = (p2->getPosition() - p1->getPosition()).normalize();
                 float penetration = sumRadius - distance;
-
-                // Displace particles
-                p1->position -= normal * penetration * p2->getMass() * oneOverSumMass;
-                p2->position += normal * penetration * p1->getMass() * oneOverSumMass;
 
                 CollisionData data;
                 data.particle1 = p1;
@@ -35,12 +28,23 @@ std::vector<CollisionSolver::CollisionData> CollisionSolver::solve()
                 collisions.push_back(data);
             }
         }
+        float distanceToPlane = particles[i]->getPosition().y() - particles[i]->getRadius();
+        if (distanceToPlane < 0 )
+        {
+            CollisionData data;
+            data.particle1 = particles[i];
+            data.particle2 = nullptr;
+            data.normal = vec3(0, 1, 0);
+            data.penetration = distanceToPlane;
+
+            collisions.push_back(data);
+        }
     }
 
     return collisions;
 }
 
-void CollisionSolver::addParticle(Particle* p)
+void CollisionDetector::addParticle(Particle* p)
 {
     particles.push_back(p);
 }

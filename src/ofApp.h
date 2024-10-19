@@ -2,12 +2,14 @@
 
 #include <unordered_set>
 
-#include "CollisionSolver.h"
+#include "CollisionDetector.h"
+#include "CollisionResolver.h"
 #include "ForceRegistry.h"
 #include "ofMain.h"
 #include "ofEvents.h"
 #include "Particle.h"
 #include "ofxGui.h"
+
 #include "particlesTypes/bullet.h"
 #include "particlesTypes/canonBall.h"
 #include "particlesTypes/fireBall.h"
@@ -37,13 +39,19 @@ public:
 
 	void addParticleForce(Particle* p, ForceGenerator* generator);
 	void addParticle(Particle* p);
+	void setDetectorList();
+	void addGravityToParticles();
 
 private:
 	// Particles
 	std::vector<Particle*> particles;
 	std::vector<ForceGenerator*> forces;
 	ForceRegistry registry;
-	CollisionSolver collisionSolver;
+	CollisionDetector collisionDetector;
+	CollisionResolver collisionResolver;
+	Particle* selectedParticle = nullptr;
+	vec3 selectionPlaneNormal = vec3(0, 1, 0);
+	vec3 selectionPlanePoint = vec3(0, 0, 0);
 
 	// Display
 	ofEasyCam camera;
@@ -57,8 +65,10 @@ private:
 	ofxButton resetButton;
 	ofxLabel fpsLabel;
 	ofxLabel frameDurationLabel;
+
 	ofxLabel particlePosition;
 	ofxLabel particleVelocity;
+	ofxLabel speedLabel;
 
 	void onToggleChanged(bool & value);
 	void onResetButtonPressed();

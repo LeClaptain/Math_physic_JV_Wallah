@@ -1,9 +1,13 @@
 #include "ofApp.h"
 
 #include "forces/GravityForceGenerator.h"
+
 #include "forces/TwoParticleSpringForceGenerator.h"
 #include "forces/FrictionForceGenerator.h"
 #include "forces/RodForceGenerator.h"
+#include "forces/Ressort1.h"
+#include "forces/Bungee.h"
+
 
 vec3 defaultGravity = vec3(0, 9.81 * 50, 0);
 //--------------------------------------------------------------
@@ -29,14 +33,15 @@ void ofApp::setup()
     vectorFont.load(settings);
 
     // Setup the scene
-    addParticle(new Particle(vec3(30, 0, 30), 0, 0, 1, ofColor::blue));
+
+    /*addParticle(new Particle(vec3(30, 0, 30), 0, 0, 1, ofColor::blue));
     addParticle(new Particle(vec3(-30, 0, -30), 0, 0, 1, ofColor::red));
     addParticleForce(particles[0], new GravityForceGenerator());
     addParticleForce(particles[1], new GravityForceGenerator());
     addParticleForce(particles[0], new FrictionForceGenerator(2, 0.03));
     addParticleForce(particles[1], new FrictionForceGenerator(2, 0.03));
     addParticleForce(particles[0], new RodForceGenerator(particles[0], particles[1]));
-    addParticleForce(particles[1], forces[forces.size()-1]);
+    addParticleForce(particles[1], forces[forces.size()-1]);*/
     /*addParticleForce(new Particle(vec3(0, 20, 0), 0, 0, 1, ofColor::blue), new GravityForceGenerator());
     addParticleForce(new Particle(vec3(0, 10, 0), 0, 0, 1, ofColor::red), new GravityForceGenerator());
     addParticle(new Particle(vec3(0, 0, 0), 0, 0, 10000000000.f, ofColor::green));
@@ -44,7 +49,53 @@ void ofApp::setup()
     collisionSolver.addParticle(particles[0]);
     collisionSolver.addParticle(particles[1]);
     collisionSolver.addParticle(particles[2]);*/
+    // Create particles and add them to the vector
+    
+    //basics
+    Particle* basic1 = new Particle(vec3(-19, 100, 0), 2, ofColor::green);
+    addParticle(basic1);
+    Particle* basic2 = new Particle(vec3(20, 80, 0), 1, ofColor::red);
+    addParticle(basic2);
+    Particle * basic3 = new Particle(vec3(0, 20, 0), 1, ofColor::blue);
+    addParticle(basic3);
 
+    //Springs
+    Particle* spring1 = new Particle(vec3(80, 20, 0), 2, ofColor::blue);
+    addParticle(spring1);
+
+    //Bungee
+    Particle* bungee1 = new Particle(vec3(50, 100, 0), 3, ofColor::pink);
+    addParticle(bungee1);
+
+    Particle* bungee2 = new Particle(vec3(100, 250, 0), 3, ofColor::black);
+    addParticle(bungee2);
+    
+    // Add gravity and track their collisions
+    addGravityToParticles();
+    setDetectorList();
+
+    //add other forces
+    addParticleForce(spring1, new Ressort1(2, 50, spring1, vec3(0, 80, 0)));
+    addParticleForce(bungee1, new Bungee(2, 150, bungee1, bungee2));
+    addParticleForce(bungee2, new Bungee(2, 150, bungee2, bungee1));
+    
+    /*addParticleForce(new Particle(vec3(-19, 100, 0), 1, ofColor::green), new GravityForceGenerator());
+    addParticleForce(new Particle(vec3(20, 50, 0), 1, ofColor::red), new GravityForceGenerator());
+    addParticleForce(new Particle(vec3(0, 20, 0), 1, ofColor::blue), new GravityForceGenerator());
+
+    Particle* visuAncre = new Particle(vec3(0, 80, 0), 1, ofColor::red);
+    addParticle(visuAncre);
+    Particle* particle = new Particle(vec3(50, 30, 0), 1, ofColor::black);
+    addParticleForce(particle, new Ressort1(2, 50, particle, vec3(0, 80, 0)));
+    addParticleForce(particle, new GravityForceGenerator());*/
+
+    /*Particle* bungeeParticle1 = new Particle(vec3(-50, 100, 0), 1, ofColor::red);
+    Particle* bungeeParticle2 = new Particle(vec3(50, 100, 0), 1, ofColor::black);
+    addParticleForce(bungeeParticle1, new Bungee(10, 50, bungeeParticle1, bungeeParticle2));
+    addParticleForce(bungeeParticle2, new Bungee(10, 50, bungeeParticle2, bungeeParticle1));*/
+
+    
+    collisionResolver.setElasticity(0.5f);
     camera.setPosition(vec3(0, 0, 500));
 
     camera.lookAt(vec3(0));
@@ -53,7 +104,7 @@ void ofApp::setup()
 void ofApp::addParticleForce(Particle* p, ForceGenerator* generator)
 {
     //particles.emplace_back(p);
-    forces.emplace_back(generator);
+    forces.emplace(generator);
     registry.add(p, generator);
 }
 
@@ -62,18 +113,49 @@ void ofApp::addParticle(Particle* p)
     particles.emplace_back(p);
 }
 
+void ofApp::setDetectorList()
+{
+    for (auto& particle : particles)
+    {
+        collisionDetector.addParticle(particle);
+    }
+}
+
+void ofApp::addGravityToParticles()
+{
+    for (auto& particle : particles)
+    {
+        addParticleForce(particle, new GravityForceGenerator());
+    }
+}
+
 //--------------------------------------------------------------
 void ofApp::update()
 {
     double lastFrame = ofGetLastFrameTime(); //gets Δt since last frame
 
+    // Add forces applied by mouse
+    if (selectedParticle != nullptr)
+    {
+        // Find intersection between mouse ray and selection plane
+        vec3 rayOrigin = camera.screenToWorld(vec3(ofGetMouseX(), ofGetMouseY(), 0));
+        vec3 rayDirection = (vec3(camera.screenToWorld(vec3(ofGetMouseX(), ofGetMouseY(), 1))) - rayOrigin).normalize();
+        float t = (selectionPlanePoint - rayOrigin).dot(selectionPlaneNormal) / rayDirection.dot(selectionPlaneNormal);
+        vec3 intersection = rayOrigin + rayDirection * t;
+
+        vec3 force = (intersection - selectedParticle->getPosition()) * 100;
+        
+        selectedParticle->addForce(force);
+    }
+
     registry.updateForces(lastFrame);
 
-    auto collisions = collisionSolver.solve();
+    auto collisions = collisionDetector.detectAllCollisions();
+    collisionResolver.resolveAllCollisions(collisions);
 
     for (auto& particle : particles)
     {
-        particle->update();
+        particle->update(lastFrame);
         particle->clearForces();
     }
 }
@@ -83,13 +165,6 @@ void ofApp::draw()
 {
     //Arrow to symbolize the initial velocity
     drawArrow();
-
-    //Drawing UI
-    controlGui.draw();
-    if (isDebugEnabled)
-    {
-        drawDebugGui();
-    }
 
     // Draw scene
 
@@ -101,7 +176,15 @@ void ofApp::draw()
     }
     ofDrawGrid(10.f, 10, false, false, true, false);
     ofDisableDepthTest();
+    
     camera.end();
+
+    //Drawing UI
+    controlGui.draw();
+    if (isDebugEnabled)
+    {
+        drawDebugGui();
+    }
 }
 
 ofApp::~ofApp()
@@ -139,14 +222,42 @@ void ofApp::mouseDragged(int x, int y, int button)
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button)
 {
-    //Called to specify special angle and velocity for a projectile
-    float mousex = ofGetMouseX();
-    float mousey = ofGetMouseY();
+    if (button != OF_MOUSE_BUTTON_RIGHT)
+    {
+        return;
+    }
+
+    Particle* selected = nullptr;
+    for (auto particle : particles)
+    {
+        vec3 particleScreenPos = camera.worldToScreen(particle->getPosition());
+        vec3 outerPointScreenPos = camera.worldToScreen(particle->getPosition() + vec3(particle->getRadius(), 0, 0));
+        float onScreenRadius = outerPointScreenPos.distance(particleScreenPos);
+
+        if (particleScreenPos.distance(vec3(x, y, 0)) < onScreenRadius)
+        {
+            selected = particle;
+            break;
+        }
+    }
+    selectedParticle = selected;
+    if (selectedParticle != nullptr)
+    {
+        vec3 particlePos = selectedParticle->getPosition();
+        selectionPlaneNormal = camera.getLookAtDir() * -1;
+        selectionPlanePoint = particlePos;
+        camera.disableMouseInput();
+    }
 }
 
 //--------------------------------------------------------------
 void ofApp::mouseReleased(int x, int y, int button)
 {
+    if (button == OF_MOUSE_BUTTON_RIGHT)
+    {
+        selectedParticle = nullptr;
+        camera.enableMouseInput();
+    }
 }
 
 //--------------------------------------------------------------
@@ -209,6 +320,8 @@ void ofApp::setupDebugGui()
     debugGui.add(frameDurationLabel.setup("frameDurationLabel", ""));
     debugGui.add(particlePosition.setup("Particle Position", ""));
     debugGui.add(particleVelocity.setup("Particle Velocity", ""));
+    debugGui.add(speedLabel.setup("greenParticleSpeedLabel", ""));
+
     //Listeners
     fpsLabel.setSize(debugGui.getWidth(), fpsLabel.getHeight());
     frameDurationLabel.setSize(debugGui.getWidth(), frameDurationLabel.getHeight());
@@ -227,6 +340,7 @@ void ofApp::onResetButtonPressed()
 
 void ofApp::drawArrow()
 {
+    /*
     //Initial Velocity Vector
     // if (isLineDrawable)
     // {
@@ -244,6 +358,7 @@ void ofApp::drawArrow()
     //
     //     vectorFont.drawString(vectorIcon, textX, textY);
     // }
+    */
 }
 
 //--------------------------------------------------------------

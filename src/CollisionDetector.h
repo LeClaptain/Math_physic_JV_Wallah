@@ -6,22 +6,24 @@
  * Class used to find collisions between particles.
  * Will return pairs of particles that are colliding, and additional data needed for collision resolution.
  */
-class CollisionSolver
+
+struct CollisionData
+{
+    Particle* particle1;
+    Particle* particle2;
+    vec3 normal;
+    float penetration;
+};
+
+class CollisionDetector
 {
 public:
-    struct CollisionData
-    {
-        Particle* particle1;
-        Particle* particle2;
-        vec3 normal;
-        float penetration;
-    };
 
     /**
      * Finds collisions, displace particles so they are no longer colliding and then returns the collision data used for resolution.
      * @return A vector of CollisionData structs.
      */
-    std::vector<CollisionData> solve();
+    std::vector<CollisionData> detectAllCollisions();
 
     void addParticle(Particle* p);
 
