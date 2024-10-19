@@ -41,6 +41,7 @@ public:
 	void addParticle(Particle* p);
 	void setDetectorList();
 	void addGravityToParticles();
+	void addFrictionToParticles();
 
 private:
 	// Particles
