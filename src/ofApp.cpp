@@ -35,7 +35,7 @@ void ofApp::setup()
     Particle* visuAncre = new Particle(vec3(80, -40, 0), 1, ofColor::white);
     addParticle(visuAncre);
     Particle* particle = new Particle(vec3(120, -80, 0), 1, ofColor::yellow);
-    addParticleForce(particle, new Ressort1(10, 100, particle, vec3(80,-40,0)));
+    addParticleForce(particle, new Ressort1(10, 100, particle, vec3(80, -40, 0)));
 
     Particle* bungeeParticle1 = new Particle(vec3(-50, 100, 0), 1, ofColor::cyan);
     Particle* bungeeParticle2 = new Particle(vec3(50, 100, 0), 1, ofColor::gray);
@@ -48,7 +48,7 @@ void ofApp::setup()
     collisionDetector.addParticle(particle);
     collisionResolver.setElasticity(0.01f);
 
- 
+
     camera.setPosition(vec3(0, 0, 500));
 
     camera.lookAt(vec3(0));
@@ -70,6 +70,20 @@ void ofApp::addParticle(Particle* p)
 void ofApp::update()
 {
     double lastFrame = ofGetLastFrameTime(); //gets Δt since last frame
+
+    // Add forces applied by mouse
+    if (selectedParticle != nullptr)
+    {
+        // Find intersection between mouse ray and selection plane
+        vec3 rayOrigin = camera.screenToWorld(vec3(ofGetMouseX(), ofGetMouseY(), 0));
+        vec3 rayDirection = (vec3(camera.screenToWorld(vec3(ofGetMouseX(), ofGetMouseY(), 1))) - rayOrigin).normalize();
+        float t = (selectionPlanePoint - rayOrigin).dot(selectionPlaneNormal) / rayDirection.dot(selectionPlaneNormal);
+        vec3 intersection = rayOrigin + rayDirection * t;
+
+        vec3 force = (intersection - selectedParticle->getPosition()) * 100;
+        
+        selectedParticle->addForce(force);
+    }
 
     registry.updateForces(lastFrame);
 
@@ -99,6 +113,7 @@ void ofApp::draw()
     }
     ofDrawGrid(10.f, 10, false, false, true, false);
     ofDisableDepthTest();
+    
     camera.end();
 
     //Drawing UI
@@ -144,14 +159,42 @@ void ofApp::mouseDragged(int x, int y, int button)
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button)
 {
-    //Called to specify special angle and velocity for a projectile
-    float mousex = ofGetMouseX();
-    float mousey = ofGetMouseY();
+    if (button != OF_MOUSE_BUTTON_RIGHT)
+    {
+        return;
+    }
+
+    Particle* selected = nullptr;
+    for (auto particle : particles)
+    {
+        vec3 particleScreenPos = camera.worldToScreen(particle->getPosition());
+        vec3 outerPointScreenPos = camera.worldToScreen(particle->getPosition() + vec3(particle->getRadius(), 0, 0));
+        float onScreenRadius = outerPointScreenPos.distance(particleScreenPos);
+
+        if (particleScreenPos.distance(vec3(x, y, 0)) < onScreenRadius)
+        {
+            selected = particle;
+            break;
+        }
+    }
+    selectedParticle = selected;
+    if (selectedParticle != nullptr)
+    {
+        vec3 particlePos = selectedParticle->getPosition();
+        selectionPlaneNormal = camera.getLookAtDir() * -1;
+        selectionPlanePoint = particlePos;
+        camera.disableMouseInput();
+    }
 }
 
 //--------------------------------------------------------------
 void ofApp::mouseReleased(int x, int y, int button)
 {
+    if (button == OF_MOUSE_BUTTON_RIGHT)
+    {
+        selectedParticle = nullptr;
+        camera.enableMouseInput();
+    }
 }
 
 //--------------------------------------------------------------

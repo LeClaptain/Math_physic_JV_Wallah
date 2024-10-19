@@ -34,7 +34,7 @@ std::vector<CollisionData> CollisionDetector::detectAllCollisions()
             CollisionData data;
             data.particle1 = particles[i];
             data.particle2 = nullptr;
-            data.normal = (particles[i]->getPosition()*(-1)).normalize();
+            data.normal = vec3(0, 1, 0);
             data.penetration = distanceToPlane;
 
             collisions.push_back(data);

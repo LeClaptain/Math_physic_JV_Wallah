@@ -22,6 +22,10 @@ namespace maths {
 
         vec3(const vec3 &other);
 
+#ifndef IGNORE_GLM
+        vec3(const glm::vec3 &other);
+#endif
+
         // op against other vec3
         vec3 &operator=(const vec3 &other);
 
