@@ -26,13 +26,17 @@ void ofApp::setup()
     vectorFont.load(settings);
 
     // Setup the scene
-    addParticleForce(new Particle(vec3(0, 20, 0), 1, ofColor::green), new GravityForceGenerator());
-    addParticleForce(new Particle(vec3(0, 10, 0), 1, ofColor::red), new GravityForceGenerator());
-    addParticle(new Particle(vec3(0, 0, 0)));
+    addParticleForce(new Particle(vec3(0, 100, 0), 1, ofColor::green), new GravityForceGenerator());
+    addParticleForce(new Particle(vec3(0, 50, 0), 1, ofColor::red), new GravityForceGenerator());
+    addParticle(new Particle(vec3(0, 20, 0)));
 
-    collisionSolver.addParticle(particles[0]);
-    collisionSolver.addParticle(particles[1]);
-    collisionSolver.addParticle(particles[2]);
+    collisionDetector.addParticle(particles[0]);
+    collisionDetector.addParticle(particles[1]);
+    collisionDetector.addParticle(particles[2]);
+
+    particles[0]->setVelocity(vec3(5, 0, 0));
+    
+    collisionResolver.setElasticity(0.5f);
 
     camera.setPosition(vec3(0, 0, 500));
 
@@ -58,7 +62,8 @@ void ofApp::update()
 
     registry.updateForces(lastFrame);
 
-    auto collisions = collisionSolver.solve();
+    auto collisions = collisionDetector.detectAllCollisions();
+    collisionResolver.resolveAllCollisions(collisions);
 
     for (auto& particle : particles)
     {
@@ -211,6 +216,7 @@ void ofApp::onResetButtonPressed()
 
 void ofApp::drawArrow()
 {
+    /*
     //Initial Velocity Vector
     // if (isLineDrawable)
     // {
@@ -228,6 +234,7 @@ void ofApp::drawArrow()
     //
     //     vectorFont.drawString(vectorIcon, textX, textY);
     // }
+    */
 }
 
 //--------------------------------------------------------------

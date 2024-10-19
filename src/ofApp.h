@@ -2,12 +2,14 @@
 
 #include <unordered_set>
 
-#include "CollisionSolver.h"
+#include "CollisionDetector.h"
+#include "CollisionResolver.h"
 #include "ForceRegistry.h"
 #include "ofMain.h"
 #include "ofEvents.h"
 #include "Particle.h"
 #include "ofxGui.h"
+
 #include "particlesTypes/bullet.h"
 #include "particlesTypes/canonBall.h"
 #include "particlesTypes/fireBall.h"
@@ -43,7 +45,8 @@ private:
 	std::vector<Particle*> particles;
 	std::unordered_set<ForceGenerator*> forces;
 	ForceRegistry registry;
-	CollisionSolver collisionSolver;
+	CollisionDetector collisionDetector;
+	CollisionResolver collisionResolver;
 
 	// Display
 	ofEasyCam camera;

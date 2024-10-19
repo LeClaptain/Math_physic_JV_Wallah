@@ -1,6 +1,6 @@
-﻿#include "CollisionSolver.h"
+﻿#include "CollisionDetector.h"
 
-std::vector<CollisionSolver::CollisionData> CollisionSolver::solve()
+std::vector<CollisionData> CollisionDetector::detectAllCollisions()
 {
     std::vector<CollisionData> collisions;
 
@@ -33,7 +33,7 @@ std::vector<CollisionSolver::CollisionData> CollisionSolver::solve()
     return collisions;
 }
 
-void CollisionSolver::addParticle(Particle* p)
+void CollisionDetector::addParticle(Particle* p)
 {
     particles.push_back(p);
 }
