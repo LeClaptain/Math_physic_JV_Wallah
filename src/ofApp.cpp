@@ -28,9 +28,9 @@ void ofApp::setup()
     vectorFont.load(settings);
 
     // Setup the scene
-    addParticleForce(new Particle(vec3(0, 20, 0), 1, ofColor::green), new GravityForceGenerator());
-    addParticleForce(new Particle(vec3(0, 10, 0), 1, ofColor::red), new GravityForceGenerator());
-    addParticle(new Particle(vec3(0, 0, 0)));
+    addParticleForce(new Particle(vec3(-20, 100, 0), 1, ofColor::green), new GravityForceGenerator());
+    addParticleForce(new Particle(vec3(20, 50, 0), 1, ofColor::red), new GravityForceGenerator());
+    addParticleForce(new Particle(vec3(0, 20, 0), 1, ofColor::blue), new GravityForceGenerator());
 
     Particle* visuAncre = new Particle(vec3(80, -40, 0), 1, ofColor::black);
     addParticle(visuAncre);
@@ -42,11 +42,13 @@ void ofApp::setup()
     addParticleForce(bungeeParticle1, new Bungee(10, 50, bungeeParticle1, bungeeParticle2));
     addParticleForce(bungeeParticle2, new Bungee(10, 50, bungeeParticle2, bungeeParticle1));
 
-    collisionSolver.addParticle(particles[0]);
-    collisionSolver.addParticle(particles[1]);
-    collisionSolver.addParticle(particles[2]);
-    collisionSolver.addParticle(particle);
+    collisionDetector.addParticle(particles[0]);
+    collisionDetector.addParticle(particles[1]);
+    collisionDetector.addParticle(particles[2]);
+    collisionDetector.addParticle(particle);
+    collisionResolver.setElasticity(0.01f);
 
+ 
     camera.setPosition(vec3(0, 0, 500));
 
     camera.lookAt(vec3(0));
@@ -71,7 +73,8 @@ void ofApp::update()
 
     registry.updateForces(lastFrame);
 
-    auto collisions = collisionSolver.solve();
+    auto collisions = collisionDetector.detectAllCollisions();
+    collisionResolver.resolveAllCollisions(collisions);
 
     for (auto& particle : particles)
     {
@@ -207,6 +210,7 @@ void ofApp::setupDebugGui()
     debugGui.setWidthElements(400);
     debugGui.add(fpsLabel.setup("fpsLabel", ""));
     debugGui.add(frameDurationLabel.setup("frameDurationLabel", ""));
+    debugGui.add(speedLabel.setup("greenParticleSpeedLabel", ""));
 
     //Listeners
     fpsLabel.setSize(debugGui.getWidth(), fpsLabel.getHeight());
@@ -224,6 +228,7 @@ void ofApp::onResetButtonPressed()
 
 void ofApp::drawArrow()
 {
+    /*
     //Initial Velocity Vector
     // if (isLineDrawable)
     // {
@@ -241,6 +246,7 @@ void ofApp::drawArrow()
     //
     //     vectorFont.drawString(vectorIcon, textX, textY);
     // }
+    */
 }
 
 //--------------------------------------------------------------

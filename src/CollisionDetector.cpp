@@ -1,6 +1,6 @@
-﻿#include "CollisionSolver.h"
+﻿#include "CollisionDetector.h"
 
-std::vector<CollisionSolver::CollisionData> CollisionSolver::solve()
+std::vector<CollisionData> CollisionDetector::detectAllCollisions()
 {
     std::vector<CollisionData> collisions;
 
@@ -28,12 +28,23 @@ std::vector<CollisionSolver::CollisionData> CollisionSolver::solve()
                 collisions.push_back(data);
             }
         }
+        float distanceToPlane = particles[i]->getPosition().y() - particles[i]->getRadius();
+        if (distanceToPlane < 0 )
+        {
+            CollisionData data;
+            data.particle1 = particles[i];
+            data.particle2 = nullptr;
+            data.normal = (particles[i]->getPosition()*(-1)).normalize();
+            data.penetration = distanceToPlane;
+
+            collisions.push_back(data);
+        }
     }
 
     return collisions;
 }
 
-void CollisionSolver::addParticle(Particle* p)
+void CollisionDetector::addParticle(Particle* p)
 {
     particles.push_back(p);
 }
