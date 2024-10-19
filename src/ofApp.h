@@ -60,6 +60,7 @@ private:
 	ofxButton resetButton;
 	ofxLabel fpsLabel;
 	ofxLabel frameDurationLabel;
+	ofxLabel speedLabel;
 
 	void onToggleChanged(bool & value);
 	void onResetButtonPressed();

@@ -28,6 +28,17 @@ std::vector<CollisionData> CollisionDetector::detectAllCollisions()
                 collisions.push_back(data);
             }
         }
+        float distanceToPlane = particles[i]->getPosition().y() - particles[i]->getRadius();
+        if (distanceToPlane < 0 )
+        {
+            CollisionData data;
+            data.particle1 = particles[i];
+            data.particle2 = nullptr;
+            data.normal = (particles[i]->getPosition()*(-1)).normalize();
+            data.penetration = distanceToPlane;
+
+            collisions.push_back(data);
+        }
     }
 
     return collisions;

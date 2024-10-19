@@ -26,17 +26,17 @@ void ofApp::setup()
     vectorFont.load(settings);
 
     // Setup the scene
-    addParticleForce(new Particle(vec3(0, 100, 0), 1, ofColor::green), new GravityForceGenerator());
-    addParticleForce(new Particle(vec3(0, 50, 0), 1, ofColor::red), new GravityForceGenerator());
-    addParticle(new Particle(vec3(0, 20, 0)));
+    addParticleForce(new Particle(vec3(-20, 100, 0), 1, ofColor::green), new GravityForceGenerator());
+    addParticleForce(new Particle(vec3(20, 50, 0), 1, ofColor::red), new GravityForceGenerator());
+    addParticleForce(new Particle(vec3(0, 20, 0), 1, ofColor::blue), new GravityForceGenerator());
 
     collisionDetector.addParticle(particles[0]);
     collisionDetector.addParticle(particles[1]);
     collisionDetector.addParticle(particles[2]);
 
-    particles[0]->setVelocity(vec3(5, 0, 0));
+    particles[0]->setVelocity(vec3(0, 10, 0));
     
-    collisionResolver.setElasticity(0.5f);
+    collisionResolver.setElasticity(0.01f);
 
     camera.setPosition(vec3(0, 0, 500));
 
@@ -199,6 +199,7 @@ void ofApp::setupDebugGui()
     debugGui.setWidthElements(400);
     debugGui.add(fpsLabel.setup("fpsLabel", ""));
     debugGui.add(frameDurationLabel.setup("frameDurationLabel", ""));
+    debugGui.add(speedLabel.setup("greenParticleSpeedLabel", ""));
 
     //Listeners
     fpsLabel.setSize(debugGui.getWidth(), fpsLabel.getHeight());
