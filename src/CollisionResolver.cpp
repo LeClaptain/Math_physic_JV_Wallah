@@ -45,7 +45,7 @@ float CollisionResolver::computeMagnitude() const
     {
         mass2 = 0.0f;
         relativeSpeed = particle1->getVelocity()*0.95;
-        magnitude = relativeSpeed.dot(normal)*(0 + 1) / (mass1 + mass2);
+        magnitude = relativeSpeed.dot(normal)*(0.1 + 1) / (mass1 + mass2);
 
     }
     else

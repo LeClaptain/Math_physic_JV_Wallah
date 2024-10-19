@@ -6,8 +6,12 @@ void Ressort1::updateForce(Particle* particle, float duration)
 {
 
 	float length = (particle->getPosition() - ancre).magnitude();
-	vec3 dir = (particle->getPosition() - ancre) / length;
+	vec3 dir = vec3(0, 0, 0);
+	if (length != 0.0f)
+	{
+		dir = (particle->getPosition() - ancre).normalized(); 
+	}
 	vec3 force = dir * this->springConstant * (restLength - length);
-	// printf("force: %f, %f, %f\n", force.x(), force.y(), force.z());
+	std::cout<<((std::string)particle->getPosition()) << std::endl;
 	particle->addForce(force);
 }
