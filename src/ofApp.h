@@ -70,7 +70,6 @@ private:
 	void onToggleChanged(bool & value);
 	void onResetButtonPressed();
 
-	void drawArrow();
 	void drawDebugGui();
 	void setupControlGui();
 	void setupDebugGui();

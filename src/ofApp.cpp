@@ -31,25 +31,6 @@ void ofApp::setup()
     settings.addRanges(ofAlphabet::Latin);
     vectorFont.load(settings);
 
-    // Setup the scene
-
-    /*addParticle(new Particle(vec3(30, 0, 30), 0, 0, 1, ofColor::blue));
-    addParticle(new Particle(vec3(-30, 0, -30), 0, 0, 1, ofColor::red));
-    addParticleForce(particles[0], new GravityForceGenerator());
-    addParticleForce(particles[1], new GravityForceGenerator());
-    addParticleForce(particles[0], new FrictionForceGenerator(2, 0.03));
-    addParticleForce(particles[1], new FrictionForceGenerator(2, 0.03));
-    addParticleForce(particles[0], new RodForceGenerator(particles[0], particles[1]));
-    addParticleForce(particles[1], forces[forces.size()-1]);*/
-    /*addParticleForce(new Particle(vec3(0, 20, 0), 0, 0, 1, ofColor::blue), new GravityForceGenerator());
-    addParticleForce(new Particle(vec3(0, 10, 0), 0, 0, 1, ofColor::red), new GravityForceGenerator());
-    addParticle(new Particle(vec3(0, 0, 0), 0, 0, 10000000000.f, ofColor::green));
-
-    collisionSolver.addParticle(particles[0]);
-    collisionSolver.addParticle(particles[1]);
-    collisionSolver.addParticle(particles[2]);*/
-    // Create particles and add them to the vector
-
     //basics - GREEN, RED, BLUE
     Particle* basic1 = new Particle(vec3(-19, 100, 0), 2, ofColor::green);
     particles.push_back(basic1);
@@ -112,7 +93,7 @@ void ofApp::setup()
 
     GravityForceGenerator* gravity = new GravityForceGenerator();
     forces.push_back(gravity);
-    FrictionForceGenerator* friction = new FrictionForceGenerator(0.001, 0);
+    FrictionForceGenerator* friction = new FrictionForceGenerator(0.1, 0);
     forces.push_back(friction);
 
     registry.add({
@@ -170,8 +151,10 @@ void ofApp::update()
         selectedParticle->addForce(force);
     }
 
+    // Update generators
     registry.updateForces(lastFrame);
 
+    // find and solve collisions
     auto collisions = collisionDetector.solve(lastFrame);
     collisionResolver.resolveCollisions(collisions);
 
@@ -190,7 +173,6 @@ void ofApp::draw()
     drawArrow();
 
     // Draw scene
-
     camera.begin();
     ofEnableDepthTest();
     for (const auto& particle : particles)
@@ -200,6 +182,7 @@ void ofApp::draw()
     ofDrawGrid(10.f, 10, false, false, true, false);
     ofDisableDepthTest();
 
+    // debug
     collisionDetector.debugDrawRelations();
     for (const auto& force : forces)
     {
@@ -207,7 +190,6 @@ void ofApp::draw()
     }
 
     camera.end();
-
 
     //Drawing UI
     controlGui.draw();
@@ -317,11 +299,6 @@ void ofApp::drawDebugGui()
     debugGui.draw();
     fpsLabel.setup("FPS", std::to_string(ofGetFrameRate()));
     frameDurationLabel.setup("Frame Duration", std::to_string(ofGetLastFrameTime() * 1000) + " ms");
-    particlePosition.setup("Particle Position", particles[0]->getPositionAsString());
-    particleVelocity.setup("Particle Velocity", particles[0]->getVelocityAsString());
-    // positionLabel.setup("Position", activeProjectile->getPositionAsString());
-    // velocityLabel.setup("Velocity: ", activeProjectile->getVelocityAsString());
-    // accelerationLabel.setup("Acceleration: ", activeProjectile->getAccelerationAsString());
 }
 
 void ofApp::setupControlGui()
@@ -366,29 +343,6 @@ void ofApp::onToggleChanged(bool& value)
 
 void ofApp::onResetButtonPressed()
 {
-}
-
-void ofApp::drawArrow()
-{
-    /*
-    //Initial Velocity Vector
-    // if (isLineDrawable)
-    // {
-    //     ofSetColor(ofColor::blueViolet);
-    //     ofSetLineWidth(5);
-    //
-    //     float textX = initialVelocity.second.x() - 10;
-    //     float textY = initialVelocity.second.y() - 15;
-    //     std::string vectorIcon = "v";
-    //     ofUTF8Append(vectorIcon, 0x20D7);
-    //     //ofUTF8Append(vectorIcon,0x2080); // Supposed to be index 0 but not supported by the font
-    //
-    //     ofDrawArrow(initialVelocity.first, initialVelocity.second, 10.0);
-    //     ofSetColor(ofColor::black);
-    //
-    //     vectorFont.drawString(vectorIcon, textX, textY);
-    // }
-    */
 }
 
 //--------------------------------------------------------------
