@@ -45,6 +45,9 @@ private:
 	CollisionDetector collisionDetector;
 	CollisionResolver collisionResolver;
 
+	// Blob
+	vector<Particle*> blob;
+
 	// Used for grabbing particles
 	Particle* selectedParticle = nullptr;
 	vec3 selectionPlaneNormal = vec3(0, 1, 0);

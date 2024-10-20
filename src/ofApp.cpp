@@ -86,7 +86,7 @@ void ofApp::setup()
     Particle* dSpring2 = new Particle(vec3(-200, 100, 0), 3, ofColor::yellow);
     particles.push_back(dSpring2);
     collisionDetector.addParticle(dSpring2);
-
+    
     TwoParticleSpringForceGenerator* twoSideSpring = new TwoParticleSpringForceGenerator(dSpring1, dSpring2, 3, 50);
     registry.add({dSpring1, dSpring2}, twoSideSpring);
     forces.push_back(twoSideSpring);
@@ -124,6 +124,70 @@ void ofApp::setup()
                      dSpring1,
                      dSpring2
                  }, friction);
+
+
+    //Blob - GOLD
+    int nbParticles =12;
+    vector<vec3> positions;
+    positions.push_back(vec3(300, 300, 50));
+    positions.push_back(vec3(300, 200, 100));
+    positions.push_back(vec3(340, 100, 30));
+    positions.push_back(vec3(400, 100, 20));
+    positions.push_back(vec3(450, 100, -10));
+    positions.push_back(vec3(425, 150, -50));
+    positions.push_back(vec3(410, 130, 30));
+    positions.push_back(vec3(450, 130, 0));
+    positions.push_back(vec3(425, 130, 0));
+    positions.push_back(vec3(300, 130, 20));
+    positions.push_back(vec3(350, 130, 0));
+    positions.push_back(vec3(400, 130, 40));
+    for(int i = 0; i < nbParticles; i++)
+    {
+        Particle* p ;
+        if(i == 0){p = new Particle(positions[i], 2, ofColor::coral); }
+        else{p = new Particle(positions[i], 2, ofColor::gold); }
+        blob.push_back(p);
+        particles.push_back(p);
+        collisionDetector.addParticle(p);
+        registry.add(p,gravity);
+        registry.add(p,friction);
+    }
+
+    // ajout des forces dans le blob
+    vector<pair<int,int>> links;
+    links.push_back(make_pair(0, 1));
+    links.push_back(make_pair(0, 2));
+    links.push_back(make_pair(0, 3));
+    links.push_back(make_pair(1, 4));
+    links.push_back(make_pair(1, 5));
+    links.push_back(make_pair(1, 6));
+    links.push_back(make_pair(2, 7));
+    links.push_back(make_pair(2, 8));
+    links.push_back(make_pair(2, 9));
+    links.push_back(make_pair(3, 10));
+    links.push_back(make_pair(3,11));
+    links.push_back(make_pair(3,0));
+    links.push_back(make_pair(4,1));
+    links.push_back(make_pair(4,2));
+    links.push_back(make_pair(4,3));
+    links.push_back(make_pair(5,4));
+    links.push_back(make_pair(5,5));
+    links.push_back(make_pair(5,6));
+    links.push_back(make_pair(6,7));
+    links.push_back(make_pair(6,8));
+    links.push_back(make_pair(6,9));
+    
+    for(pair<int,int> pr: links)
+    {
+        int i = pr.first;
+        int j = pr.second;
+        //float length = (positions[i]-positions[j]).magnitude();
+        TwoParticleSpringForceGenerator* blobSpring = new TwoParticleSpringForceGenerator(blob[i], blob[j], 10, 40);
+        registry.add({blob[i], blob[j]}, blobSpring);
+        forces.push_back(blobSpring);
+        collisionDetector.addRelation(RelationType::CABLE, blob[i], blob[j], 100);
+    }    
+    
 
     collisionResolver.setElasticity(0.5f);
 
@@ -170,7 +234,7 @@ void ofApp::update()
 void ofApp::draw()
 {
     //Arrow to symbolize the initial velocity
-    drawArrow();
+    // drawArrow();
 
     // Draw scene
     camera.begin();
@@ -214,6 +278,23 @@ ofApp::~ofApp()
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key)
 {
+    //ajouter de la vitesse à la première particule de la liste blob
+    if (key == OF_KEY_UP)
+    {
+        blob[0]->setVelocity(vec3(0, 0, -100));
+    }
+    if (key == OF_KEY_DOWN)
+    {
+        blob[0]->setVelocity(vec3(0, 0, 100));
+    }
+    if (key == OF_KEY_LEFT)
+    {
+        blob[0]->setVelocity(vec3(-100, 0, 0));
+    }
+    if (key == OF_KEY_RIGHT)
+    {
+        blob[0]->setVelocity(vec3(100, 0, 0));
+    }
 }
 
 //--------------------------------------------------------------
