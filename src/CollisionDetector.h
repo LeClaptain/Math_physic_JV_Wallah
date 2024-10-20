@@ -46,6 +46,8 @@ public:
 
     void addRelation(RelationType type, Particle* p1, Particle* p2, float length);
 
+    void removeRelation(Particle* p1, Particle* p2);
+
     void debugDrawRelations();
 
 private:

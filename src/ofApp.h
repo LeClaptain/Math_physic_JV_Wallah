@@ -9,6 +9,7 @@
 #include "ofEvents.h"
 #include "Particle.h"
 #include "ofxGui.h"
+#include "forces/TwoParticleSpringForceGenerator.h"
 
 #include "particlesTypes/bullet.h"
 #include "particlesTypes/canonBall.h"
@@ -46,7 +47,9 @@ private:
 	CollisionResolver collisionResolver;
 
 	// Blob
-	vector<Particle*> blob;
+	std::vector<Particle*> blob;
+	std::vector<TwoParticleSpringForceGenerator*> blobSprings;
+	float forceToSeparateParticles = 1000.0f;
 
 	// Used for grabbing particles
 	Particle* selectedParticle = nullptr;

@@ -15,6 +15,8 @@ public:
 
     void add(Particle* p, ForceGenerator* generator);
     void add(std::vector<Particle *> p, ForceGenerator* generator);
+    void remove(Particle* p, ForceGenerator* generator);
+    void remove(std::vector<Particle *> p, ForceGenerator* generator);
     void clear();
     void updateForces(float duration);
 

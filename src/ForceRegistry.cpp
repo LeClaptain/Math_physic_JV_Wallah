@@ -22,6 +22,18 @@ void ForceRegistry::add(std::vector<Particle*> p, ForceGenerator* generator)
     }
 }
 
+void ForceRegistry::remove(Particle* p, ForceGenerator* generator)
+{
+    entries.erase(std::remove(entries.begin(), entries.end(), ParticleForceEntry{p, generator}), entries.end());
+}
+
+void ForceRegistry::remove(std::vector<Particle*> p, ForceGenerator* generator)
+{
+    for (Particle* particle : p)
+    {
+        remove(particle, generator);
+    }
+}
 
 void ForceRegistry::clear()
 {

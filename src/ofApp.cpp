@@ -68,7 +68,7 @@ void ofApp::setup()
     Particle* rod2 = new Particle(vec3(-100, 100, 0), 3, ofColor::purple);
     particles.push_back(rod2);
     collisionDetector.addParticle(rod2);
-    collisionDetector.addRelation(RelationType::ROD, rod1, rod2, 50);
+    collisionDetector.addRelation(ROD, rod1, rod2, 50);
 
     // Cable - FORESTGREEN
     Particle* cable1 = new Particle(vec3(150, 100, 0), 3, ofColor::forestGreen);
@@ -77,7 +77,7 @@ void ofApp::setup()
     Particle* cable2 = new Particle(vec3(200, 100, 0), 3, ofColor::forestGreen);
     particles.push_back(cable2);
     collisionDetector.addParticle(cable2);
-    collisionDetector.addRelation(RelationType::CABLE, cable1, cable2, 50);
+    collisionDetector.addRelation(CABLE, cable1, cable2, 50);
 
     //Double Spring - ORANGERED AND YELLOW
     Particle* dSpring1 = new Particle(vec3(-150, 100, 0), 3, ofColor::orangeRed);
@@ -86,7 +86,7 @@ void ofApp::setup()
     Particle* dSpring2 = new Particle(vec3(-200, 100, 0), 3, ofColor::yellow);
     particles.push_back(dSpring2);
     collisionDetector.addParticle(dSpring2);
-    
+
     TwoParticleSpringForceGenerator* twoSideSpring = new TwoParticleSpringForceGenerator(dSpring1, dSpring2, 3, 50);
     registry.add({dSpring1, dSpring2}, twoSideSpring);
     forces.push_back(twoSideSpring);
@@ -127,71 +127,65 @@ void ofApp::setup()
 
 
     //Blob - GOLD
-    int nbParticles =12;
     vector<vec3> positions;
-    positions.push_back(vec3(300, 300, 50));
-    positions.push_back(vec3(300, 200, 100));
-    positions.push_back(vec3(340, 100, 30));
-    positions.push_back(vec3(400, 100, 20));
-    positions.push_back(vec3(450, 100, -10));
-    positions.push_back(vec3(425, 150, -50));
-    positions.push_back(vec3(410, 130, 30));
-    positions.push_back(vec3(450, 130, 0));
-    positions.push_back(vec3(425, 130, 0));
-    positions.push_back(vec3(300, 130, 20));
-    positions.push_back(vec3(350, 130, 0));
-    positions.push_back(vec3(400, 130, 40));
-    for(int i = 0; i < nbParticles; i++)
+    positions.push_back(vec3(300, 100, 50));
+    positions.push_back(vec3(300 - 50, 100, 50));
+    positions.push_back(vec3(300 - 50, 100 - 50, 50));
+    positions.push_back(vec3(300, 100 - 50, 50));
+    positions.push_back(vec3(300, 100, 0));
+    positions.push_back(vec3(300 - 50, 100, 0));
+    positions.push_back(vec3(300 - 50, 100 - 50, 0));
+    positions.push_back(vec3(300, 100 - 50, 0));
+    for (int i = 0; i < positions.size(); i++)
     {
-        Particle* p ;
-        if(i == 0){p = new Particle(positions[i], 2, ofColor::coral); }
-        else{p = new Particle(positions[i], 2, ofColor::gold); }
+        Particle* p;
+        if (i == 0)
+        {
+            p = new Particle(positions[i], 2, ofColor::coral);
+        }
+        else
+        {
+            p = new Particle(positions[i], 2, ofColor::gold);
+        }
         blob.push_back(p);
         particles.push_back(p);
         collisionDetector.addParticle(p);
-        registry.add(p,gravity);
-        registry.add(p,friction);
+        registry.add(p, gravity);
+        registry.add(p, friction);
     }
 
     // ajout des forces dans le blob
-    vector<pair<int,int>> links;
-    links.push_back(make_pair(0, 1));
-    links.push_back(make_pair(0, 2));
-    links.push_back(make_pair(0, 3));
-    links.push_back(make_pair(1, 4));
-    links.push_back(make_pair(1, 5));
-    links.push_back(make_pair(1, 6));
-    links.push_back(make_pair(2, 7));
-    links.push_back(make_pair(2, 8));
-    links.push_back(make_pair(2, 9));
-    links.push_back(make_pair(3, 10));
-    links.push_back(make_pair(3,11));
-    links.push_back(make_pair(3,0));
-    links.push_back(make_pair(4,1));
-    links.push_back(make_pair(4,2));
-    links.push_back(make_pair(4,3));
-    links.push_back(make_pair(5,4));
-    links.push_back(make_pair(5,5));
-    links.push_back(make_pair(5,6));
-    links.push_back(make_pair(6,7));
-    links.push_back(make_pair(6,8));
-    links.push_back(make_pair(6,9));
-    
-    for(pair<int,int> pr: links)
+    vector<pair<int, int>> links;
+    links.push_back({0, 1});
+    links.push_back({1, 2});
+    links.push_back({2, 3});
+    links.push_back({3, 0});
+    links.push_back({4, 5});
+    links.push_back({5, 6});
+    links.push_back({6, 7});
+    links.push_back({7, 4});
+    links.push_back({0, 4});
+    links.push_back({1, 5});
+    links.push_back({2, 6});
+    links.push_back({3, 7});
+
+    for (pair<int, int> pr : links)
     {
         int i = pr.first;
         int j = pr.second;
         //float length = (positions[i]-positions[j]).magnitude();
-        TwoParticleSpringForceGenerator* blobSpring = new TwoParticleSpringForceGenerator(blob[i], blob[j], 10, 40);
+        TwoParticleSpringForceGenerator* blobSpring = new TwoParticleSpringForceGenerator(blob[i], blob[j], 10, 60);
+        blobSprings.push_back(blobSpring);
         registry.add({blob[i], blob[j]}, blobSpring);
         forces.push_back(blobSpring);
         collisionDetector.addRelation(RelationType::CABLE, blob[i], blob[j], 100);
-    }    
-    
+    }
 
     collisionResolver.setElasticity(0.5f);
 
     camera.setPosition(vec3(0, 0, 500));
+
+    camera.setFarClip(10000.0f);
 
     camera.lookAt(vec3(0));
 }
@@ -215,12 +209,28 @@ void ofApp::update()
         selectedParticle->addForce(force);
     }
 
-    // Update generators
-    registry.updateForces(lastFrame);
+    // Check if we need to remove links from the blob
+    for (int i = 0; i < blobSprings.size(); i++)
+    {
+        if (blobSprings[i]->getParticle1()->getForces().magnitude() > forceToSeparateParticles || blobSprings[i]->
+            getParticle2()->
+            getForces().magnitude() > forceToSeparateParticles)
+        {
+            registry.remove({blobSprings[i]->getParticle1(), blobSprings[i]->getParticle2()}, blobSprings[i]);
+            collisionDetector.removeRelation(blobSprings[i]->getParticle1(), blobSprings[i]->getParticle2());
+            forces.erase(std::remove(forces.begin(), forces.end(), blobSprings[i]), forces.end());
+            delete blobSprings[i];
+            blobSprings.erase(blobSprings.begin() + i);
+            i--;
+        }
+    }
 
     // find and solve collisions
     auto collisions = collisionDetector.solve(lastFrame);
     collisionResolver.resolveCollisions(collisions);
+
+    // Update generators
+    registry.updateForces(lastFrame);
 
     // euler integration
     for (auto& particle : particles)

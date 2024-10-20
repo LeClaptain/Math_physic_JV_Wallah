@@ -86,6 +86,14 @@ void CollisionDetector::addRelation(RelationType type, Particle* p1, Particle* p
     relations.push_back({p1, p2, length, type});
 }
 
+void CollisionDetector::removeRelation(Particle* p1, Particle* p2)
+{
+    relations.erase(std::remove_if(relations.begin(), relations.end(), [p1, p2](Relation& r)
+    {
+        return r.p1 == p1 && r.p2 == p2;
+    }), relations.end());
+}
+
 void CollisionDetector::debugDrawRelations()
 {
     for (Relation& r : relations)
@@ -103,7 +111,7 @@ void CollisionDetector::debugDrawRelations()
         }
         else if (r.type == ROD)
             ofSetColor(255, 0, 0);
-        
+
         ofDrawLine(r.p1->getPosition(), r.p2->getPosition());
     }
 }

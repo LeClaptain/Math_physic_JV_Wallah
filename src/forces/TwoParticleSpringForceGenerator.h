@@ -16,5 +16,8 @@ public:
 	void updateForce(Particle* particle, float duration) override;
 
 	void debugDraw() const override;
+
+	Particle* getParticle1() const { return p1; }
+	Particle* getParticle2() const { return p2; }
 };
 
