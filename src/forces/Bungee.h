@@ -14,7 +14,10 @@ public:
         this->restLength = restLength;
         this->particle1 = particle1;
         this->particle2 = particle2;
-    };
+    }
+    
     void updateForce(Particle* particle, float duration) override;
+
+    void debugDraw() const override;
 };
 

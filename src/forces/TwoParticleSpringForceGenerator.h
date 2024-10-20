@@ -14,5 +14,7 @@ public:
 	TwoParticleSpringForceGenerator(Particle* particle1, Particle* particle2, float k, float initialLength) { p1 = particle1; p2 = particle2; this->k = k; l0 = initialLength; }
 
 	void updateForce(Particle* particle, float duration) override;
+
+	void debugDraw() const override;
 };
 

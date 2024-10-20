@@ -1,5 +1,7 @@
 #include "Bungee.h"
 
+#include "ofxColorPicker.h"
+
 
 void Bungee::updateForce(Particle* particle1, float duration)
 {
@@ -10,4 +12,10 @@ void Bungee::updateForce(Particle* particle1, float duration)
 	vec3 force = dir * this->bungeeConstant * (restLength - length);
 	// printf("force: %f, %f, %f\n", force.x(), force.y(), force.z());
 	particle1->addForce(force);
+}
+
+void Bungee::debugDraw() const
+{
+	ofSetColor(ofColor::azure);
+	ofDrawLine(particle1->getPosition(), particle2->getPosition());
 }

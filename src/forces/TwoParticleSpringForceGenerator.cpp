@@ -1,5 +1,7 @@
 #include "TwoParticleSpringForceGenerator.h"
 
+#include "ofxColorPicker.h"
+
 void TwoParticleSpringForceGenerator::updateForce(Particle* particle, float duration)
 {
 	vec3 distance = p1->getPosition() - p2->getPosition();
@@ -13,4 +15,10 @@ void TwoParticleSpringForceGenerator::updateForce(Particle* particle, float dura
 		particle->addForce(force);
 	else
 		particle->addForce(-force);
+}
+
+void TwoParticleSpringForceGenerator::debugDraw() const
+{
+	ofSetColor(ofColor::azure);
+	ofDrawLine(p1->getPosition(), p2->getPosition());
 }

@@ -2,58 +2,52 @@
 
 #include <complex.h>
 
-CollisionResolver::CollisionResolver()
-{
-}
-
-void CollisionResolver::resolveAllCollisions(std::vector<CollisionData> collisions)
+void CollisionResolver::resolveCollisions(std::vector<CollisionData> collisions)
 {
     for (const CollisionData& data : collisions)
     {
         resolveOneCollision(data);
     }
-        
 }
 
 void CollisionResolver::resolveOneCollision(CollisionData data)
 {
-    particle1 = data.particle1;
-    particle2 = data.particle2;
-    normal = data.normal;
-    float magnitude = computeMagnitude();
-    particle1->setVelocity(normal * (-magnitude));
-    if(particle2 != nullptr)
-    {
-        particle2->setVelocity(normal * magnitude);
-    }
-    else
-    {
-        vec3 positionP1 = particle1->getPosition();
-        vec3 newPosition = vec3(particle1->getPosition().x(), positionP1.y() - data.penetration, particle1->getPosition().z());
-        particle1->setPosition(newPosition);
-        std::cout << particle1 << " " << particle2 << std::endl;
-    }
-}
+    Particle* particle1 = data.particle1;
+    Particle* particle2 = data.particle2;
+    vec3 normal = data.normal;
+    float mass1 = particle1->getMass();
+    float mass2 = particle2 == nullptr ? 0.0f : particle2->getMass();
+    float inverseMass1 = particle1->getInverseMass();
+    float inverseMass2 = particle2 == nullptr ? 0.0f : particle2->getInverseMass();
 
-float CollisionResolver::computeMagnitude() const
-{
-    vec3 relativeSpeed;
-    float mass1 = particle1->getInverseMass();
-    float mass2;
-    float magnitude;
-    if(particle2 == nullptr)
+    // If there is a collision and it is not at rest (small velocities)
+    if (!data.atRest)
     {
-        mass2 = 0.0f;
-        relativeSpeed = particle1->getVelocity();
-        magnitude = relativeSpeed.dot(normal)*(0.5 + 1) / (mass1 + mass2);
+        // Displacement
+        if (particle2 == nullptr)
+        {
+            // ground
+            particle1->setPosition(particle1->getPosition() + normal * data.penetration);
+        }
+        else
+        {
+            float deltap1 = mass2 / (mass1 + mass2) * data.penetration;
+            float deltap2 = mass1 / (mass1 + mass2) * data.penetration;
 
+            particle1->setPosition(particle1->getPosition() - normal * deltap1);
+            particle2->setPosition(particle2->getPosition() + normal * deltap2);
+        }
     }
-    else
+
+    // Impulse resolution
+    vec3 vrel = data.particle1->getVelocity() - (data.particle2 == nullptr ? vec3() : data.particle2->getVelocity());
+
+
+    float k = (vrel * (elasticity + 1)).dot(normal) / (inverseMass1 + inverseMass2);
+
+    particle1->setVelocity(particle1->getVelocity() - normal * k * inverseMass1);
+    if (particle2 != nullptr)
     {
-        mass2 = particle2->getInverseMass();
-        relativeSpeed = particle1->getVelocity() - particle2->getVelocity();
-        magnitude = relativeSpeed.dot(normal)*(elasticity + 1) / (mass1 + mass2);
+        particle2->setVelocity(particle2->getVelocity() + normal * k * inverseMass2);
     }
-    
-    return magnitude;
 }

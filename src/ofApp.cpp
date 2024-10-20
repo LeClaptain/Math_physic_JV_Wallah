@@ -4,8 +4,7 @@
 
 #include "forces/TwoParticleSpringForceGenerator.h"
 #include "forces/FrictionForceGenerator.h"
-#include "forces/RodForceGenerator.h"
-#include "forces/Ressort1.h"
+#include "forces/Ressort.h"
 #include "forces/Bungee.h"
 
 
@@ -50,108 +49,106 @@ void ofApp::setup()
     collisionSolver.addParticle(particles[1]);
     collisionSolver.addParticle(particles[2]);*/
     // Create particles and add them to the vector
-    
-    //basics
+
+    //basics - GREEN, RED, BLUE
     Particle* basic1 = new Particle(vec3(-19, 100, 0), 2, ofColor::green);
-    addParticle(basic1);
+    particles.push_back(basic1);
+    collisionDetector.addParticle(basic1);
     Particle* basic2 = new Particle(vec3(20, 80, 0), 2, ofColor::red);
-    addParticle(basic2);
-    Particle * basic3 = new Particle(vec3(0, 20, 0), 1, ofColor::blue);
-    addParticle(basic3);
+    particles.push_back(basic2);
+    collisionDetector.addParticle(basic2);
+    Particle* basic3 = new Particle(vec3(0, 20, 0), 1, ofColor::blue);
+    particles.push_back(basic3);
+    collisionDetector.addParticle(basic3);
 
-    //Springs
-    Particle* spring1 = new Particle(vec3(80, 20, 0), 2, ofColor::blue);
-    addParticle(spring1);
+    //Springs - BLUEVIOLET
+    Particle* spring1 = new Particle(vec3(0, 80, 0), 2, ofColor::blueViolet);
+    particles.push_back(spring1);
+    collisionDetector.addParticle(spring1);
+    Ressort* spring = new Ressort(2, 50, vec3(0, 150, 0));
+    registry.add({spring1}, spring);
+    forces.push_back(spring);
 
-    //Bungee
-    Particle* bungee1 = new Particle(vec3(50, 100, 0), 3, ofColor::pink);
-    addParticle(bungee1);
-    Particle* bungee2 = new Particle(vec3(100, 250, 0), 3, ofColor::black);
-    addParticle(bungee2);
+    //Bungee - PINK AND BLACK
+    Particle* bungee1 = new Particle(vec3(100, 100, 0), 3, ofColor::pink);
+    particles.push_back(bungee1);
+    collisionDetector.addParticle(bungee1);
+    Particle* bungee2 = new Particle(vec3(100, 150, 0), 3, ofColor::black);
+    particles.push_back(bungee2);
+    collisionDetector.addParticle(bungee2);
+    Bungee* bungee = new Bungee(3, 50, bungee1, bungee2);
+    registry.add({bungee1, bungee2}, bungee);
+    forces.push_back(bungee);
 
-    //Rod
+    //Rod - PURPLE
     Particle* rod1 = new Particle(vec3(-50, 100, 0), 3, ofColor::purple);
+    particles.push_back(rod1);
+    collisionDetector.addParticle(rod1);
     Particle* rod2 = new Particle(vec3(-100, 100, 0), 3, ofColor::purple);
-    addParticle(rod2);
-    addParticle(rod1);
-    addParticleForce(particles[0], new RodForceGenerator(particles[0], particles[1]));
+    particles.push_back(rod2);
+    collisionDetector.addParticle(rod2);
+    collisionDetector.addRelation(RelationType::ROD, rod1, rod2, 50);
 
-    //Double Spring
+    // Cable - FORESTGREEN
+    Particle* cable1 = new Particle(vec3(150, 100, 0), 3, ofColor::forestGreen);
+    particles.push_back(cable1);
+    collisionDetector.addParticle(cable1);
+    Particle* cable2 = new Particle(vec3(200, 100, 0), 3, ofColor::forestGreen);
+    particles.push_back(cable2);
+    collisionDetector.addParticle(cable2);
+    collisionDetector.addRelation(RelationType::CABLE, cable1, cable2, 50);
+
+    //Double Spring - ORANGERED AND YELLOW
     Particle* dSpring1 = new Particle(vec3(-150, 100, 0), 3, ofColor::orangeRed);
+    particles.push_back(dSpring1);
+    collisionDetector.addParticle(dSpring1);
     Particle* dSpring2 = new Particle(vec3(-200, 100, 0), 3, ofColor::yellow);
-    addParticle(dSpring1);
-    addParticle(dSpring2);
-    TwoParticleSpringForceGenerator * twoSideSpring = new TwoParticleSpringForceGenerator(dSpring1, dSpring2, 3, 50);
-    addParticleForce(dSpring1, twoSideSpring);
-    addParticleForce(dSpring2, twoSideSpring);
-    
-    // Add gravity and track their collisions
-    addGravityToParticles();
-    setDetectorList();
+    particles.push_back(dSpring2);
+    collisionDetector.addParticle(dSpring2);
 
-    //add other forces
-    addParticleForce(spring1, new Ressort1(2, 50, spring1, vec3(0, 80, 0)));
-    addParticleForce(bungee1, new Bungee(2, 150, bungee1, bungee2));
-    //addParticleForce(bungee2, new Bungee(2, 150, bungee2, bungee1));
-    addParticleForce(rod1, new RodForceGenerator(rod1, rod2));
+    TwoParticleSpringForceGenerator* twoSideSpring = new TwoParticleSpringForceGenerator(dSpring1, dSpring2, 3, 50);
+    registry.add({dSpring1, dSpring2}, twoSideSpring);
+    forces.push_back(twoSideSpring);
 
-    
-    /*addParticleForce(new Particle(vec3(-19, 100, 0), 1, ofColor::green), new GravityForceGenerator());
-    addParticleForce(new Particle(vec3(20, 50, 0), 1, ofColor::red), new GravityForceGenerator());
-    addParticleForce(new Particle(vec3(0, 20, 0), 1, ofColor::blue), new GravityForceGenerator());
+    GravityForceGenerator* gravity = new GravityForceGenerator();
+    forces.push_back(gravity);
+    FrictionForceGenerator* friction = new FrictionForceGenerator(0.001, 0);
+    forces.push_back(friction);
 
-    Particle* visuAncre = new Particle(vec3(0, 80, 0), 1, ofColor::red);
-    addParticle(visuAncre);
-    Particle* particle = new Particle(vec3(50, 30, 0), 1, ofColor::black);
-    addParticleForce(particle, new Ressort1(2, 50, particle, vec3(0, 80, 0)));
-    addParticleForce(particle, new GravityForceGenerator());*/
+    registry.add({
+                     basic1,
+                     basic2,
+                     basic3,
+                     spring1,
+                     bungee1,
+                     bungee2,
+                     rod1,
+                     rod2,
+                     cable1,
+                     cable2,
+                     dSpring1,
+                     dSpring2
+                 }, gravity);
+    registry.add({
+                     basic1,
+                     basic2,
+                     basic3,
+                     spring1,
+                     bungee1,
+                     bungee2,
+                     rod1,
+                     rod2,
+                     cable1,
+                     cable2,
+                     dSpring1,
+                     dSpring2
+                 }, friction);
 
-    /*Particle* bungeeParticle1 = new Particle(vec3(-50, 100, 0), 1, ofColor::red);
-    Particle* bungeeParticle2 = new Particle(vec3(50, 100, 0), 1, ofColor::black);
-    addParticleForce(bungeeParticle1, new Bungee(10, 50, bungeeParticle1, bungeeParticle2));
-    addParticleForce(bungeeParticle2, new Bungee(10, 50, bungeeParticle2, bungeeParticle1));*/
-
-    
     collisionResolver.setElasticity(0.5f);
+
     camera.setPosition(vec3(0, 0, 500));
 
     camera.lookAt(vec3(0));
-}
-
-void ofApp::addParticleForce(Particle* p, ForceGenerator* generator)
-{
-    //particles.emplace_back(p);
-    forces.emplace_back(generator);
-    registry.add(p, generator);
-}
-
-void ofApp::addParticle(Particle* p)
-{
-    particles.emplace_back(p);
-}
-
-void ofApp::setDetectorList()
-{
-    for (auto& particle : particles)
-    {
-        collisionDetector.addParticle(particle);
-    }
-}
-
-void ofApp::addGravityToParticles()
-{
-    for (auto& particle : particles)
-    {
-        addParticleForce(particle, new GravityForceGenerator());
-    }
-}
-
-void ofApp::addFrictionToParticles()
-{
-    for (auto& particle : particles)
-    {
-        addParticleForce(particle, new FrictionForceGenerator(5, 0.03));
-    }
 }
 
 //--------------------------------------------------------------
@@ -168,16 +165,17 @@ void ofApp::update()
         float t = (selectionPlanePoint - rayOrigin).dot(selectionPlaneNormal) / rayDirection.dot(selectionPlaneNormal);
         vec3 intersection = rayOrigin + rayDirection * t;
 
-        vec3 force = (intersection - selectedParticle->getPosition()) * 100;
-        
+        vec3 force = (intersection - selectedParticle->getPosition()) * 10;
+
         selectedParticle->addForce(force);
     }
 
     registry.updateForces(lastFrame);
 
-    auto collisions = collisionDetector.detectAllCollisions();
-    collisionResolver.resolveAllCollisions(collisions);
+    auto collisions = collisionDetector.solve(lastFrame);
+    collisionResolver.resolveCollisions(collisions);
 
+    // euler integration
     for (auto& particle : particles)
     {
         particle->update(lastFrame);
@@ -201,8 +199,15 @@ void ofApp::draw()
     }
     ofDrawGrid(10.f, 10, false, false, true, false);
     ofDisableDepthTest();
-    
+
+    collisionDetector.debugDrawRelations();
+    for (const auto& force : forces)
+    {
+        force->debugDraw();
+    }
+
     camera.end();
+
 
     //Drawing UI
     controlGui.draw();

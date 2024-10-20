@@ -37,12 +37,6 @@ public:
     void dragEvent(ofDragInfo dragInfo);
     void gotMessage(ofMessage msg);
 
-	void addParticleForce(Particle* p, ForceGenerator* generator);
-	void addParticle(Particle* p);
-	void setDetectorList();
-	void addGravityToParticles();
-	void addFrictionToParticles();
-
 private:
 	// Particles
 	std::vector<Particle*> particles;
@@ -50,6 +44,8 @@ private:
 	ForceRegistry registry;
 	CollisionDetector collisionDetector;
 	CollisionResolver collisionResolver;
+
+	// Used for grabbing particles
 	Particle* selectedParticle = nullptr;
 	vec3 selectionPlaneNormal = vec3(0, 1, 0);
 	vec3 selectionPlanePoint = vec3(0, 0, 0);

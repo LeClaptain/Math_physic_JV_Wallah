@@ -8,12 +8,20 @@ bool ForceRegistry::ParticleForceEntry::operator==(const ParticleForceEntry& oth
 void ForceRegistry::add(Particle* p, ForceGenerator* generator)
 {
     entries.push_back({p, generator});
+
+    std::sort(entries.begin(), entries.end(), [](const ParticleForceEntry& a, const ParticleForceEntry& b) {
+        return a.generator->getPriority() < b.generator->getPriority();
+    });
 }
 
-void ForceRegistry::remove(Particle* p, ForceGenerator* generator)
+void ForceRegistry::add(std::vector<Particle*> p, ForceGenerator* generator)
 {
-    entries.erase(std::find(entries.begin(), entries.end(), ParticleForceEntry{p, generator}));
+    for (Particle* particle : p)
+    {
+        add(particle, generator);
+    }
 }
+
 
 void ForceRegistry::clear()
 {
