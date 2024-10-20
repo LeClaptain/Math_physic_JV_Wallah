@@ -16,7 +16,8 @@ You can then run the project.
 ## Setup
 - Create a new open frameworks project with ofxGui enabled.
 - Copy the content of the git src folder and paste it in the src of the newly created project.
-- Exclude all files under `src\externalressources` and under `src\tests`
+- Inlcude everything
+- Then exclude all files under `src\externalressources` and under `src\tests`
 
 You can then run the project.
 
@@ -32,4 +33,15 @@ Use the on screen controls on the bottom left to change settings such as the par
 
 # Using the project - tag `phase2`
 
-TODO
+You can right click on a particle and move the mouse to move it. If you apply a force too big on one of the particle of the blob it will separate from the rest.
+
+Camera movement : right click to rotate the camera, middle click to translate and right click / scroll to zoom in and out.
+
+Blob : click once on one of the arrow key to add some horizontal movement.
+
+Links :
+- White : basic two particle spring
+- Red : rod
+- Azure : bungee
+- Green/sometimes blue : cable
+- White ball and no line : basic single particle spring
