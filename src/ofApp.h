@@ -15,6 +15,9 @@
 #include "particlesTypes/canonBall.h"
 #include "particlesTypes/fireBall.h"
 
+#include "forces/Ressort.h"
+#include "forces/Bungee.h"
+
 
 
 class ofApp : public ofBaseApp
@@ -68,6 +71,7 @@ private:
 	ofxButton resetButton;
 	ofxLabel fpsLabel;
 	ofxLabel frameDurationLabel;
+	ofxLabel blobNumberLabel;
 
 	ofxLabel particlePosition;
 	ofxLabel particleVelocity;

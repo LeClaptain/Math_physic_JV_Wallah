@@ -4,8 +4,7 @@
 
 #include "forces/TwoParticleSpringForceGenerator.h"
 #include "forces/FrictionForceGenerator.h"
-#include "forces/Ressort.h"
-#include "forces/Bungee.h"
+
 
 
 vec3 defaultGravity = vec3(0, 9.81 * 50, 0);
@@ -209,6 +208,8 @@ void ofApp::update()
         selectedParticle->addForce(force);
     }
 
+    
+
     // Check if we need to remove links from the blob
     for (int i = 0; i < blobSprings.size(); i++)
     {
@@ -221,6 +222,14 @@ void ofApp::update()
             forces.erase(std::remove(forces.begin(), forces.end(), blobSprings[i]), forces.end());
             delete blobSprings[i];
             blobSprings.erase(blobSprings.begin() + i);
+
+            for (auto it = blob.begin(); it != blob.end(); ) {
+                if (*it == selectedParticle) {
+                    it = blob.erase(it);
+                } else {
+                    ++it;
+                }
+            }
             i--;
         }
     }
@@ -390,6 +399,7 @@ void ofApp::drawDebugGui()
     debugGui.draw();
     fpsLabel.setup("FPS", std::to_string(ofGetFrameRate()));
     frameDurationLabel.setup("Frame Duration", std::to_string(ofGetLastFrameTime() * 1000) + " ms");
+    blobNumberLabel.setup("Number of blob particules", std::to_string(blob.size()));
 }
 
 void ofApp::setupControlGui()
@@ -400,7 +410,7 @@ void ofApp::setupControlGui()
     controlGui.setWidthElements(350);
     controlGui.setPosition(10, ofGetHeight() - 120);
     // controlGui.add(nextProjectileLabel.setup("Next projectile", activeProjectile->getName()));
-    controlGui.add(resetButton.setup("Reset the scene"));
+    //controlGui.add(resetButton.setup("Reset the scene"));
     controlGui.add(debugToggle.setup("Debug Toggle", false));
 
     //Listeners
@@ -416,9 +426,11 @@ void ofApp::setupDebugGui()
     debugGui.setWidthElements(400);
     debugGui.add(fpsLabel.setup("fpsLabel", ""));
     debugGui.add(frameDurationLabel.setup("frameDurationLabel", ""));
-    debugGui.add(particlePosition.setup("Particle Position", ""));
-    debugGui.add(particleVelocity.setup("Particle Velocity", ""));
-    debugGui.add(speedLabel.setup("greenParticleSpeedLabel", ""));
+    debugGui.add(blobNumberLabel.setup("blobNumberLabel", ""));
+    
+    //debugGui.add(particlePosition.setup("Particle Position", ""));
+    //debugGui.add(particleVelocity.setup("Particle Velocity", ""));
+    //debugGui.add(speedLabel.setup("greenParticleSpeedLabel", ""));
 
     //Listeners
     fpsLabel.setSize(debugGui.getWidth(), fpsLabel.getHeight());
