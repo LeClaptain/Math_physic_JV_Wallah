@@ -60,9 +60,6 @@ namespace maths {
 
         vec3 &operator/=(const float &other);
 
-        // op against mat3
-        vec3 operator*(const mat3& other);
-
         float dot(const vec3 &other) const;
 
         vec3 cross(const vec3 &other) const;

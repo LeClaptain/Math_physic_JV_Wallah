@@ -157,16 +157,6 @@ namespace maths
 		return *this;
 	}
 
-	vec3 vec3::operator*(const mat3& other)
-	{
-		float x, y, z;
-		vec3 v(*this);
-		x = v[0] * other[0] + v[1] * other[1] + v[2] * other[2];
-		y = v[0] * other[3] + v[1] * other[4] + v[2] * other[5];
-		z = v[0] * other[6] + v[1] * other[7] + v[2] * other[8];
-		return vec3(x, y, z);
-	}
-
 	float vec3::dot(const vec3& other) const
 	{
 		return _x * other._x + _y * other._y + _z * other._z;

@@ -17,6 +17,16 @@ namespace maths {
 
 		vec4(const vec4& other);
 
+		float operator[](const int& index) const;
+
+		float x() const;
+
+		float y() const;
+
+		float z() const;
+
+		float w() const;
+
 #ifndef IGNORE_GLM
 		vec4(const glm::vec4& other);
 #endif

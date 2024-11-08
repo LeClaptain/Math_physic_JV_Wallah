@@ -37,7 +37,7 @@ namespace maths
 	{
 		for (int i = 0; i < 9; i++)
 		{
-			m[i] = other.m[i];
+			m[i] = other[i];
 		}
 	}
 
@@ -253,10 +253,9 @@ namespace maths
 	vec3 mat3::operator*(const vec3& other) const
 	{
 		float x, y, z;
-		mat3 m(*this);
-		x = other[0] * m.m[0] + other[1] * m.m[3] + other[2] * m.m[6];
-		y = other[0] * m.m[1] + other[1] * m.m[4] + other[2] * m.m[7];
-		z = other[0] * m.m[2] + other[1] * m.m[5] + other[2] * m.m[8];
+		x = other[0] * m[0] + other[1] * m[3] + other[2] * m[6];
+		y = other[0] * m[1] + other[1] * m[4] + other[2] * m[7];
+		z = other[0] * m[2] + other[1] * m[5] + other[2] * m[8];
 		return vec3(x, y, z);
 	}
 
@@ -286,7 +285,9 @@ namespace maths
 
 	mat3 mat3::identity()
 	{
-		return mat3(1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f);
+		return mat3(1.0f, 0.0f, 0.0f, 
+					0.0f, 1.0f, 0.0f, 
+					0.0f, 0.0f, 1.0f);
 	}
 
 	float mat3::operator[](const int& index) const

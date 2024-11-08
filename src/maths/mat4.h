@@ -1,5 +1,7 @@
 #pragma once
 
+#include "vec4.h"
+
 namespace maths {
 	class mat4
 	{
@@ -14,6 +16,53 @@ namespace maths {
 			 float m41, float m42, float m43, float m44);
 
 		mat4(const mat4& other);
+
+		float operator[](const int& index) const;
+
+        // op against other mat
+        mat4& operator=(const mat4& other);
+
+        bool operator==(const mat4& other) const;
+
+        mat4 operator+(const mat4& other) const;
+
+        mat4 operator-(const mat4& other) const;
+
+        mat4 operator*(const mat4& other) const;
+
+        mat4 operator-() const;
+
+        mat4& operator+=(const mat4& other);
+
+        mat4& operator-=(const mat4& other);
+
+        mat4& operator*=(const mat4& other);
+
+        // op against float
+        mat4 operator+(const float& other) const;
+
+        mat4 operator-(const float& other) const;
+
+        mat4 operator*(const float& other) const;
+
+        mat4 operator/(const float& other) const;
+
+        mat4& operator+=(const float& other);
+
+        mat4& operator-=(const float& other);
+
+        mat4& operator*=(const float& other);
+
+        mat4& operator/=(const float& other);
+
+        // op against vec
+        vec4 operator*(const vec4& other) const;
+
+        mat4 transpose() const;
+
+        float det() const;
+
+        static mat4 identity();
 
 	private:
 		// still COLUMN MAJOR
