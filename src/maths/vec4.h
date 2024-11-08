@@ -68,7 +68,7 @@ namespace maths {
 
 		vec4& operator/=(const float& other);
 
-		// op against other vec3
+		// op against other vec4
 		vec4& operator=(const vec4& other);
 
 		bool operator==(const vec4& other) const;
