@@ -12,7 +12,9 @@ namespace maths {
 
         explicit mat3(const float &v);
 
-        mat3(float m11, float m12, float m13, float m21, float m22, float m23, float m31, float m32, float m33);
+        mat3(float m11, float m12, float m13, 
+             float m21, float m22, float m23, 
+             float m31, float m32, float m33);
 
         mat3(const mat3 &other);
 
@@ -67,7 +69,7 @@ namespace maths {
 
         static mat3 scale(const float &scale);
 
-        vec3 operator[](const int &index) const;
+        float operator[](const int &index) const;
 
     private:
         // COLUMN MAJOR

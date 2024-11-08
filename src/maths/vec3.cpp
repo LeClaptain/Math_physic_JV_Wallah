@@ -7,6 +7,7 @@
 #include <cmath>
 #include <stdexcept>
 #include <string>
+#include "mat3.h"
 
 namespace maths
 {
@@ -206,7 +207,6 @@ namespace maths
 	{
 		return (other - *this).magnitude();
 	}
-
 
 	float vec3::x() const
 	{
