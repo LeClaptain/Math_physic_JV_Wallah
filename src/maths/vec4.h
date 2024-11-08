@@ -4,6 +4,7 @@
 #ifndef IGNORE_GLM
 #include <glm/vec4.hpp>
 #endif
+#include "vec3.h"
 
 namespace maths {
 	class vec4
@@ -17,6 +18,11 @@ namespace maths {
 
 		vec4(const vec4& other);
 
+		vec4(const vec3& other, float w);
+
+#ifndef IGNORE_GLM
+		vec4(const glm::vec4& other);
+#endif
 		float operator[](const int& index) const;
 
 		float x() const;
@@ -28,8 +34,56 @@ namespace maths {
 		float w() const;
 
 #ifndef IGNORE_GLM
-		vec4(const glm::vec4& other);
+		operator glm::vec4() const;
 #endif
+
+		operator std::string() const;
+
+		float dot(const vec4& other) const;
+
+		float magnitude() const;
+
+		vec4 normalized() const;
+
+		vec4& normalize();
+
+		float distance(const vec4& other) const;
+
+		vec3 toVec3();
+
+		// op against float
+		vec4 operator+(const float& other) const;
+
+		vec4 operator-(const float& other) const;
+
+		vec4 operator*(const float& other) const;
+
+		vec4 operator/(const float& other) const;
+
+		vec4& operator+=(const float& other);
+
+		vec4& operator-=(const float& other);
+
+		vec4& operator*=(const float& other);
+
+		vec4& operator/=(const float& other);
+
+		// op against other vec3
+		vec4& operator=(const vec4& other);
+
+		bool operator==(const vec4& other) const;
+
+		bool operator!=(const vec4& other) const;
+
+		vec4 operator+(const vec4& other) const;
+
+		vec4 operator-(const vec4& other) const;
+
+		vec4 operator-() const;
+
+		vec4& operator+=(const vec4& other);
+
+		vec4& operator-=(const vec4& other);
 
 	private:
 		float _x, _y, _z, _w;

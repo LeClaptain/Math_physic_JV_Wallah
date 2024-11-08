@@ -208,7 +208,6 @@ namespace maths
 		return (other - *this).magnitude();
 	}
 
-
 	float vec3::x() const
 	{
 		return _x;
