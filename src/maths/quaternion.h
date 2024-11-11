@@ -17,6 +17,8 @@ namespace maths
 
 		mat4 toMat4();
 
+		mat3 toMat3();
+
 		float magnitude() const;
 
 		quaternion conjugate() const;

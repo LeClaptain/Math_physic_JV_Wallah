@@ -1,30 +1,37 @@
 #include "quaternion.h"
 
 namespace maths {
-	maths::quaternion::quaternion()
+	quaternion::quaternion()
 	{
 		_w = 1;
 		_v = vec3(0, 0, 0);
 	}
 
-	maths::quaternion::quaternion(float w, float x, float y, float z)
+	quaternion::quaternion(float w, float x, float y, float z)
 	{
 		_w = w;
 		_v = vec3(x, y, z);
 	}
 
-	maths::quaternion::quaternion(float w, vec3 v)
+	quaternion::quaternion(float w, vec3 v)
 	{
 		_w = w;
 		_v = v;
 	}
 
-	mat4 maths::quaternion::toMat4()
+	mat4 quaternion::toMat4()
 	{
 		return mat4(_w,		 -_v.z(), _v.y(),  _v.x(),
 					_v.z(),  _w,	  -_v.x(), _v.y(),
 					-_v.y(), _v.x(),  _w,	   _v.z(),
 					-_v.x(), -_v.y(), -_v.z(), _w);
+	}
+
+	mat3 quaternion::toMat3()
+	{
+		return mat3(1-2*(_v.y()*_v.y()+_v.z()*_v.z()), 2*(_v.x()*_v.y() + _v.z()*_w),     2*(_v.x()*_v.z() - _v.y()*_w),
+					2*(_v.x()*_v.y() - _v.z()*_w), 	   1-2*(_v.x()*_v.x()+_v.z()*_v.z()), 2*(_v.y()*_v.z()+_v.x()*_w),
+					2*(_v.x()*_v.z() + _v.y()*_w),     2*(_v.y()*_v.z()-_v.x()*_w),       1-2*(_v.x()_v.x()+_v.y()_v.y()));
 	}
 
 	float quaternion::magnitude() const
