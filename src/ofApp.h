@@ -4,6 +4,7 @@
 
 #include "CollisionDetector.h"
 #include "CollisionResolver.h"
+#include "CorpsRigide.h"
 #include "ForceRegistry.h"
 #include "ofMain.h"
 #include "ofEvents.h"
@@ -43,6 +44,7 @@ public:
 
 private:
 	// Particles
+	std::vector<CorpsRigide*> rigidBodies;
 	std::vector<Particle*> particles;
 	std::vector<ForceGenerator*> forces;
 	ForceRegistry registry;
@@ -83,4 +85,7 @@ private:
 	void drawDebugGui();
 	void setupControlGui();
 	void setupDebugGui();
+	void setupFont();
+
+	void setupThingsToDraw();
 };

@@ -31,7 +31,7 @@ namespace maths {
 	{
 		return mat3(1-2*(_v.y()*_v.y()+_v.z()*_v.z()), 2*(_v.x()*_v.y() + _v.z()*_w),     2*(_v.x()*_v.z() - _v.y()*_w),
 					2*(_v.x()*_v.y() - _v.z()*_w), 	   1-2*(_v.x()*_v.x()+_v.z()*_v.z()), 2*(_v.y()*_v.z()+_v.x()*_w),
-					2*(_v.x()*_v.z() + _v.y()*_w),     2*(_v.y()*_v.z()-_v.x()*_w),       1-2*(_v.x()_v.x()+_v.y()_v.y()));
+					2*(_v.x()*_v.z() + _v.y()*_w),     2*(_v.y()*_v.z()-_v.x()*_w),       1-2*(_v.x()*_v.x()+_v.y()*_v.y()));
 	}
 
 	float quaternion::magnitude() const
