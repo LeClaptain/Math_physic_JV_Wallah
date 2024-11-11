@@ -1,4 +1,5 @@
 #pragma once
+#include "of3dPrimitives.h"
 #include "maths/mat3.h"
 #include "maths/mat4.h"
 #include "maths/vec3.h"
@@ -10,10 +11,13 @@ using namespace maths;
 class CorpsRigide
 {
 public:
+    //TODO : etendre le constructeur, juste la j'essaie des trucs
+    CorpsRigide(vec3 position, vec3 extent, ofColor color);
+    
     double getMass() const { return mass; }
-    void setMass(double mass) { this->mass = mass; }
+    void setMass(double mass) { this->mass = mass; inverseMass = 1.0 / mass; }
 
-    double getOneOverMass() const { return 1.0 / mass; }
+    double getOneOverMass() const { return inverseMass; }
 
     vec3 getPosition() const { return position; }
     void setPosition(const vec3& position) { this->position = position; }
@@ -47,18 +51,21 @@ public:
     void draw();
 
 private:
-    double mass;
+    double mass = 0.0;
+    double inverseMass = 0.0;
     vec3 position;
-    vec3 extent{1, 1, 1};
+    vec3 extent{100, 100, 100};
+    ofBoxPrimitive rigidBody;
+    ofColor color;
 
     // angular
     quaternion orientation;
-    vec3 angularVelocity;
-    vec3 angularAcceleration;
+    vec3 angularVelocity = vec3(0);
+    vec3 angularAcceleration = vec3(0);
     mat3 JminusOne;
 
     // linear
-    vec3 velocity;
-    vec3 acceleration;
-    vec3 forces;
+    vec3 velocity = vec3(0);
+    vec3 acceleration = vec3(0);
+    vec3 forces = vec3(0);
 };
