@@ -1,6 +1,8 @@
 
 #include "../maths/mat3.h"
 #include "../maths/vec3.h"
+#include "../maths/mat4.h"
+#include "../maths/quaternion.h"
 
 using namespace maths;
 
@@ -135,6 +137,203 @@ int main(int argc, char** argv)
     auto bracket = vec3(3, 2, 1);
     PRINT_TEST(bracket[0] == 3 && bracket[1] == 2 && bracket[2] == 1)
 
+
+    // ####################### Tests Mat3 ##############################
+
+    auto mat3_eq1 = mat3(0,1,2,3,4,5,6,7,8);
+    auto mat3_eq2 = mat3(0,1,2,3,4,5,6,7,8);
+    PRINT_TEST(mat3_eq1 == mat3_eq2)
+
+    auto mat3_det = mat3(0,1,2,3,4,5,6,7,8);
+    PRINT_TEST(mat3_det.det() == 0);
+
+    auto mat3_add1 = mat3(0,1,2,3,4,5,6,7,8);
+    auto mat3_add2 = mat3(0,1,2,3,4,5,6,7,8);
+    auto mat3_add3 = mat3(0,2,4,6,8,10,12,14,16);
+    PRINT_TEST(mat3_add1 + mat3_add2 == mat3_add3)
+
+    auto mat3_addEq1 = mat3(0,1,2,3,4,5,6,7,8);
+    auto mat3_addEq2 = mat3(0,1,2,3,4,5,6,7,8);
+    auto mat3_addEq3 = mat3(0,2,4,6,8,10,12,14,16);
+    mat3_addEq1 += mat3_addEq2;
+    PRINT_TEST(mat3_addEq1 == mat3_addEq3)
+
+    auto mat3_sub1 = mat3(0,1,2,3,4,5,6,7,8);
+    auto mat3_sub2 = mat3(0,1,2,3,4,5,6,7,8);
+    auto mat3_sub3 = mat3(0,0,0,0,0,0,0,0,0);
+    PRINT_TEST(mat3_sub1 - mat3_sub2 == mat3_sub3)
+
+    auto mat3_subEq1 = mat3(0,1,2,3,4,5,6,7,8);
+    auto mat3_subEq2 = mat3(0,1,2,3,4,5,6,7,8);
+    auto mat3_subEq3 = mat3(0,0,0,0,0,0,0,0,0);
+    mat3_subEq1 -= mat3_subEq2;
+    PRINT_TEST(mat3_subEq1 == mat3_subEq3)
+
+    auto mat3_mul1 = mat3(1,0,0,0,1,0,0,0,1);
+    auto mat3_mul2 = mat3(0,1,2,3,4,5,6,7,8);
+    auto mat3_mul3 = mat3(0,1,2,3,4,5,6,7,8);
+    PRINT_TEST(mat3_mul1 * mat3_mul2 == mat3_mul3)
+
+    auto mat3_mulEq1 = mat3(1,0,0,0,1,0,0,0,1);
+    auto mat3_mulEq2 = mat3(0,1,2,3,4,5,6,7,8);
+    auto mat3_mulEq3 = mat3(0,1,2,3,4,5,6,7,8);
+    mat3_mulEq1 *= mat3_mulEq2;
+    PRINT_TEST(mat3_mulEq1 == mat3_mulEq3)
+
+    auto mat3_opposite1 = mat3(0,1,2,3,4,5,6,7,8);
+    auto mat3_opposite2 = mat3(0,-1,-2,-3,-4,-5,-6,-7,-8);
+    PRINT_TEST(-mat3_opposite1 == mat3_opposite2)
+
+    auto mat3_addFloat1 = mat3(0,1,2,3,4,5,6,7,8);
+    float mat3_addFloat2 = 2.0;
+    auto mat3_addFloatExpected = mat3(2,3,4,5,6,7,8,9,10);
+    PRINT_TEST(mat3_addFloat1 + mat3_addFloat2 == mat3_addFloatExpected)
+
+    auto mat3_addEqFloat1 = mat3(0,1,2,3,4,5,6,7,8);
+    float mat3_addEqFloat2 = 2.0;
+    auto mat3_addEqFloat3 = mat3_addEqFloat1 += mat3_addEqFloat2;
+    auto mat3_addEqFloatExpected = mat3(2,3,4,5,6,7,8,9,10);
+    PRINT_TEST(mat3_addEqFloat3 == mat3_addEqFloatExpected)
+
+    auto mat3_subFloat1 = mat3(0,1,2,3,4,5,6,7,8);
+    float mat3_subFloat2 = 2.0;
+    auto mat3_subFloatExpected = mat3(-2,-1,0,1,2,3,4,5,6);
+    PRINT_TEST(mat3_subFloat1 - mat3_subFloat2 == mat3_subFloatExpected)
+
+    auto mat3_subEqFloat1 = mat3(0,1,2,3,4,5,6,7,8);
+    float mat3_subEqFloat2 = 2.0;
+    auto mat3_subEqFloat3 = mat3_subEqFloat1 -= mat3_subEqFloat2;
+    auto mat3_subEqFloatExpected = mat3(-2,-1,0,1,2,3,4,5,6);
+    PRINT_TEST(mat3_subEqFloat3 == mat3_subEqFloatExpected)
+
+    auto mat3_mulFloat1 = mat3(0,1,2,3,4,5,6,7,8);
+    float mat3_mulFloat2 = 2.0;
+    auto mat3_mulFloatExpected = mat3(0,2,4,6,8,10,12,14,16);
+    PRINT_TEST(mat3_mulFloat1 * mat3_mulFloat2 == mat3_mulFloatExpected)
+
+    auto mat3_mulEqFloat1 = mat3(0,1,2,3,4,5,6,7,8);
+    float mat3_mulEqFloat2 = 2.0;
+    auto mat3_mulEqFloat3 = mat3_mulEqFloat1 *= mat3_mulEqFloat2;
+    auto mat3_mulEqFloatExpected = mat3(0,2,4,6,8,10,12,14,16);
+    PRINT_TEST(mat3_mulEqFloat3 == mat3_mulFloatExpected)
+
+    auto mat3_divEqFloat1 = mat3(0,2,4,6,8,10,12,14,16);
+    float mat3_divEqFloat2 = 2.0;
+    auto mat3_divEqFloat3 = mat3_divEqFloat1 /= mat3_divEqFloat2;
+    auto mat3_divEqFloatExpected = mat3(0,1,2,3,4,5,6,7,8);
+    PRINT_TEST(mat3_divEqFloat3 == mat3_divEqFloatExpected);
+
+    auto mat3_mulVec1 = mat3(0,1,2,3,4,5,6,7,8);
+    vec3 mat3_mulVec2 = vec3(0,1,2);
+    auto mat3_mulVecExpected = vec3(5,14,23);
+    PRINT_TEST(mat3_mulVec1 * mat3_mulVec2 == mat3_mulVecExpected);
+
+    auto mat3_transpose1 = mat3(0,1,2,3,4,5,6,7,8);
+    auto mat3_transpose2 = mat3_transpose1.transpose();
+    auto mat3_transposeExpected = mat3(0,3,6,1,4,7,2,5,8);
+    PRINT_TEST(mat3_transpose2 == mat3_transposeExpected)
+
+    auto mat3_inverse1 = mat3(2,3,4,-3,-3,-2,-2,1,-1);
+    auto mat3_inverse2 = mat3_inverse1.inverse();
+    auto mat3_inverseExpected = mat3(5,7,6,1,6,-8,-9,-8,3) * (1/-23);
+    PRINT_TEST(mat3_inverse2 == mat3_inverseExpected);
+
+    auto mat3_identite = mat3::identity();
+    auto mat3_identiteExpected = mat3(1,0,0,0,1,0,0,0,1);
+    PRINT_TEST(mat3_identite == mat3_identiteExpected)
+
+    auto mat3_get = mat3(0,1,2,3,4,5,6,7,8);
+    auto mat3_get11 = mat3_get[0];
+    auto mat3_get11Expected = 0;
+    PRINT_TEST(mat3_get11 == mat3_get11Expected);
+
+    // ####################### Tests Mat4 ##############################
+
+    auto mat4_eq1 = maths::mat4(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15);
+    auto mat4_eq2 = maths::mat4(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15);
+    PRINT_TEST(mat4_eq1 == mat4_eq2);
+
+    auto mat4_det = maths::mat4(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15);
+    PRINT_TEST(mat4_det.det() == 0);
+
+    auto mat4_add1 = maths::mat4(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15);
+    auto mat4_add2 = maths::mat4(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15);
+    auto mat4_addExpected = maths::mat4(0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30);
+    PRINT_TEST(mat4_add1 + mat4_add2 == mat4_addExpected);
+
+    auto mat4_addEq1 = maths::mat4(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15);
+    auto mat4_addEq2 = maths::mat4(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15);
+    mat4_addEq1 += mat4_addEq2;
+    PRINT_TEST(mat4_addEq1 == mat4_addExpected);
+
+    auto mat4_sub1 = maths::mat4(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15);
+    auto mat4_sub2 = maths::mat4(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15);
+    auto mat4_subExpected = maths::mat4(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+    PRINT_TEST(mat4_sub1 - mat4_sub2 == mat4_subExpected);
+
+    auto mat4_subEq1 = maths::mat4(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15);
+    mat4_subEq1 -= mat4_sub2;
+    PRINT_TEST(mat4_subEq1 == mat4_subExpected);
+
+    auto mat4_mul1 = maths::mat4::identity();
+    auto mat4_mul2 = maths::mat4(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15);
+    auto mat4_mul3 = mat4_mul1 * mat4_mul2;
+    PRINT_TEST(mat4_mul3 == mat4_mul2);
+
+    auto mat4_mulEq1 = maths::mat4::identity();
+    auto mat4_mulEq2 = maths::mat4(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15);
+    auto mat4_mulEq3 = mat4_mulEq1 *= mat4_mulEq2;
+    PRINT_TEST(mat4_mulEq3 == mat4_mulEq2);
+
+    auto mat4_opposite1 = maths::mat4(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15);
+    auto mat4_oppositeExpected = maths::mat4(0,-1,-2,-3,-4,-5,-6,-7,-8,-9,-10,-11,-12,-13,-14,-15);
+    PRINT_TEST(-mat4_opposite1 == mat4_oppositeExpected);
+
+    auto mat4_addFloat1 = maths::mat4(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15);
+    float mat4_addFloat2 = 2.0f;
+    auto mat4_addFloatExpected = maths::mat4(2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17);
+    PRINT_TEST(mat4_addFloat1 + mat4_addFloat2 == mat4_addFloatExpected);
+
+    auto mat4_addEqFloat1 = maths::mat4(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15);
+    float mat4_addEqFloat2 = 2.0f;
+    auto mat4_addEqFloat3 = mat4_addEqFloat1 += mat4_addEqFloat2;
+    auto mat4_addEqFloatExpected = maths::mat4(2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17);
+    PRINT_TEST(mat4_addEqFloat3 == mat4_addEqFloatExpected);
+
+    auto mat4_subFloatExpected = maths::mat4(-2,-1,0,1,2,3,4,5,6,7,8,9,10,11,12,13);
+    PRINT_TEST(mat4_addFloat1 - mat4_addFloat2 == mat4_subFloatExpected);
+
+    auto mat4_subEqFloat1 = maths::mat4(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15);
+    float mat4_subEqFloat2 = 2.0f;
+    auto mat4_subEqFloat3 = mat4_subEqFloat1 -= mat4_subEqFloat2;
+    auto mat4_subEqFloatExpected = maths::mat4(-2,-1,0,1,2,3,4,5,6,7,8,9,10,11,12,13);
+    PRINT_TEST(mat4_subEqFloat3 == mat4_subEqFloatExpected);
+
+    auto mat4_mulFloatExpected = maths::mat4(0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30);
+    PRINT_TEST(mat4_addFloat1 * mat4_addFloat2 == mat4_mulFloatExpected);
+
+    auto mat4_mulEqFloat1 = maths::mat4(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15);
+    float mat4_mulEqFloat2 = 2.0f;
+    auto mat4_mulEqFloat3 = mat4_mulEqFloat1 *= mat4_mulEqFloat2;
+    auto mat4_mulEqFloatExpected = maths::mat4(0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30);
+    PRINT_TEST(mat4_mulEqFloat3 == mat4_mulEqFloatExpected);
+
+    auto mat4_divFloat1 = maths::mat4(0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30);
+    float mat4_divFloat2 = 2.0f;
+    auto mat4_divFloatExpected = maths::mat4(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15);
+    PRINT_TEST(mat4_divFloat1 / mat4_divFloat2 == mat4_divFloatExpected);
+
+    auto mat4_transpose1 = maths::mat4(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15);
+    auto mat4_transposeExpected = maths::mat4(0,4,8,12,1,5,9,13,2,6,10,14,3,7,11,15);
+    PRINT_TEST(mat4_transpose1.transpose() == mat4_transposeExpected);
+
+    auto mat4_identity = maths::mat4::identity();
+    auto mat4_identityExpected = maths::mat4(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
+    PRINT_TEST(mat4_identity == mat4_identityExpected);
+
+
+    // ###################### FIN ######################################
+     
     std::printf("%u tests succeeded, %u tests failed.", success, fail);
 
     return 0;

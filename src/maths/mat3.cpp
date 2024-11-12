@@ -279,7 +279,7 @@ namespace maths
 
 	mat3 mat3::inverse() const
 	{
-		// TODO
+		//TODO
 		return mat3();
 	}
 
