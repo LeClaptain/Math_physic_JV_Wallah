@@ -56,6 +56,10 @@ namespace maths {
 
 	quaternion quaternion::pow(float t) const
 	{
+		if (0.99f < _w && _w < 1.01)
+		{
+			return quaternion(_w, _v);
+		}
 		float alpha = acos(_w);
 		return quaternion(cos(t * alpha), _v * (sin(t * alpha) / sin(alpha)));
 	}

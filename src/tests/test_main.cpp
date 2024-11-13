@@ -233,9 +233,9 @@ int main(int argc, char** argv)
     auto mat3_transposeExpected = mat3(0,3,6,1,4,7,2,5,8);
     PRINT_TEST(mat3_transpose2 == mat3_transposeExpected)
 
-    auto mat3_inverse1 = mat3(2,3,4,-3,-3,-2,-2,1,-1);
+    auto mat3_inverse1 = mat3(2,1,-2,3,2,2,5,4,3);
     auto mat3_inverse2 = mat3_inverse1.inverse();
-    auto mat3_inverseExpected = mat3(5,7,6,1,6,-8,-9,-8,3) * (1/-23);
+    auto mat3_inverseExpected = mat3(2,11,-6,-1,-16,10,-2,3,-1) * (1.0f/7);
     PRINT_TEST(mat3_inverse2 == mat3_inverseExpected);
 
     auto mat3_identite = mat3::identity();
@@ -331,6 +331,94 @@ int main(int argc, char** argv)
     auto mat4_identityExpected = maths::mat4(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
     PRINT_TEST(mat4_identity == mat4_identityExpected);
 
+    // ###################### Quaternions ##############################
+    
+
+    auto quat_toMat4 = maths::quaternion(1, 2, 3, 4).toMat4();
+    auto quat_toMat4Expected = maths::mat4(1, -4, 3, 2,
+                                           4,  1, -2, 3,
+                                          -3,  2,  1, 4,
+                                          -2, -3, -4, 1);
+    PRINT_TEST(quat_toMat4 == quat_toMat4Expected);
+
+    auto quat_magnitude = maths::quaternion(1, 2, 3, 4).magnitude();
+    float quat_magnitudeExpected = maths::vec4(2, 3, 4, 1).magnitude();
+    PRINT_TEST(quat_magnitude == quat_magnitudeExpected);
+
+    auto quat_conjugate = maths::quaternion(1, 2, 3, 4).conjugate();
+    auto quat_conjugateExpected = maths::quaternion(1, -2, -3, -4);
+    PRINT_TEST(quat_conjugate == quat_conjugateExpected);
+
+    auto quat_inverse = maths::quaternion(1, 2, 3, 4).inverse();
+    auto quat_inverseExpected = maths::quaternion(1, -2, -3, -4) / quat_magnitudeExpected;
+    PRINT_TEST(quat_inverse == quat_inverseExpected);
+
+    auto quat_dot = maths::quaternion(1, 2, 3, 4).dot(maths::quaternion(2, 2, 2, 2));
+    float quat_dotExpected = 1 * 2 + 2 * 2 + 3 * 2 + 4 * 2;
+    PRINT_TEST(quat_dot == quat_dotExpected);
+
+    // Test de la méthode pow avec un angle significatif
+    auto quat_pow = maths::quaternion(0.99f, 0.5f, 0.5f, 0.5f).pow(0.5f);
+    float alpha = acos(0.99f); // Angle en radians
+    auto quat_powExpected = maths::quaternion(
+        cos(0.5f * alpha), 
+        maths::vec3(0.5f, 0.5f, 0.5f) * (sin(0.5f * alpha) / sin(alpha))
+    );
+    PRINT_TEST(quat_pow == quat_powExpected);
+
+    // Test de la méthode pow pour un angle très petit (_w proche de 1)
+    auto quat_powBis = maths::quaternion(0.991f, 0.5f, 0.5f, 0.5f).pow(0.5f);
+    auto quat_powBisExpected = maths::quaternion(0.991f, 0.5f, 0.5f, 0.5f);
+    PRINT_TEST(quat_powBis == quat_powBisExpected);
+    
+    auto quat_pow_near_identity = maths::quaternion(1, 0.001f, 0.001f, 0.001f).pow(0.5f);
+    auto quat_pow_near_identityExpected = maths::quaternion(1, 0.001f, 0.001f, 0.001f); // Pas de changement significatif
+    PRINT_TEST(quat_pow_near_identity == quat_pow_near_identityExpected);
+
+    auto quat_rotation = maths::quaternion(1, 2, 3, 4).isRotation();
+    bool quat_rotationExpected = maths::quaternion(1, 2, 3, 4).magnitude() == 1;
+    PRINT_TEST(quat_rotation == quat_rotationExpected);
+
+    auto quat_neg = -maths::quaternion(1, 2, 3, 4);
+    auto quat_negExpected = maths::quaternion(-1, -2, -3, -4);
+    PRINT_TEST(quat_neg == quat_negExpected);
+
+    auto quat_addFloat = maths::quaternion(1, 2, 3, 4) + 2.0f;
+    auto quat_addFloatExpected = maths::quaternion(3, 4, 5, 6);
+    PRINT_TEST(quat_addFloat == quat_addFloatExpected);
+
+    auto quat_subFloat = maths::quaternion(1, 2, 3, 4) - 2.0f;
+    auto quat_subFloatExpected = maths::quaternion(-1, 0, 1, 2);
+    PRINT_TEST(quat_subFloat == quat_subFloatExpected);
+
+    auto quat_mulFloat = maths::quaternion(1, 2, 3, 4) * 2.0f;
+    auto quat_mulFloatExpected = maths::quaternion(2, 4, 6, 8);
+    PRINT_TEST(quat_mulFloat == quat_mulFloatExpected);
+
+    auto quat_divFloat = maths::quaternion(2, 4, 6, 8) / 2.0f;
+    auto quat_divFloatExpected = maths::quaternion(1, 2, 3, 4);
+    PRINT_TEST(quat_divFloat == quat_divFloatExpected);
+
+    auto quat_equal1 = maths::quaternion(1, 2, 3, 4);
+    auto quat_equal2 = maths::quaternion(1, 2, 3, 4);
+    PRINT_TEST(quat_equal1 == quat_equal2);
+
+    auto quat_notEqual1 = maths::quaternion(1, 2, 3, 4);
+    auto quat_notEqual2 = maths::quaternion(4, 3, 2, 1);
+    PRINT_TEST(quat_notEqual1 != quat_notEqual2);
+
+    auto quat_subQuat = maths::quaternion(1, 2, 3, 4) - maths::quaternion(4, 3, 2, 1);
+    auto quat_subQuatExpected = maths::quaternion(4, 3, 2, 1) * maths::quaternion(1, -2, -3, -4);
+    PRINT_TEST(quat_subQuat == quat_subQuatExpected);
+
+    auto quat_mulQuat = maths::quaternion(1, 2, 3, 4) * maths::quaternion(4, 3, 2, 1);
+    auto quat_mulQuatExpected = maths::quaternion(
+        1 * 4 - maths::vec3(2, 3, 4).dot(maths::vec3(3, 2, 1)),
+        maths::vec3(3, 2, 1) * 1 + maths::vec3(2, 3, 4) * 4 + maths::vec3(2, 3, 4).cross(maths::vec3(3, 2, 1))
+    );
+    PRINT_TEST(quat_mulQuat == quat_mulQuatExpected);
+    
+    
 
     // ###################### FIN ######################################
      

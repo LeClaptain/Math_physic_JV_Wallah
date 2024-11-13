@@ -4,6 +4,8 @@
 
 #pragma once
 #include "vec3.h"
+#include <stdexcept>
+
 
 namespace maths {
     class mat3 {

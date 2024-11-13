@@ -279,8 +279,28 @@ namespace maths
 
 	mat3 mat3::inverse() const
 	{
-		//TODO
-		return mat3();
+		float m11 = m[0], m12 = m[3], m13 = m[6];
+		float m21 = m[1], m22 = m[4], m23 = m[7];
+		float m31 = m[2], m32 = m[5], m33 = m[8];
+		float det = m11 * (m22 * m33 - m23 * m32) -
+					m12 * (m21 * m33 - m23 * m31) +
+					m13 * (m21 * m32 - m22 * m31);
+		if (det == 0.0f)
+		{
+			throw std::runtime_error("Matrice non inversible (dét=0)");
+		}
+		float invDet = 1.0f / det;
+		return mat3(
+			(m22 * m33 - m23 * m32) * invDet,
+			(m13 * m32 - m12 * m33) * invDet,
+			(m12 * m23 - m13 * m22) * invDet,
+			(m23 * m31 - m21 * m33) * invDet,
+			(m11 * m33 - m13 * m31) * invDet,
+			(m13 * m21 - m11 * m23) * invDet,
+			(m21 * m32 - m22 * m31) * invDet,
+			(m12 * m31 - m11 * m32) * invDet,
+			(m11 * m22 - m12 * m21) * invDet
+		);
 	}
 
 	mat3 mat3::identity()
