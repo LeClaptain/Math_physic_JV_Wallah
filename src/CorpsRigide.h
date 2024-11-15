@@ -5,6 +5,8 @@
 #include "maths/vec3.h"
 #include "maths/vec4.h"
 #include "maths/Quaternion.h"
+#include "ofMaterial.h"
+
 
 using namespace maths;
 
@@ -57,10 +59,11 @@ private:
     vec3 extent{100, 100, 100};
     ofBoxPrimitive rigidBody;
     ofColor color;
+    ofMaterial material;
 
     // angular
     quaternion orientation;
-    vec3 angularVelocity = vec3(0);
+    vec3 angularVelocity;
     vec3 angularAcceleration = vec3(0);
     mat3 JminusOne;
 
@@ -68,4 +71,7 @@ private:
     vec3 velocity = vec3(0);
     vec3 acceleration = vec3(0);
     vec3 forces = vec3(0);
+    
+    void applyRotationFromQuaternion();
+
 };

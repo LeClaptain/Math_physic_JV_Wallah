@@ -1,5 +1,6 @@
 #include "CorpsRigide.h"
 
+#include "ofMaterial.h"
 #include "ofxColorPicker.h"
 
 CorpsRigide::CorpsRigide(vec3 position, vec3 extent, ofColor color)
@@ -8,6 +9,7 @@ CorpsRigide::CorpsRigide(vec3 position, vec3 extent, ofColor color)
     this->extent = extent;
     this->color = color;
     rigidBody.set(extent.x() * 2, extent.y() * 2, extent.z() * 2);
+
 }
 
 void CorpsRigide::update(double dt)
@@ -16,14 +18,29 @@ void CorpsRigide::update(double dt)
     acceleration = forces * inverseMass;
     velocity = velocity + acceleration * dt;
     this->position += velocity * dt;
-    
+
+    orientation = quaternion(1, 0, 0, 0) + quaternion(0, angularVelocity) * 1/2 * orientation *dt;
+    orientation.normalize();
+    angularVelocity = angularVelocity + angularAcceleration * dt;
+    rigidBody.rotate(orientation);
+    rigidBody.setPosition(position);
+
 }
 
 void CorpsRigide::draw()
 {
-    ofSetColor(color);
-    rigidBody.setPosition(position);
-    //rigidBody.setPosition(ofGetWidth() / 2, ofGetHeight() / 2, 0);
+    //ofSetColor(color);
+    material.setDiffuseColor(color);
+    material.setSpecularColor(ofColor(100, 100, 100));
+    material.setShininess(50);
+    material.begin();
     rigidBody.draw();
-    //rigidBody.drawWireframe();
+    material.end();
+}
+
+
+void CorpsRigide::applyRotationFromQuaternion() {
+
+
+    // Appliquer la rotation avec ofRotate
 }

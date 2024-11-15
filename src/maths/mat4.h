@@ -1,6 +1,7 @@
 #pragma once
 
 #include "vec4.h"
+#include "ofMatrix4x4.h"
 
 namespace maths {
 	class mat4
@@ -18,6 +19,8 @@ namespace maths {
 		mat4(const mat4& other);
 
 		float operator[](const int& index) const;
+		
+        ofMatrix4x4 toOfMatrix4() const;
 
         // op against other mat
         mat4& operator=(const mat4& other);

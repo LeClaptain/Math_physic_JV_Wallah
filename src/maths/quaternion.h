@@ -34,6 +34,8 @@ namespace maths
 
 		bool isRotation() const;
 
+		void normalize();
+
 		quaternion operator-() const;
 
 		// operations on floats
@@ -51,11 +53,18 @@ namespace maths
 		bool operator==(const quaternion& other) const;
 
 		bool operator!=(const quaternion& other) const;
+		
+		quaternion operator+(const quaternion& other) const;
 
 		quaternion operator-(const quaternion& other) const;
 
 		quaternion operator*(const quaternion& other) const;
 
+		operator glm::quat() const;
+
+        int getW(){return _w;}
+        
+        vec3 getV(){return _v;}
 	private:
 		float _w;
 		vec3 _v;

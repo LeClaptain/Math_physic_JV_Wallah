@@ -16,8 +16,8 @@ void ofApp::setup()
     //GUI
     setupControlGui();
     setupDebugGui();
-    controlGui.setWidthElements(350);
     setupFont();
+    setupLight();
 
     setupThingsToDraw();
     
@@ -31,6 +31,7 @@ void ofApp::update()
 {
     double lastFrame = ofGetLastFrameTime(); //gets Δt since last frame
 
+
     // euler integration
     for (auto& CorpsRigide : rigidBodies)
     {
@@ -43,6 +44,8 @@ void ofApp::draw()
 {
     //Arrow to symbolize the initial velocity
     // drawArrow();
+
+    light.enable();
 
     // Draw scene
     camera.begin();
@@ -63,6 +66,8 @@ void ofApp::draw()
     {
         drawDebugGui();
     }*/
+    light.disable();
+
 }
 
 ofApp::~ofApp()
@@ -237,9 +242,23 @@ void ofApp::setupFont()
     vectorFont.load(settings);
 }
 
+void ofApp::setupLight()
+{
+    light.setDirectional();  
+    light.setPosition(0, 0, 500);  
+    light.setOrientation(vec3(45, -45, 0));
+    light.setAmbientColor(ofColor(255, 255, 255));
+    light.setDiffuseColor(ofColor(255, 255, 255));
+    light.setSpecularColor(ofColor(255, 255, 255));
+}
+
 void ofApp::setupThingsToDraw()
 {
     CorpsRigide* cube1 = new CorpsRigide(vec3(0,50,0), vec3(100,50,50), ofColor::red);
+    //DEBUG
+    cube1->setOrientation(quaternion(0.5, 1,0,0));
+    cube1->setAngularVelocity(vec3(0,5,0));
+    
     rigidBodies.emplace_back(cube1);
 }
 
