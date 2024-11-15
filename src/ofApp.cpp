@@ -18,6 +18,14 @@ void ofApp::setup()
     setupFont();
     setupLight();
 
+    // différents corps rigides
+    CorpsRigide* cube0 = new CorpsRigide(vec3(0,50,0), vec3(100,50,50), ofColor::red);
+    CorpsRigide* cube1 = new CorpsRigide(vec3(0,50,0), vec3(75,20,40), ofColor::blueSteel);
+    CorpsRigide* cube2 = new CorpsRigide(vec3(0,50,0), vec3(50,50,50), ofColor::green);
+    RigidBodiesChoice.push_back(cube0);
+    RigidBodiesChoice.push_back(cube1);
+    RigidBodiesChoice.push_back(cube2);
+
     setupThingsToDraw();
 
     camera.setPosition(vec3(0, 0, 500));
@@ -59,12 +67,12 @@ void ofApp::draw()
     camera.end();
 
     //Drawing UI
-    /*
+    
     controlGui.draw();
-    if (isDebugEnabled)
-    {
-        drawDebugGui();
-    }*/
+    // if (isDebugEnabled)
+    // {
+    //     drawDebugGui();
+    // }
     light.disable();
 }
 
@@ -205,12 +213,17 @@ void ofApp::setupControlGui()
     controlGui.setWidthElements(350);
     controlGui.setPosition(10, ofGetHeight() - 120);
     // controlGui.add(nextProjectileLabel.setup("Next projectile", activeProjectile->getName()));
-    //controlGui.add(resetButton.setup("Reset the scene"));
-    controlGui.add(debugToggle.setup("Debug Toggle", false));
+    controlGui.add(resetButton.setup("Reset the scene"));
+    //controlGui.add(debugToggle.setup("Debug Toggle", false));
+    controlGui.add(changeProjectileButton.setup("Change Projectile"));
+    controlGui.add(launchProjectileButton.setup("Launch Projectile"));
+    
 
     //Listeners
     resetButton.addListener(this, &ofApp::onResetButtonPressed);
-    debugToggle.addListener(this, &ofApp::onToggleChanged);
+    //debugToggle.addListener(this, &ofApp::onToggleChanged);
+    changeProjectileButton.addListener(this, &ofApp::onChangeProjectilePressed);
+    launchProjectileButton.addListener(this, &ofApp::onLaunchProjectilePressed);
 }
 
 void ofApp::setupDebugGui()
@@ -261,7 +274,8 @@ void ofApp::setupLight()
 
 void ofApp::setupThingsToDraw()
 {
-    CorpsRigide* cube1 = new CorpsRigide(vec3(0, 50, 0), vec3(100, 50, 50), ofColor::red);
+    CorpsRigide* cube1 = RigidBodiesChoice[0];
+    rigidBodies.emplace_back(cube1);
     //DEBUG
     // cube1->setOrientation(quaternion(0.5, 1,0,0));
     // cube1->setAngularVelocity(vec3(0,5,0));
@@ -277,7 +291,36 @@ void ofApp::onToggleChanged(bool& value)
 
 void ofApp::onResetButtonPressed()
 {
+    CorpsRigide* rigidBody = rigidBodies[0];
+    rigidBody->setVelocity(vec3(0,0,0));
+    rigidBody->setAngularVelocity(vec3(0,0,0));
+    rigidBody->setPosition(vec3(0,50,0));
+    rigidBody->setOrientation(quaternion(0, vec3(0,50,0)));
+    
 }
+
+void ofApp::onChangeProjectilePressed()
+{
+    CorpsRigide* rigidBody = rigidBodies[0];
+    rigidBody->setVelocity(vec3(0,0,0));
+    rigidBody->setAngularVelocity(vec3(0,0,0));
+    rigidBody->setPosition(vec3(0,50,0));
+    rigidBody->setOrientation(quaternion(0, vec3(0,50,0)));
+    
+    currentRigidBody = (currentRigidBody + 1) % RigidBodiesChoice.size();
+    rigidBodies.clear();
+    rigidBodies.emplace_back(RigidBodiesChoice[currentRigidBody]);
+}
+
+void ofApp::onLaunchProjectilePressed()
+{
+    CorpsRigide* rigidBody = rigidBodies[0];
+    // rigidBody->setVelocity(vec3(50, 50, 20));
+    // rigidBody->setAngularVelocity(vec3(1000, 1000, 0));
+    rigidBody->addForce(vec3(5000, 500, 10000), vec3(1,2,3));
+    
+}
+
 
 //--------------------------------------------------------------
 void ofApp::dragEvent(ofDragInfo dragInfo)

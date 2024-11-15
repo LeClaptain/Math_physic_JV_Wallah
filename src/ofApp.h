@@ -60,7 +60,11 @@ private:
 	Particle* selectedParticle = nullptr;
 	vec3 selectionPlaneNormal = vec3(0, 1, 0);
 	vec3 selectionPlanePoint = vec3(0, 0, 0);
-
+	
+	// RigidBodies
+	std::vector<CorpsRigide*> RigidBodiesChoice;
+	int currentRigidBody = 0;
+	
 	// Display
 	ofEasyCam camera;
 	
@@ -71,6 +75,8 @@ private:
 	ofxPanel debugGui;
 	ofxToggle debugToggle;
 	ofxButton resetButton;
+	ofxButton changeProjectileButton;
+	ofxButton launchProjectileButton;
 	ofxLabel fpsLabel;
 	ofxLabel frameDurationLabel;
 	ofxLabel blobNumberLabel;
@@ -89,6 +95,8 @@ private:
 	void setupDebugGui();
 	void setupFont();
 	void setupLight();
+	void onChangeProjectilePressed();
+	void onLaunchProjectilePressed();
 	
 	void setupThingsToDraw();
 };
