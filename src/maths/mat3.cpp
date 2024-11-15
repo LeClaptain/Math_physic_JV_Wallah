@@ -315,4 +315,17 @@ namespace maths
 		return m[index];
 	}
 
+	mat3 operator*(const float& lhs, const mat3& rhs)
+	{
+		return rhs * lhs;
+	}
+
+	vec3 operator*(const vec3& lhs, const mat3& rhs)
+	{
+		float x, y, z;
+		x = lhs[0] * rhs[0] + lhs[1] * rhs[3] + lhs[2] * rhs[6];
+		y = lhs[0] * rhs[1] + lhs[1] * rhs[4] + lhs[2] * rhs[7];
+		z = lhs[0] * rhs[2] + lhs[1] * rhs[5] + lhs[2] * rhs[8];
+		return vec3(x, y, z);
+	}
 } // maths

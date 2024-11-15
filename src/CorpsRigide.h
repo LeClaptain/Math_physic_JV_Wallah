@@ -17,7 +17,7 @@ public:
     CorpsRigide(vec3 position, vec3 extent, ofColor color);
     
     double getMass() const { return mass; }
-    void setMass(double mass) { this->mass = mass; inverseMass = 1.0 / mass; }
+    void setMass(double mass) { this->mass = mass; inverseMass = 1.0 / mass; calcJminusOne(); }
 
     double getOneOverMass() const { return inverseMass; }
 
@@ -25,7 +25,7 @@ public:
     void setPosition(const vec3& position) { this->position = position; }
 
     vec3 getExtent() const { return extent; }
-    void setExtent(const vec3& extent) { this->extent = extent; }
+    void setExtent(const vec3& extent) { this->extent = extent; calcJminusOne(); }
 
     quaternion getOrientation() const { return orientation; }
     void setOrientation(quaternion orientation) { this->orientation = orientation; }
@@ -47,12 +47,25 @@ public:
 
     vec3 getForces() const { return forces; }
     void setForces(const vec3& forces) { this->forces = forces; }
+    void addForce(vec3 f) { forces += f; }
+
+    void addForce(const vec3& force, const vec3& point)
+    {
+        tau += (point - position).cross(force);
+        forces += force;
+    }
 
     // Before physics
     void update(double dt);
     void draw();
 
 private:
+    void calcJminusOne()
+    {
+        JminusOne = 1.f / 12.f * mass * (extent.x() * extent.x() + extent.y() * extent.y()) * mat3::identity();
+        JminusOne = JminusOne.inverse();
+    }
+    
     double mass = 0.0;
     double inverseMass = 0.0;
     vec3 position;
@@ -62,9 +75,10 @@ private:
     ofMaterial material;
 
     // angular
-    quaternion orientation;
-    vec3 angularVelocity;
-    vec3 angularAcceleration = vec3(0);
+    quaternion orientation; // warning : is not really the orientation but rather the offset to the last rotation;
+    vec3 tau{0, 0, 0};
+    vec3 angularVelocity{0, 0, 0};
+    vec3 angularAcceleration{0, 0, 0};
     mat3 JminusOne;
 
     // linear

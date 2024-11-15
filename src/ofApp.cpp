@@ -6,7 +6,6 @@
 #include "forces/FrictionForceGenerator.h"
 
 
-
 vec3 defaultGravity = vec3(0, 9.81 * 50, 0);
 //--------------------------------------------------------------
 void ofApp::setup()
@@ -20,7 +19,7 @@ void ofApp::setup()
     setupLight();
 
     setupThingsToDraw();
-    
+
     camera.setPosition(vec3(0, 0, 500));
     camera.setFarClip(10000.0f);
     camera.lookAt(vec3(0));
@@ -67,7 +66,6 @@ void ofApp::draw()
         drawDebugGui();
     }*/
     light.disable();
-
 }
 
 ofApp::~ofApp()
@@ -101,6 +99,15 @@ void ofApp::keyPressed(int key)
     if (key == OF_KEY_RIGHT)
     {
         blob[0]->setVelocity(vec3(100, 0, 0));
+    }
+
+    // if F key
+    if (key == 102)
+    {
+        for (auto rb : rigidBodies)
+        {
+            rb->addForce(vec3(0, 500, 0), vec3(1, 1, 1));
+        }
     }
 }
 
@@ -215,7 +222,7 @@ void ofApp::setupDebugGui()
     debugGui.add(fpsLabel.setup("fpsLabel", ""));
     debugGui.add(frameDurationLabel.setup("frameDurationLabel", ""));
     debugGui.add(blobNumberLabel.setup("blobNumberLabel", ""));
-    
+
     //debugGui.add(particlePosition.setup("Particle Position", ""));
     //debugGui.add(particleVelocity.setup("Particle Velocity", ""));
     //debugGui.add(speedLabel.setup("greenParticleSpeedLabel", ""));
@@ -244,8 +251,8 @@ void ofApp::setupFont()
 
 void ofApp::setupLight()
 {
-    light.setDirectional();  
-    light.setPosition(0, 0, 500);  
+    light.setDirectional();
+    light.setPosition(0, 0, 500);
     light.setOrientation(vec3(45, -45, 0));
     light.setAmbientColor(ofColor(255, 255, 255));
     light.setDiffuseColor(ofColor(255, 255, 255));
@@ -254,11 +261,12 @@ void ofApp::setupLight()
 
 void ofApp::setupThingsToDraw()
 {
-    CorpsRigide* cube1 = new CorpsRigide(vec3(0,50,0), vec3(100,50,50), ofColor::red);
+    CorpsRigide* cube1 = new CorpsRigide(vec3(0, 50, 0), vec3(100, 50, 50), ofColor::red);
     //DEBUG
-    cube1->setOrientation(quaternion(0.5, 1,0,0));
-    cube1->setAngularVelocity(vec3(0,5,0));
-    
+    // cube1->setOrientation(quaternion(0.5, 1,0,0));
+    // cube1->setAngularVelocity(vec3(0,5,0));
+    cube1->addForce(vec3(500, 0, 0), vec3(1, 1, 1));
+
     rigidBodies.emplace_back(cube1);
 }
 

@@ -82,4 +82,8 @@ namespace maths {
          */
         float m[9]{};
     };
+
+    mat3 operator*(const float &lhs, const mat3 &rhs);
+
+    vec3 operator*(const vec3 &lhs, const mat3 &rhs);
 }
