@@ -19,9 +19,10 @@ void CorpsRigide::update(double dt)
     velocity = velocity + acceleration * dt;
     this->position += velocity * dt;
 
+    //TODO : accelleration ici stp
+    angularVelocity = angularVelocity + angularAcceleration * dt;
     orientation = quaternion(1, 0, 0, 0) + quaternion(0, angularVelocity) * 1/2 * orientation *dt;
     orientation.normalize();
-    angularVelocity = angularVelocity + angularAcceleration * dt;
     rigidBody.rotate(orientation);
     rigidBody.setPosition(position);
 
