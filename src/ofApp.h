@@ -79,6 +79,8 @@ private:
 	ofxLabel particleVelocity;
 	ofxLabel speedLabel;
 
+	ofLight light; //light to better see the faces of all the objects of the scene
+	
 	void onToggleChanged(bool & value);
 	void onResetButtonPressed();
 
@@ -86,6 +88,7 @@ private:
 	void setupControlGui();
 	void setupDebugGui();
 	void setupFont();
-
+	void setupLight();
+	
 	void setupThingsToDraw();
 };

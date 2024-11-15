@@ -1,5 +1,9 @@
 #include "quaternion.h"
+#include <glm/gtc/quaternion.hpp>
+#include <glm/gtx/quaternion.hpp>
 
+
+using namespace glm;
 namespace maths {
 	quaternion::quaternion()
 	{
@@ -69,6 +73,13 @@ namespace maths {
 		return magnitude() == 1;
 	}
 
+	void quaternion::normalize()
+	{
+		vec4 intermidiate = vec4(_v, _w).normalized();
+		_w = intermidiate.w();
+		_v = vec3(intermidiate.x(), intermidiate.y(), intermidiate.z());
+	}
+
 	quaternion quaternion::operator-() const
 	{
 		return quaternion(-_w, -_v);
@@ -114,6 +125,15 @@ namespace maths {
 	{
 		return _w != other._w || _v != other._v;
 	}
+	
+	quaternion quaternion::operator+(const quaternion& other) const {
+		return quaternion(
+			this->_w + other._w,
+			this->_v.x() + other._v.x(),
+			this->_v.y() + other._v.y(),
+			this->_v.z() + other._v.z()
+		);
+	}
 
 	quaternion quaternion::operator-(const quaternion& other) const
 	{
@@ -123,5 +143,9 @@ namespace maths {
 	quaternion quaternion::operator*(const quaternion& other) const
 	{
 		return quaternion(_w * other._w - _v.dot(other._v), (other._v * _w + _v * other._w + _v.cross(other._v)));
+	}
+
+	quaternion::operator glm::quat() const {
+		return glm::quat(_w, _v.x(), _v.y(), _v.z());
 	}
 }
