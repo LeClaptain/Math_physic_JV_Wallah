@@ -20,16 +20,18 @@ void CorpsRigide::update(double dt)
     velocity = velocity + acceleration * dt;
     this->position += velocity * dt;
 
-    // update JminusOne
+    // on calcule le jminusone actuel pour prendre en compte l'orientation
     mat3 orientationMatrix = orientation.toMat3();
     mat3 JminusOnePrim = orientationMatrix * JminusOne * orientationMatrix.inverse();
-    
+
+    // calcul de l'acceleration a partir des forces accumulees dans tau
     angularAcceleration = tau * JminusOnePrim;
-    
+
+    // mise a jour de la velocite puis de l'orientation
     angularVelocity += angularAcceleration * dt;
-    
     orientation = orientation + quaternion(0, angularVelocity) * 1/2 * orientation * dt;
-    orientation.normalize();
+    orientation.normalize(); // on s'assure que le quaternion represente une rotation
+    
     rigidBody.setOrientation(orientation);
     rigidBody.setPosition(position);
 

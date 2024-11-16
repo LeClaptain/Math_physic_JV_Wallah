@@ -60,11 +60,15 @@ public:
     void draw();
 
 private:
+    // Calcule la matrice d'inertie inverse
     void calcJminusOne()
     {
+        // dans le cas d'un parallélépipède, on definis un axe (c) comme etant la hauteur.
+        // cet axe sera ignore dans le calcul de la matrice.
+        // on trie donc l'extent pour trouver c et n'utiliser que a et b
         float abc[3] = {extent.x(), extent.y(), extent.z()};
 
-        // sort by size, greatest first
+        // tri, decroissant
         for (int i = 0; i < 3; i++)
         {
             for (int j = i + 1; j < 3; j++)
@@ -77,7 +81,8 @@ private:
                 }
             }
         }
-        
+
+        // cf wikipedia
         JminusOne = 1.f / 12.f * mass * (abc[1] * abc[1] + abc[2] * abc[2]) * mat3::identity();
         JminusOne = JminusOne.inverse();
     }
