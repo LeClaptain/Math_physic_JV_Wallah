@@ -51,7 +51,7 @@ public:
 
     void addForce(const vec3& force, const vec3& point)
     {
-        tau += (point - position).cross(force);
+        tau += point.cross(force);
         forces += force;
     }
 
@@ -62,7 +62,23 @@ public:
 private:
     void calcJminusOne()
     {
-        JminusOne = 1.f / 12.f * mass * (extent.x() * extent.x() + extent.y() * extent.y()) * mat3::identity();
+        float abc[3] = {extent.x(), extent.y(), extent.z()};
+
+        // sort by size, greatest first
+        for (int i = 0; i < 3; i++)
+        {
+            for (int j = i + 1; j < 3; j++)
+            {
+                if (abc[i] < abc[j])
+                {
+                    float temp = abc[i];
+                    abc[i] = abc[j];
+                    abc[j] = temp;
+                }
+            }
+        }
+        
+        JminusOne = 1.f / 12.f * mass * (abc[1] * abc[1] + abc[2] * abc[2]) * mat3::identity();
         JminusOne = JminusOne.inverse();
     }
     
