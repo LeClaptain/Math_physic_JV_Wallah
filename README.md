@@ -2,35 +2,17 @@
 
 Git repository for the physics engine of Oscar Cizeron, Maëlle Juilliot, Ghali Mechkour and Théo Le Goc, made for 8INF935.
 
-# How to build - tag `phase1`
+# How to build
 
-- Create a new open frameworks project with ofxGui enabled.
-- Copy the content of the git src folder and paste it in the src of the newly created project.
-- Exclude all files under `src\externalressources` and under `src\tests`
+- Creer un nouveau projet openframework avec ofxGui activé
+- Copier le contenu du dossier `src` du git dans le dossier `src` du projet nouvellement créé
+- Dans le projet C++ ajouter tout les fichiers copiés à l'exception de ceux des dossiers `src\externalressources` et `src\tests`
 
-You can then run the project.
-
-# How to build - tag `phase2`
-
-- Create a new open frameworks project with ofxGui enabled.
-- Copy the content of the git src folder and paste it in the src of the newly created project.
-- Include everything
-- Then exclude all files under `src\externalressources` and under `src\tests`
-
-You can then run the project.
-
-# How to build - tag `phase3`
-
-- Create a new open frameworks project with ofxGui enabled.
-- Copy the content of the git src folder and paste it in the src of the newly created project.
-- Include everything
-- Then exclude all files under `src\externalressources` and under `src\tests`
-
-You can then run the project.
+Vous pouvez ensuite lancer le projet
 
 # Tests
 
-Create a new Visual Studio c++ console project, and add all files from `src/maths` and `src/tests`. You will also need to set the define flag `IGNORE_GLM`. You can then run the project, and it will print results in the console.
+Créer un nouveau projet C++ Console, et ajouter les fichiers des dossiers `src/maths` et `src/tests`. Il faut aussi définir le marqueur `IGNORE_GLM` dans les options de compilation (preprocessor flags). Il suffit ensuite de lancer le projet, les tests vont s'écrire dans la console.
 
 # Using the project - tag `phase1`
 
