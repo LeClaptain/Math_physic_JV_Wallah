@@ -9,7 +9,7 @@ CorpsRigide::CorpsRigide(vec3 position, vec3 extent, ofColor color)
     this->extent = extent;
     this->color = color;
     setMass(1);
-    rigidBody.set(extent.x() * 2, extent.y() * 2, extent.z() * 2);
+    rigidBody.set(extent.x(), extent.y(), extent.z());
     calcJminusOne();
 }
 
