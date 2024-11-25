@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include "Particle.h"
-#include "vec3.h"
+#include "maths/vec3.h"
 
 /**
  * Class used to find collisions between particles.

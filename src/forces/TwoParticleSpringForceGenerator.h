@@ -1,6 +1,6 @@
 #pragma once
-#include "ForceGenerator.h"
-#include "vec3.h"
+#include "../ForceGenerator.h"
+#include "../maths/vec3.h"
 
 class TwoParticleSpringForceGenerator : public ForceGenerator
 {
