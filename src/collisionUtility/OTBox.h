@@ -19,6 +19,12 @@ namespace octree
 			extent = ext;
 		}
 
+		OTBox(float x, float y, float z, maths::vec3 ext)
+		{
+			position = maths::vec3(x, y, z);
+			extent = ext;
+		}
+
 		OTBox()
 		{
 			position = maths::vec3(0.0f);
@@ -27,8 +33,8 @@ namespace octree
 
 		maths::vec3 getPosition() { return position; }
 		maths::vec3 getExtent() { return extent; }
-		maths::vec3 getMaxEdge() { return maths::vec3(position.x() + extent.x(), position.y() + extent.y(), position.z() + extent.z() / 2); }
-		maths::vec3 getMinEdge() { return maths::vec3(position.x() - extent.x(), position.y() - extent.y(), position.z() - extent.z() / 2); }
+		maths::vec3 getMaxEdge() { return maths::vec3(position.x() + extent.x() / 2.0f, position.y() + extent.y() / 2.0f, position.z() + extent.z() / 2.0f); }
+		maths::vec3 getMinEdge() { return maths::vec3(position.x() - extent.x() / 2.0f, position.y() - extent.y() / 2.0f, position.z() - extent.z() / 2.0f); }
 
 		bool contains(OTBox& other);
 		bool intersects(OTBox& other);
@@ -38,3 +44,4 @@ namespace octree
 		maths::vec3 extent;
 	};
 }
+
