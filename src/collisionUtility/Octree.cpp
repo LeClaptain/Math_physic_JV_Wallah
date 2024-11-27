@@ -4,7 +4,7 @@ namespace octree
 {
 	void Octree::remove(BoundingVolume* value)
 	{
-		remove(_root, _box, value);
+		remove(_root.get(), _box, value);
 	}
 
 	bool Octree::remove(Node* node, OTBox box, BoundingVolume* value)
@@ -20,7 +20,7 @@ namespace octree
 				auto i = getOctant(box, getBoxFromBV(value));
 				if (i != -1)
 				{
-					if (remove(node->children[i], getSubBox(box, i), value))
+					if (remove(node->children[i].get(), getSubBox(box, i), value))
 					{
 						return mergeNode(node);
 					}
@@ -39,7 +39,7 @@ namespace octree
 
 	void Octree::add(BoundingVolume* value)
 	{
-		add(_root, 0, _box, value);
+		add(_root.get(), 0, _box, value);
 	}
 
 	void Octree::add(Node* node, int depth, OTBox box, BoundingVolume* value)
@@ -63,7 +63,7 @@ namespace octree
 				auto i = getOctant(box, getBoxFromBV(value));
 				if (i != -1)
 				{
-					add(node->children[i], depth + 1, getSubBox(box, i), value);
+					add(node->children[i].get(), depth + 1, getSubBox(box, i), value);
 				}
 				else
 				{
@@ -71,16 +71,25 @@ namespace octree
 				}
 			}
 		}
+		else
+		{
+			std::cout << "failed to add BV " << box.contains(getBoxFromBV(value)) << " " << (node != nullptr) << " " << depth << std::endl;
+		}
 	}
 
 	std::vector<BoundingVolume*> Octree::query(OTBox queryBox)
 	{
 		auto values = std::vector<BoundingVolume*>();
-		query(_root, _box, queryBox, values);
+		query(_root.get(), _box, queryBox, values);
 		return values;
 	}
 
-	void Octree::query(Node* node, OTBox box, OTBox queryBox, std::vector<BoundingVolume*> values)
+	void Octree::draw()
+	{
+		drawNode(_root.get(), _box);
+	}
+
+	void Octree::query(Node* node, OTBox box, OTBox queryBox, std::vector<BoundingVolume*> &values)
 	{
 		if (node != nullptr && queryBox.intersects(box))
 		{
@@ -98,7 +107,7 @@ namespace octree
 					auto childBox = getSubBox(box, i);
 					if (queryBox.intersects(childBox))
 					{
-						query(node->children[i], childBox, queryBox, values);
+						query(node->children[i].get(), childBox, queryBox, values);
 					}
 				}
 			}
@@ -116,7 +125,7 @@ namespace octree
 		{
 			for (auto& child : node->children)
 			{
-				child = new Node;
+				child = std::make_unique<Node>();
 			}
 			auto newValues = std::vector<BoundingVolume*>();
 			for (auto& value : node->values)
@@ -138,12 +147,12 @@ namespace octree
 	int Octree::getOctant(OTBox nodeBox, OTBox valueBox)
 	{
 		auto center = nodeBox.getPosition();
-		auto front = valueBox.getMinEdge().z();
-		auto back = valueBox.getMaxEdge().z();
+		auto front = valueBox.getMaxEdge().z();
+		auto back = valueBox.getMinEdge().z();
 		auto top = valueBox.getMaxEdge().y();
 		auto bottom = valueBox.getMinEdge().y();
-		auto left = valueBox.getMinEdge().x();
 		auto right = valueBox.getMaxEdge().x();
+		auto left = valueBox.getMinEdge().x();
 
 		// front
 		if (back <= center.z())
@@ -304,7 +313,7 @@ namespace octree
 			auto nbValues = node->values.size();
 			for (auto& child : node->children)
 			{
-				if (!isLeaf(child))
+				if (!isLeaf(child.get()))
 				{
 					return false;
 				}
@@ -322,7 +331,7 @@ namespace octree
 				}
 				for (auto& child : node->children)
 				{
-					delete child;
+					child.reset();
 				}
 
 				return true;
@@ -335,6 +344,30 @@ namespace octree
 		else
 		{
 			return false;
+		}
+	}
+
+	void Octree::drawNode(Node* node, OTBox box)
+	{
+		box.draw();
+
+		if (node != nullptr)
+		{
+			if (!node->values.empty())
+			{
+				for (auto& value : node->values)
+				{
+					value->draw();
+				}
+			}
+
+			if (!isLeaf(node))
+			{
+				for (int i = 0; i < node->children.size(); i++)
+				{
+					drawNode(node->children[i].get(), getSubBox(box, i));
+				}
+			}
 		}
 	}
 }
