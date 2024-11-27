@@ -1,6 +1,8 @@
 #pragma once
 
 #include "../maths/vec3.h"
+#include "ofMaterial.h"
+#include "of3dPrimitives.h"
 
 namespace octree
 {
@@ -39,9 +41,11 @@ namespace octree
 		bool contains(OTBox& other);
 		bool intersects(OTBox& other);
 
+		void draw();
+
 	private:
 		maths::vec3 position;
-		maths::vec3 extent;
+		maths::vec3 extent; // extent is the full extent of the box (i.e. "width" is the full width of the box, not the half-width)
 	};
 }
 

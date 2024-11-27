@@ -22,6 +22,8 @@
 #include "forces/Ressort.h"
 #include "forces/Bungee.h"
 
+#include "collisionUtility/Octree.h"
+
 
 
 class ofApp : public ofBaseApp
@@ -98,4 +100,9 @@ private:
 	void setupDebugGui();
 	void setupFont();
 	void setupLight();
+	
+	//void setupThingsToDraw();
+
+	// DEBUG OCTREE DELETE LATER
+	//octree::Octree* octree;
 };
