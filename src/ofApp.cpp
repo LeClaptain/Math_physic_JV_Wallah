@@ -22,11 +22,9 @@ void ofApp::setup()
     CorpsRigide* cube0 = new CorpsRigide(vec3(0, 50, 0), vec3(100, 50, 50), ofColor::red);
     CorpsRigide* cube1 = new CorpsRigide(vec3(0, 50, 0), vec3(75, 20, 40), ofColor::blueSteel);
     CorpsRigide* cube2 = new CorpsRigide(vec3(0, 50, 0), vec3(50, 50, 50), ofColor::green);
-    RigidBodiesChoice.push_back(cube0);
-    RigidBodiesChoice.push_back(cube1);
-    RigidBodiesChoice.push_back(cube2);
-
-    setupThingsToDraw();
+    rigidBodies.push_back(cube0);
+    rigidBodies.push_back(cube1);
+    rigidBodies.push_back(cube2);
 
     camera.setPosition(vec3(0, 0, 500));
     camera.setFarClip(10000.0f);
@@ -78,37 +76,15 @@ void ofApp::draw()
 
 ofApp::~ofApp()
 {
-    for (auto particle : particles)
+    for (auto rb : rigidBodies)
     {
-        delete particle;
-    }
-    for (auto force : forces)
-    {
-        delete force;
+        delete rb;
     }
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key)
 {
-    //ajouter de la vitesse à la première particule de la liste blob
-    if (key == OF_KEY_UP)
-    {
-        blob[0]->setVelocity(vec3(0, 0, -100));
-    }
-    if (key == OF_KEY_DOWN)
-    {
-        blob[0]->setVelocity(vec3(0, 0, 100));
-    }
-    if (key == OF_KEY_LEFT)
-    {
-        blob[0]->setVelocity(vec3(-100, 0, 0));
-    }
-    if (key == OF_KEY_RIGHT)
-    {
-        blob[0]->setVelocity(vec3(100, 0, 0));
-    }
-
     // if F key
     if (key == 102)
     {
@@ -137,42 +113,13 @@ void ofApp::mouseDragged(int x, int y, int button)
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button)
 {
-    if (button != OF_MOUSE_BUTTON_RIGHT)
-    {
-        return;
-    }
-
-    Particle* selected = nullptr;
-    for (auto particle : particles)
-    {
-        vec3 particleScreenPos = camera.worldToScreen(particle->getPosition());
-        vec3 outerPointScreenPos = camera.worldToScreen(particle->getPosition() + vec3(particle->getRadius(), 0, 0));
-        float onScreenRadius = outerPointScreenPos.distance(particleScreenPos);
-
-        if (particleScreenPos.distance(vec3(x, y, 0)) < onScreenRadius)
-        {
-            selected = particle;
-            break;
-        }
-    }
-    selectedParticle = selected;
-    if (selectedParticle != nullptr)
-    {
-        vec3 particlePos = selectedParticle->getPosition();
-        selectionPlaneNormal = camera.getLookAtDir() * -1;
-        selectionPlanePoint = particlePos;
-        camera.disableMouseInput();
-    }
+    
 }
 
 //--------------------------------------------------------------
 void ofApp::mouseReleased(int x, int y, int button)
 {
-    if (button == OF_MOUSE_BUTTON_RIGHT)
-    {
-        selectedParticle = nullptr;
-        camera.enableMouseInput();
-    }
+    
 }
 
 //--------------------------------------------------------------
@@ -202,7 +149,6 @@ void ofApp::drawDebugGui()
     debugGui.draw();
     fpsLabel.setup("FPS", std::to_string(ofGetFrameRate()));
     frameDurationLabel.setup("Frame Duration", std::to_string(ofGetLastFrameTime() * 1000) + " ms");
-    blobNumberLabel.setup("Number of blob particules", std::to_string(blob.size()));
 }
 
 void ofApp::setupControlGui()
@@ -217,13 +163,9 @@ void ofApp::setupControlGui()
     //controlGui.add(debugToggle.setup("Debug Toggle", false));
     controlGui.add(changeProjectileButton.setup("Change Projectile"));
     controlGui.add(launchProjectileButton.setup("Launch Projectile"));
-
-
+    
     //Listeners
     resetButton.addListener(this, &ofApp::onResetButtonPressed);
-    //debugToggle.addListener(this, &ofApp::onToggleChanged);
-    changeProjectileButton.addListener(this, &ofApp::onChangeProjectilePressed);
-    launchProjectileButton.addListener(this, &ofApp::onLaunchProjectilePressed);
 }
 
 void ofApp::setupDebugGui()
@@ -272,18 +214,6 @@ void ofApp::setupLight()
     light.setSpecularColor(ofColor(255, 255, 255));
 }
 
-void ofApp::setupThingsToDraw()
-{
-    CorpsRigide* cube1 = RigidBodiesChoice[0];
-    rigidBodies.emplace_back(cube1);
-    //DEBUG
-    // cube1->setOrientation(quaternion(0.5, 1,0,0));
-    // cube1->setAngularVelocity(vec3(0,5,0));
-    // cube1->addForce(vec3(500, 0, 0), vec3(1, 1, 1));
-
-    rigidBodies.emplace_back(cube1);
-}
-
 void ofApp::onToggleChanged(bool& value)
 {
     isDebugEnabled = value;
@@ -296,27 +226,6 @@ void ofApp::onResetButtonPressed()
     rigidBody->setAngularVelocity(vec3(0, 0, 0));
     rigidBody->setPosition(vec3(0, 50, 0));
     rigidBody->setOrientation(quaternion(0, vec3(0, 50, 0)));
-}
-
-void ofApp::onChangeProjectilePressed()
-{
-    CorpsRigide* rigidBody = rigidBodies[0];
-    rigidBody->setVelocity(vec3(0, 0, 0));
-    rigidBody->setAngularVelocity(vec3(0, 0, 0));
-    rigidBody->setPosition(vec3(0, 50, 0));
-    rigidBody->setOrientation(quaternion(0, vec3(0, 50, 0)));
-
-    currentRigidBody = (currentRigidBody + 1) % RigidBodiesChoice.size();
-    rigidBodies.clear();
-    rigidBodies.emplace_back(RigidBodiesChoice[currentRigidBody]);
-}
-
-void ofApp::onLaunchProjectilePressed()
-{
-    CorpsRigide* rigidBody = rigidBodies[0];
-    // rigidBody->setVelocity(vec3(50, 50, 20));
-    // rigidBody->setAngularVelocity(vec3(1000, 1000, 0));
-    rigidBody->addForce(vec3(5000, 0, 0), vec3(1, 2, 3));
 }
 
 
