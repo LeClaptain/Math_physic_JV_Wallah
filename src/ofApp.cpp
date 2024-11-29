@@ -42,14 +42,14 @@ void ofApp::setup()
     rigidBodies.push_back(cube2);
 
     // DEBUG OCTREE DELETE LATER
-    /*
+    
     octree = new octree::Octree(octree::OTBox(0.0f, 0.0f, 0.0f, 1000.0f, 1000.0f, 1000.0f));
     for (int i = 0; i < 100; i++)
     {
         auto position = maths::vec3((std::rand() % 1000) - 500, (std::rand() % 1000) - 500, (std::rand() % 1000) - 500);
         
         octree->add(new BoundingVolume(5.0f, position));
-    } */
+    }
 
     camera.setPosition(vec3(0, 0, 500));
     camera.setFarClip(10000.0f);
@@ -90,7 +90,7 @@ void ofApp::draw()
     }
 
     // DEBUG OCTREE DELETE LATER
-    /*
+    
     octree->draw();
     octree::OTBox queryBox(maths::vec3(125.0f, 125.0f, 125.0f), maths::vec3(300.0f));
     queryBox.draw();
@@ -101,7 +101,7 @@ void ofApp::draw()
         {
             value->draw(ofColor(255, 255, 255), 5);
         }
-    }*/
+    }
 
     ofDrawGrid(25.f, 1000, false, false, true, false);
     ofDisableDepthTest();

@@ -104,5 +104,5 @@ private:
 	//void setupThingsToDraw();
 
 	// DEBUG OCTREE DELETE LATER
-	//octree::Octree* octree;
+	octree::Octree* octree;
 };
