@@ -25,6 +25,7 @@ namespace octree
                 getMinEdge().z() >= other.getMaxEdge().z()
               );
     }
+    
     void OTBox::draw()
     {
         ofMaterial material;

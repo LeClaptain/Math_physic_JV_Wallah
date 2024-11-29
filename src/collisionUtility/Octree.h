@@ -35,7 +35,7 @@ namespace octree
 		OTBox _box; // base box of the octree, should encompass the entire area where there could be collisions
 		std::unique_ptr<Node> _root; // base node
 		const int _THRESHOLD = 8; // maximum amount of elements a node can contain
-		const int _MAXDEPTH = 8; // maximum amount of levels the tree can contain: this means there can be at most 4^_MAXDEPTH + 1 nodes in the tree, which equals to at most (4^_MAXDEPTH + 1) * _THRESHOLD objects in the tree
+		const int _MAXDEPTH = 8; // maximum amount of levels the tree can contain: this means there can be at most 8^_MAXDEPTH + 1 nodes in the tree, which equals to at most (8^_MAXDEPTH + 1) * _THRESHOLD objects in the tree
 
 		bool isLeaf(Node* node)
 		{

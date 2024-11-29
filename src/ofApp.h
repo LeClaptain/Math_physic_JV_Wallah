@@ -106,4 +106,7 @@ private:
 	void onLaunchProjectilePressed();
 	
 	void setupThingsToDraw();
+
+	// DEBUG OCTREE DELETE LATER
+	//octree::Octree* octree;
 };
