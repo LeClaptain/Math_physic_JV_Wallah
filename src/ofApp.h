@@ -4,13 +4,16 @@
 
 #include "CollisionDetector.h"
 #include "CollisionResolver.h"
-#include "CorpsRigide.h"
+#include "CorpsRigides/CorpsRigide.h"
+#include "CorpsRigides/Integrateur.h"
 #include "ForceRegistry.h"
 #include "ofMain.h"
 #include "ofEvents.h"
 #include "Particle.h"
 #include "ofxGui.h"
 #include "forces/TwoParticleSpringForceGenerator.h"
+#include "CorpsRigides/Box.h"
+#include "CorpsRigides/Cylinder.h"
 
 #include "particlesTypes/bullet.h"
 #include "particlesTypes/canonBall.h"
@@ -87,6 +90,8 @@ private:
 	
 	void onToggleChanged(bool & value);
 	void onResetButtonPressed();
+	void onLaunchProjectilePressed();
+	void onChangeProjectilePressed();
 
 	void drawDebugGui();
 	void setupControlGui();

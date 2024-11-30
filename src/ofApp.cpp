@@ -1,5 +1,6 @@
 #include "ofApp.h"
 
+#include "CorpsRigides/Cone.h"
 #include "forces/GravityForceGenerator.h"
 
 #include "forces/TwoParticleSpringForceGenerator.h"
@@ -19,28 +20,32 @@ void ofApp::setup()
     setupLight();
 
     // différents corps rigides
-    CorpsRigide* cube0 = new CorpsRigide(vec3(0, 50, 0), vec3(100, 50, 50), ofColor::red);
-    CorpsRigide* cube1 = new CorpsRigide(vec3(0, 50, 0), vec3(75, 20, 40), ofColor::blueSteel);
-    CorpsRigide* cube2 = new CorpsRigide(vec3(0, 50, 0), vec3(50, 50, 50), ofColor::green);
-    rigidBodies.push_back(cube0);
-    rigidBodies.push_back(cube1);
+    Cone* cone = new Cone(50,100,vec3( 0,50,0), ofColor::blueSteel);
+    Cylinder* cylindre = new Cylinder(50, 100, vec3(100, 50, 0), ofColor::red);
+    Box* cube2 = new Box(vec3(50, 50, 50), vec3(-100,50,0), ofColor::green);
+    rigidBodies.push_back(cone);
+    rigidBodies.push_back(cylindre);
     rigidBodies.push_back(cube2);
 
     camera.setPosition(vec3(0, 0, 500));
     camera.setFarClip(10000.0f);
     camera.lookAt(vec3(0));
+    
 }
 
 //--------------------------------------------------------------
 void ofApp::update()
 {
     double lastFrame = ofGetLastFrameTime(); //gets Δt since last frame
-
+    Integrateur integrateur = Integrateur();
+    
+    
 
     // euler integration
     for (auto& CorpsRigide : rigidBodies)
     {
-        CorpsRigide->update(lastFrame);
+        // CorpsRigide->update(lastFrame);
+        integrateur.integrer(lastFrame, CorpsRigide);
     }
 }
 
@@ -166,6 +171,8 @@ void ofApp::setupControlGui()
     
     //Listeners
     resetButton.addListener(this, &ofApp::onResetButtonPressed);
+    changeProjectileButton.addListener(this, &ofApp::onChangeProjectilePressed);
+    launchProjectileButton.addListener(this, &ofApp::onLaunchProjectilePressed);
 }
 
 void ofApp::setupDebugGui()
@@ -226,6 +233,25 @@ void ofApp::onResetButtonPressed()
     rigidBody->setAngularVelocity(vec3(0, 0, 0));
     rigidBody->setPosition(vec3(0, 50, 0));
     rigidBody->setOrientation(quaternion(0, vec3(0, 50, 0)));
+}
+
+ void ofApp::onChangeProjectilePressed()
+ {
+//     CorpsRigide* rigidBody = rigidBodies[0];
+//     rigidBody->setVelocity(vec3(0, 0, 0));
+//     rigidBody->setAngularVelocity(vec3(0, 0, 0));
+//     rigidBody->setPosition(vec3(0, 50, 0));
+//     rigidBody->setOrientation(quaternion(0, vec3(0, 50, 0)));
+//     currentRigidBody = (currentRigidBody + 1) % RigidBodiesChoice.size();
+//     rigidBodies.clear();
+//     rigidBodies.emplace_back(RigidBodiesChoice[currentRigidBody]);
+ }
+void ofApp::onLaunchProjectilePressed()
+{
+    CorpsRigide* rigidBody = rigidBodies[0];
+    // rigidBody->setVelocity(vec3(50, 50, 20));
+    // rigidBody->setAngularVelocity(vec3(1000, 1000, 0));
+    rigidBody->addForce(vec3(5000, 0, 0), vec3(10,100,0));
 }
 
 

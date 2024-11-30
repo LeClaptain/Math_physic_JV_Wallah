@@ -13,8 +13,9 @@ using namespace maths;
 class CorpsRigide
 {
 public:
-    //TODO : etendre le constructeur, juste la j'essaie des trucs
-    CorpsRigide(vec3 position, vec3 extent, ofColor color);
+    CorpsRigide(vec3 position, ofColor color);
+
+    virtual ~CorpsRigide() = default;
     
     double getMass() const { return mass; }
     void setMass(double mass) { this->mass = mass; inverseMass = 1.0 / mass; calcJminusOne(); }
@@ -55,9 +56,16 @@ public:
         forces += force;
     }
 
-    // Before physics
-    void update(double dt);
-    void draw();
+    float getInverseMass() const { return inverseMass; }
+    vec3 getTau() const { return tau; }
+    void setTau(const vec3& tau) { this->tau = tau; }
+
+    virtual void draw() = 0;
+    virtual of3dPrimitive* getRigidBody() =0;
+
+    ofColor color;
+    ofMaterial material;
+
 
 private:
     // Calcule la matrice d'inertie inverse
@@ -91,9 +99,7 @@ private:
     double inverseMass = 0.0;
     vec3 position;
     vec3 extent{100, 100, 100};
-    ofBoxPrimitive rigidBody;
-    ofColor color;
-    ofMaterial material;
+
 
     // angular
     quaternion orientation; // warning : is not really the orientation but rather the offset to the last rotation;
