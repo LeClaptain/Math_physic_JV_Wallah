@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include "CorpsRigide.h"
+#include "CorpsRigides/CorpsRigide.h"
 
 class Integrateur
 {

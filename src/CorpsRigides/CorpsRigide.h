@@ -6,6 +6,7 @@
 #include "maths/vec4.h"
 #include "maths/Quaternion.h"
 #include "ofMaterial.h"
+#include "collisionUtility/BoundingVolume.h"
 
 
 using namespace maths;
@@ -49,6 +50,9 @@ public:
     vec3 getForces() const { return forces; }
     void setForces(const vec3& forces) { this->forces = forces; }
     void addForce(vec3 f) { forces += f; }
+    
+    bool getunmoovable() const { return unmoovable; }
+    void setUnmoovable(bool newValue) { this->unmoovable = newValue; }
 
     void addForce(const vec3& force, const vec3& point)
     {
@@ -63,9 +67,11 @@ public:
     virtual void draw() = 0;
     virtual of3dPrimitive* getRigidBody() =0;
 
+    BoundingVolume* generateBoundingVolume();
+
     ofColor color;
     ofMaterial material;
-
+    
 
 private:
     // Calcule la matrice d'inertie inverse
@@ -100,6 +106,8 @@ private:
     vec3 position;
     vec3 extent{100, 100, 100};
 
+    BoundingVolume* boundingVolume;
+    bool unmoovable = false;
 
     // angular
     quaternion orientation; // warning : is not really the orientation but rather the offset to the last rotation;

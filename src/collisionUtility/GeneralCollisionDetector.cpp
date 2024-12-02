@@ -69,4 +69,7 @@ bool GeneralCollisionDetector::doBoundingVolumesCollide(BoundingVolume* volume1,
 
 void GeneralCollisionDetector::SeperatingAxisCheck(BoundingVolume* volume1, BoundingVolume* volume2)
 {
+    of3dPrimitive* mesh1 = volume1->getRigidBody();
+    of3dPrimitive* mesh2 = volume2->getRigidBody();
+
 }

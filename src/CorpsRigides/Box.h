@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "CorpsRigide.h"
+#include "CorpsRigides/CorpsRigide.h"
 #include "ofMaterial.h"
 
 class Box : public CorpsRigide

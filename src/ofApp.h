@@ -102,8 +102,6 @@ private:
 	void setupDebugGui();
 	void setupFont();
 	void setupLight();
-	void onChangeProjectilePressed();
-	void onLaunchProjectilePressed();
 	
 	void setupThingsToDraw();
 

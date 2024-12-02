@@ -1,4 +1,4 @@
-#include "CorpsRigide.h"
+#include "CorpsRigides/CorpsRigide.h"
 
 #include "ofMaterial.h"
 #include "ofxColorPicker.h"
@@ -13,6 +13,12 @@ CorpsRigide::CorpsRigide(vec3 position, ofColor color)
     calcJminusOne();
 }
 
+
+BoundingVolume* CorpsRigide::generateBoundingVolume()
+{
+    boundingVolume = new BoundingVolume(this);
+    return boundingVolume;
+}
 
 void CorpsRigide::applyRotationFromQuaternion() {
 

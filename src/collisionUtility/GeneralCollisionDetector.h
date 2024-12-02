@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include "BoundingVolume.h"
-#include "CorpsRigide.h"
+#include "CorpsRigides/CorpsRigide.h"
 #include "Octree.h"
 
 struct CollisionPair

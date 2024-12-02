@@ -1,7 +1,10 @@
 #pragma once
 
 #include "../maths/vec3.h"
-#include "../CorpsRigide.h"
+#include"ofColor.h"
+//#include "CorpsRigides/CorpsRigide.h"
+
+class CorpsRigide;
 
 class BoundingVolume
 {
@@ -17,6 +20,7 @@ public:
 	float getRadius() { return radius; }
 	maths::vec3 getCenter() { return center; }
 	CorpsRigide* getRigidBody() { return rigidbody; }
+	void setRigidBody(CorpsRigide* newBody){rigidbody = newBody;}
 
 	void draw(ofColor color = ofColor(255, 0, 0), int offset = 0);
 

@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "CorpsRigide.h"
+#include "CorpsRigides/CorpsRigide.h"
 #include "ofMaterial.h"
 
 class Cone : public CorpsRigide
@@ -23,7 +23,7 @@ public:
         material.end();
     }
 
-    of3dPrimitive* getRigidBody() override { return &rigidBody; }
+    ofConePrimitive* getRigidBody() override { return &rigidBody; }
 
 private:
     float radius;
