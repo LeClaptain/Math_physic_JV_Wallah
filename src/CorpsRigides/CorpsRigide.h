@@ -1,10 +1,10 @@
 #pragma once
 #include "of3dPrimitives.h"
-#include "maths/mat3.h"
-#include "maths/mat4.h"
-#include "maths/vec3.h"
-#include "maths/vec4.h"
-#include "maths/Quaternion.h"
+#include "../maths/mat3.h"
+#include "../maths/mat4.h"
+#include "../maths/vec3.h"
+#include "../maths/vec4.h"
+#include "../maths/Quaternion.h"
 #include "ofMaterial.h"
 
 
@@ -102,7 +102,7 @@ private:
 
 
     // angular
-    quaternion orientation; // warning : is not really the orientation but rather the offset to the last rotation;
+    quaternion orientation; 
     vec3 tau{0, 0, 0};
     vec3 angularVelocity{0, 0, 0};
     vec3 angularAcceleration{0, 0, 0};

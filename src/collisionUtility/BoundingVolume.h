@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../maths/vec3.h"
-#include "../CorpsRigide.h"
+#include "../CorpsRigides/CorpsRigide.h"
 
 class BoundingVolume
 {
