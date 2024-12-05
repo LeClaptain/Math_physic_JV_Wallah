@@ -6,6 +6,9 @@
 #include "OTBox.h"
 #include "BoundingVolume.h"
 
+//	Réalisé en s'appuyant sur le projet Quadtree de Pierre Vigier (pvigier) sur GitHub:
+//	https://github.com/pvigier/Quadtree
+
 namespace octree
 {
 	class Octree

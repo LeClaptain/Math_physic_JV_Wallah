@@ -1,6 +1,5 @@
 #include "ofApp.h"
 
-#include "CorpsRigides/Cone.h"
 #include "forces/GravityForceGenerator.h"
 
 #include "forces/TwoParticleSpringForceGenerator.h"
@@ -17,29 +16,10 @@ void ofApp::setup()
     setupControlGui();
     setupDebugGui();
     setupFont();
+
+    //SCENE
     setupLight();
-
-    // mise en place de la scène (murs, sol et plafond)
-    Box* sol = new Box(vec3(1000, 1, 1000), vec3(0,0,0), ofColor::lightGray);
-    rigidBodies.push_back(sol);
-    Box* mur1 = new Box(vec3(1000, 400, 1), vec3(0, 200, 500), ofColor::lightGray);
-    rigidBodies.push_back(mur1);
-    Box* mur2 = new Box(vec3(1000, 400, 1), vec3(0, 200, -500), ofColor::lightGray);
-    rigidBodies.push_back(mur2);
-    Box* mur3 = new Box(vec3(1, 400, 1000), vec3(500, 200, 0), ofColor::lightGray);
-    rigidBodies.push_back(mur3);
-    Box* mur4 = new Box(vec3(1, 400, 1000), vec3(-500, 200, 0), ofColor::lightGray);
-    rigidBodies.push_back(mur4);
-    Box* plafond = new Box(vec3(1000, 1, 1000), vec3(0,400,0), ofColor::lightGray);
-    rigidBodies.push_back(plafond);
-
-    // différents corps rigides
-    Cone* cone = new Cone(50,100,vec3( 0,50,0), ofColor::blueSteel);
-    Cylinder* cylindre = new Cylinder(50, 100, vec3(100, 50, 0), ofColor::red);
-    Box* cube2 = new Box(vec3(50, 50, 50), vec3(-100,50,0), ofColor::green);
-    rigidBodies.push_back(cone);
-    rigidBodies.push_back(cylindre);
-    rigidBodies.push_back(cube2);
+    setupThingsToDraw();
 
     // DEBUG OCTREE DELETE LATER
     
@@ -258,6 +238,27 @@ void ofApp::setupLight()
     light.setAmbientColor(ofColor(255, 255, 255));
     light.setDiffuseColor(ofColor(255, 255, 255));
     light.setSpecularColor(ofColor(255, 255, 255));
+}
+
+void ofApp::setupThingsToDraw()
+{
+    // mise en place de la scène (murs, sol et plafond)
+    Box* sol = new Box(vec3(1000, 1, 1000), vec3(0,0,0), ofColor::lightGray);
+    rigidBodies.push_back(sol);
+    Box* mur1 = new Box(vec3(1000, 400, 1), vec3(0, 200, 500), ofColor::lightGray);
+    rigidBodies.push_back(mur1);
+    Box* mur2 = new Box(vec3(1000, 400, 1), vec3(0, 200, -500), ofColor::lightGray);
+    rigidBodies.push_back(mur2);
+    Box* mur3 = new Box(vec3(1, 400, 1000), vec3(500, 200, 0), ofColor::lightGray);
+    rigidBodies.push_back(mur3);
+    Box* mur4 = new Box(vec3(1, 400, 1000), vec3(-500, 200, 0), ofColor::lightGray);
+    rigidBodies.push_back(mur4);
+    Box* plafond = new Box(vec3(1000, 1, 1000), vec3(0,400,0), ofColor::lightGray);
+    rigidBodies.push_back(plafond);
+
+    //Trucs a placer dans la scène
+    Box* cube2 = new Box(vec3(50, 50, 50), vec3(-100,50,0), ofColor::green);
+    rigidBodies.push_back(cube2);
 }
 
 void ofApp::onToggleChanged(bool& value)

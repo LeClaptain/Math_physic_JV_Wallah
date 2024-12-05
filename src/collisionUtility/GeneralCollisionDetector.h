@@ -3,6 +3,13 @@
 #include "CorpsRigides/CorpsRigide.h"
 #include "Octree.h"
 
+struct PointCollision
+{
+    maths::vec3 point;
+    maths::vec3 normal;
+    float penetration;
+};
+
 struct CollisionPair
 {
     CorpsRigide* body1;
@@ -12,12 +19,7 @@ struct CollisionPair
     bool atRest;
 };
 
-struct PointCollision
-{
-    maths::vec3 point;
-    maths::vec3 normal;
-    float penetration;
-};
+
 
 struct Face
 {
@@ -40,11 +42,12 @@ public:
 
     void draw();
     std::vector<CollisionPair> DetectAllCollisions();
-    void setBoundingVolumeVector(std::vector<BoundingVolume*>* volumes){this->volumes = volumes;}
     void setDebug(bool debug){this->debug = debug;}
+    void addBody(CorpsRigide* body);
+    
 private:
     bool debug = false;
-    std::vector<BoundingVolume*>* volumes;
+    std::vector<BoundingVolume*> volumes;
     std::vector<CollisionPair> collisionPairs;
     octree::Octree* octree;
 

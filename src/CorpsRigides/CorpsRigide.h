@@ -96,7 +96,6 @@ private:
             }
         }
 
-        // cf wikipedia
         JminusOne = 1.f / 12.f * mass * (abc[1] * abc[1] + abc[2] * abc[2]) * mat3::identity();
         JminusOne = JminusOne.inverse();
     }

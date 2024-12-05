@@ -2,8 +2,6 @@
 #include <CorpsRigides/CorpsRigide.h>
 
 #include "CorpsRigides/Box.h"
-#include "CorpsRigides/Cone.h"
-#include "CorpsRigides/Cylinder.h"
 
 BoundingVolume::BoundingVolume(CorpsRigide* rb)
 {
@@ -14,17 +12,6 @@ BoundingVolume::BoundingVolume(CorpsRigide* rb)
 		maths::vec3 size = box->getExtent();
 		radius = std::max( std::max( size.x(), size.y() ), size.z() );
 	}
-	else if (Cylinder* cylinder = dynamic_cast<Cylinder*>(rigidbody))
-	{
-		ofCylinderPrimitive* mesh = cylinder->getRigidBody();
-		radius = std::max(mesh->getHeight(), mesh->getRadius());
-	}
-	else if (Cone* cone = dynamic_cast<Box*>(rigidbody))
-	{
-		ofConePrimitive* mesh = cylinder->getRigidBody();
-		radius = std::max(mesh->getHeight(), mesh->getRadius());
-	}
-}
 	maths::vec3 size = rb->getExtent();
 	radius = std::max( std::max( size.x(), size.y() ), size.z() );
 }

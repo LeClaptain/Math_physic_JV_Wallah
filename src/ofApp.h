@@ -11,10 +11,9 @@
 #include "ofEvents.h"
 #include "Particle.h"
 #include "ofxGui.h"
+#include "collisionUtility/GeneralCollisionDetector.h"
 #include "forces/TwoParticleSpringForceGenerator.h"
 #include "CorpsRigides/Box.h"
-#include "CorpsRigides/Cylinder.h"
-
 #include "particlesTypes/bullet.h"
 #include "particlesTypes/canonBall.h"
 #include "particlesTypes/fireBall.h"
@@ -67,6 +66,7 @@ private:
 	
 	// RigidBodies
 	std::vector<CorpsRigide*> rigidBodies;
+	GeneralCollisionDetector collisionDetector = GeneralCollisionDetector(maths::vec3(0,200,0), maths::vec3(3000));
 	
 	// Display
 	ofEasyCam camera;
@@ -101,7 +101,7 @@ private:
 	void setupFont();
 	void setupLight();
 	
-	//void setupThingsToDraw();
+	void setupThingsToDraw();
 
 	// DEBUG OCTREE DELETE LATER
 	octree::Octree* octree;
