@@ -19,6 +19,20 @@ void ofApp::setup()
     setupFont();
     setupLight();
 
+    // mise en place de la scène (murs, sol et plafond)
+    Box* sol = new Box(vec3(1000, 1, 1000), vec3(0,0,0), ofColor::lightGray);
+    rigidBodies.push_back(sol);
+    Box* mur1 = new Box(vec3(1000, 400, 1), vec3(0, 200, 500), ofColor::lightGray);
+    rigidBodies.push_back(mur1);
+    Box* mur2 = new Box(vec3(1000, 400, 1), vec3(0, 200, -500), ofColor::lightGray);
+    rigidBodies.push_back(mur2);
+    Box* mur3 = new Box(vec3(1, 400, 1000), vec3(500, 200, 0), ofColor::lightGray);
+    rigidBodies.push_back(mur3);
+    Box* mur4 = new Box(vec3(1, 400, 1000), vec3(-500, 200, 0), ofColor::lightGray);
+    rigidBodies.push_back(mur4);
+    Box* plafond = new Box(vec3(1000, 1, 1000), vec3(0,400,0), ofColor::lightGray);
+    rigidBodies.push_back(plafond);
+
     // différents corps rigides
     Cone* cone = new Cone(50,100,vec3( 0,50,0), ofColor::blueSteel);
     Cylinder* cylindre = new Cylinder(50, 100, vec3(100, 50, 0), ofColor::red);
@@ -26,6 +40,16 @@ void ofApp::setup()
     rigidBodies.push_back(cone);
     rigidBodies.push_back(cylindre);
     rigidBodies.push_back(cube2);
+
+    // DEBUG OCTREE DELETE LATER
+    
+    octree = new octree::Octree(octree::OTBox(0.0f, 0.0f, 0.0f, 1000.0f, 1000.0f, 1000.0f));
+    for (int i = 0; i < 100; i++)
+    {
+        auto position = maths::vec3((std::rand() % 1000) - 500, (std::rand() % 1000) - 500, (std::rand() % 1000) - 500);
+        
+        octree->add(new BoundingVolume(5.0f, position));
+    }
 
     camera.setPosition(vec3(0, 0, 500));
     camera.setFarClip(10000.0f);
@@ -63,6 +87,20 @@ void ofApp::draw()
     for (const auto& CorpsRigide : rigidBodies)
     {
         CorpsRigide->draw();
+    }
+
+    // DEBUG OCTREE DELETE LATER
+    
+    octree->draw();
+    octree::OTBox queryBox(maths::vec3(125.0f, 125.0f, 125.0f), maths::vec3(300.0f));
+    queryBox.draw();
+    auto values = octree->query(queryBox);
+    if (!values.empty())
+    {
+        for (auto& value : values)
+        {
+            value->draw(ofColor(255, 255, 255), 5);
+        }
     }
 
     ofDrawGrid(25.f, 1000, false, false, true, false);

@@ -25,6 +25,9 @@ BoundingVolume::BoundingVolume(CorpsRigide* rb)
 		radius = std::max(mesh->getHeight(), mesh->getRadius());
 	}
 }
+	maths::vec3 size = rb->getExtent();
+	radius = std::max( std::max( size.x(), size.y() ), size.z() );
+}
 
 void BoundingVolume::draw(ofColor color, int offset)
 {

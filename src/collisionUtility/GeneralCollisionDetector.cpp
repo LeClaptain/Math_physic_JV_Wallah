@@ -43,7 +43,7 @@ void GeneralCollisionDetector::detectCollisionForOneBoundingVolume(BoundingVolum
         if (*potentialCollider == volume){continue;}
         if (doBoundingVolumesCollide(volume, *potentialCollider))
         {
-            SeperatingAxisCheck(volume, *potentialCollider);
+            checkCollision(volume, *potentialCollider);
         }
     }
 }
@@ -53,7 +53,6 @@ std::vector<BoundingVolume*> GeneralCollisionDetector::octreeComputation(Boundin
 {
     float radius = volume->getRadius();
     vec3 position = volume->getCenter();
-    octree::OTBox queryBox(position, vec3(radius));
     std::vector<BoundingVolume*> potentialCollisions = octree->query(queryBox);
     return potentialCollisions;
 }
@@ -67,9 +66,6 @@ bool GeneralCollisionDetector::doBoundingVolumesCollide(BoundingVolume* volume1,
     return false;
 }
 
-void GeneralCollisionDetector::SeperatingAxisCheck(BoundingVolume* volume1, BoundingVolume* volume2)
 {
-    of3dPrimitive* mesh1 = volume1->getRigidBody();
-    of3dPrimitive* mesh2 = volume2->getRigidBody();
 
 }

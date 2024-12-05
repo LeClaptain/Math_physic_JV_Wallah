@@ -49,26 +49,24 @@ public:
 
 private:
 	// Particles
-	std::vector<CorpsRigide*> rigidBodies;
-	std::vector<Particle*> particles;
-	std::vector<ForceGenerator*> forces;
-	ForceRegistry registry;
-	CollisionDetector collisionDetector;
-	CollisionResolver collisionResolver;
+	// std::vector<Particle*> particles;
+	// std::vector<ForceGenerator*> forces;
+	// ForceRegistry registry;
+	// CollisionDetector collisionDetector;
+	// CollisionResolver collisionResolver;
 
 	// Blob
-	std::vector<Particle*> blob;
-	std::vector<TwoParticleSpringForceGenerator*> blobSprings;
-	float forceToSeparateParticles = 1000.0f;
+	// std::vector<Particle*> blob;
+	// std::vector<TwoParticleSpringForceGenerator*> blobSprings;
+	// float forceToSeparateParticles = 1000.0f;
 
 	// Used for grabbing particles
-	Particle* selectedParticle = nullptr;
-	vec3 selectionPlaneNormal = vec3(0, 1, 0);
-	vec3 selectionPlanePoint = vec3(0, 0, 0);
+	// Particle* selectedParticle = nullptr;
+	// vec3 selectionPlaneNormal = vec3(0, 1, 0);
+	// vec3 selectionPlanePoint = vec3(0, 0, 0);
 	
 	// RigidBodies
-	std::vector<CorpsRigide*> RigidBodiesChoice;
-	int currentRigidBody = 0;
+	std::vector<CorpsRigide*> rigidBodies;
 	
 	// Display
 	ofEasyCam camera;
@@ -103,8 +101,8 @@ private:
 	void setupFont();
 	void setupLight();
 	
-	void setupThingsToDraw();
+	//void setupThingsToDraw();
 
 	// DEBUG OCTREE DELETE LATER
-	//octree::Octree* octree;
+	octree::Octree* octree;
 };
