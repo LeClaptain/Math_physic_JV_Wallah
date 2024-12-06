@@ -35,7 +35,7 @@ void ofApp::setup()
     camera.setFarClip(10000.0f);
     camera.lookAt(vec3(0));
 
-    collisionDetector.setDebug(true);
+    // collisionDetector.setDebug(true);
 }
 
 //--------------------------------------------------------------
@@ -89,9 +89,10 @@ void ofApp::draw()
     auto collisions = collisionDetector.FindAllCollisions();
     for (auto& collision : collisions)
     {
-        for (auto& point : collision.PointCollisions)
+        std::cout << "Collision detected between " << collision.body1 << " and " << collision.body2 << std::endl;
+        for (auto& point : collision.collisionPoints)
         {
-            // ofDrawSphere(point.point, .1f);
+            ofDrawSphere(point.point, 5.f);
         }
     }
 
@@ -272,14 +273,13 @@ void ofApp::setupThingsToDraw()
     Box* cube2 = new Box(vec3(50, 50, 50), vec3(-100,0,0), ofColor::green);
     rigidBodies.push_back(cube2);
 
-    collisionDetector.addBody(sol);
-    collisionDetector.addBody(mur1);
-    collisionDetector.addBody(mur2);
-    collisionDetector.addBody(mur3);
-    collisionDetector.addBody(mur4);
-    collisionDetector.addBody(plafond);
-    
     collisionDetector.addBody(cube2);
+    collisionDetector.addBody(sol);
+    // collisionDetector.addBody(mur1);
+    // collisionDetector.addBody(mur2);
+    // collisionDetector.addBody(mur3);
+    // collisionDetector.addBody(mur4);
+    // collisionDetector.addBody(plafond);
 }
 
 void ofApp::onToggleChanged(bool& value)

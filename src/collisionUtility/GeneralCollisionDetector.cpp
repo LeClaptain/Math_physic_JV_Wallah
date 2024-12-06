@@ -1,6 +1,8 @@
 ﻿#include "GeneralCollisionDetector.h"
 
 #include "CollisionDetector.h"
+#include "of3dGraphics.h"
+#include "ofGraphics.h"
 #include "CorpsRigides/Box.h"
 
 GeneralCollisionDetector::GeneralCollisionDetector(vec3 octreePosition, vec3 octreeExtent) : position(octreePosition),
@@ -12,26 +14,42 @@ std::vector<CollisionPair> GeneralCollisionDetector::FindAllCollisions()
 {
     auto pairs = std::vector<CollisionPair>();
 
-    auto otbox = octree::OTBox(position, extent);
-    octree::Octree o = octree::Octree(otbox);
+    // auto otbox = octree::OTBox(position, extent);
+    // octree::Octree o = octree::Octree(otbox);
     std::vector<BoundingVolume> volumes;
 
     for (auto& body : bodies)
     {
         volumes.push_back(BoundingVolume(body));
-        o.add(&volumes.back());
+        // o.add(&volumes.back());
         // volumes.back().draw();
     }
 
-    if (debug)
-    {
-        o.draw();
-    }
+    // if (debug)
+    // {
+    //     o.draw();
+    // }
 
-    for (auto& volume : volumes)
+    // for (auto& volume : volumes)
+    // {
+    //     auto collisions = FindCollisionsForOneBoundingVolume(o, &volume);
+    //     pairs.insert(pairs.end(), collisions.begin(), collisions.end());
+    // }
+
+    for (int i = 0; i < volumes.size(); i++)
     {
-        auto collisions = FindCollisionsForOneBoundingVolume(o, &volume);
-        pairs.insert(pairs.end(), collisions.begin(), collisions.end());
+        for (int j = i + 1; j < volumes.size(); j++)
+        {
+            if (volumes[i].getRigidBody() == volumes[j].getRigidBody()) { continue; }
+            if (BoundingVolumesMightCollide(&volumes[i], &volumes[j]))
+            {
+                CollisionPair cp;
+                if (FindCollisionPointsIfAny(&volumes[i], &volumes[j], &cp))
+                {
+                    pairs.push_back(cp);
+                }
+            }
+        }
     }
 
     return pairs;
@@ -42,7 +60,8 @@ void GeneralCollisionDetector::addBody(CorpsRigide* body)
     bodies.push_back(body);
 }
 
-std::vector<CollisionPair> GeneralCollisionDetector::FindCollisionsForOneBoundingVolume(const octree::Octree& o, BoundingVolume* volume)
+std::vector<CollisionPair> GeneralCollisionDetector::FindCollisionsForOneBoundingVolume(
+    const octree::Octree& o, BoundingVolume* volume)
 {
     std::vector<BoundingVolume*> potentialColliders = FindPotientialCollidingColliders(o, volume);
     std::vector<CollisionPair> result;
@@ -87,45 +106,40 @@ bool GeneralCollisionDetector::BoundingVolumesMightCollide(BoundingVolume* volum
 bool GeneralCollisionDetector::FindCollisionPointsIfAny(BoundingVolume* volume1, BoundingVolume* volume2,
                                                         CollisionPair* cp)
 {
-    auto v1Center = volume1->getCenter();
-    auto v1Extent = volume1->getRigidBody()->getExtent();
+    auto v1Center = volume1->getRigidBody()->getPosition();
+    auto v1HalfExtent = volume1->getRigidBody()->getExtent() / 2.f;
     auto v1Orientation = volume1->getRigidBody()->getOrientation().toMat3();
-    auto v2Center = volume2->getCenter();
-    auto v2Extent = volume2->getRigidBody()->getExtent();
+    auto v2Center = volume2->getRigidBody()->getPosition();
+    auto v2HalfExtent = volume2->getRigidBody()->getExtent() / 2.f;
     auto v2Orientation = volume2->getRigidBody()->getOrientation().toMat3();
 
-    maths::vec3 rightTopFront_vertex(v2Center.x() + v2Extent.x(), v2Center.y() + v2Extent.y(),
-                                     v2Center.y() + v2Extent.y());
-    maths::vec3 leftBottomBack_vertex(v2Center.x() - v2Extent.x(), v2Center.y() - v2Extent.y(),
-                                      v2Center.y() - v2Extent.y());
-    rightTopFront_vertex = v2Orientation * rightTopFront_vertex;
-    leftBottomBack_vertex = v2Orientation * leftBottomBack_vertex;
+    vec3 rightTopFront_vertex = v2Center + v2Orientation * v2HalfExtent;
+    vec3 leftBottomBack_vertex = v2Center + v2Orientation * -v2HalfExtent;
 
     std::vector<Face> faces;
-    faces.push_back({rightTopFront_vertex, v2Orientation * maths::vec3(1, 0, 0)});
-    faces.push_back({rightTopFront_vertex, v2Orientation * maths::vec3(0, 1, 0)});
-    faces.push_back({rightTopFront_vertex, v2Orientation * maths::vec3(0, 0, 1)});
-    faces.push_back({leftBottomBack_vertex, v2Orientation * maths::vec3(-1, 0, 0)});
-    faces.push_back({leftBottomBack_vertex, v2Orientation * maths::vec3(0, -1, 0)});
-    faces.push_back({leftBottomBack_vertex, v2Orientation * maths::vec3(0, 0, -1)});
+    faces.push_back({rightTopFront_vertex, v2Orientation * vec3(1, 0, 0)});
+    faces.push_back({rightTopFront_vertex, v2Orientation * vec3(0, 1, 0)});
+    faces.push_back({rightTopFront_vertex, v2Orientation * vec3(0, 0, 1)});
+    faces.push_back({leftBottomBack_vertex, v2Orientation * vec3(-1, 0, 0)});
+    faces.push_back({leftBottomBack_vertex, v2Orientation * vec3(0, -1, 0)});
+    faces.push_back({leftBottomBack_vertex, v2Orientation * vec3(0, 0, -1)});
 
-    std::vector<maths::vec3> vertices;
-    vertices.push_back(v1Orientation * maths::vec3(v1Center.x() + v1Extent.x(), v1Center.y() + v1Extent.y(),
-                                                   v1Center.z() + v1Extent.z()));
-    vertices.push_back(v1Orientation * maths::vec3(v1Center.x() + v1Extent.x(), v1Center.y() + v1Extent.y(),
-                                                   v1Center.z() - v1Extent.z()));
-    vertices.push_back(v1Orientation * maths::vec3(v1Center.x() + v1Extent.x(), v1Center.y() - v1Extent.y(),
-                                                   v1Center.z() + v1Extent.z()));
-    vertices.push_back(v1Orientation * maths::vec3(v1Center.x() + v1Extent.x(), v1Center.y() - v1Extent.y(),
-                                                   v1Center.z() - v1Extent.z()));
-    vertices.push_back(v1Orientation * maths::vec3(v1Center.x() - v1Extent.x(), v1Center.y() + v1Extent.y(),
-                                                   v1Center.z() + v1Extent.z()));
-    vertices.push_back(v1Orientation * maths::vec3(v1Center.x() - v1Extent.x(), v1Center.y() + v1Extent.y(),
-                                                   v1Center.z() - v1Extent.z()));
-    vertices.push_back(v1Orientation * maths::vec3(v1Center.x() - v1Extent.x(), v1Center.y() - v1Extent.y(),
-                                                   v1Center.z() + v1Extent.z()));
-    vertices.push_back(v1Orientation * maths::vec3(v1Center.x() - v1Extent.x(), v1Center.y() - v1Extent.y(),
-                                                   v1Center.z() - v1Extent.z()));
+    // draw each normal
+    for (auto& face : faces)
+    {
+        ofDrawSphere(face.point, 5);
+        ofDrawLine(face.point, face.point + face.normal * 100);
+    }
+
+    std::vector<vec3> vertices;
+    vertices.push_back(v1Center + v1Orientation * vec3(v1HalfExtent.x(), v1HalfExtent.y(), v1HalfExtent.z()));
+    vertices.push_back(v1Center + v1Orientation * vec3(v1HalfExtent.x(), v1HalfExtent.y(), -v1HalfExtent.z()));
+    vertices.push_back(v1Center + v1Orientation * vec3(v1HalfExtent.x(), -v1HalfExtent.y(), v1HalfExtent.z()));
+    vertices.push_back(v1Center + v1Orientation * vec3(v1HalfExtent.x(), -v1HalfExtent.y(), -v1HalfExtent.z()));
+    vertices.push_back(v1Center + v1Orientation * vec3(-v1HalfExtent.x(), v1HalfExtent.y(), v1HalfExtent.z()));
+    vertices.push_back(v1Center + v1Orientation * vec3(-v1HalfExtent.x(), v1HalfExtent.y(), -v1HalfExtent.z()));
+    vertices.push_back(v1Center + v1Orientation * vec3(-v1HalfExtent.x(), -v1HalfExtent.y(), v1HalfExtent.z()));
+    vertices.push_back(v1Center + v1Orientation * vec3(-v1HalfExtent.x(), -v1HalfExtent.y(), -v1HalfExtent.z()));
 
     std::vector<PointCollision> collisions;
     for (auto& vertex : vertices)
@@ -158,17 +172,11 @@ bool GeneralCollisionDetector::FindCollisionPointsIfAny(BoundingVolume* volume1,
     CollisionPair colPair;
     colPair.body1 = volume1->getRigidBody();
     colPair.body2 = volume2->getRigidBody();
-    colPair.PointCollisions = collisions; // erreur de conversion
-    if (volume1->getRigidBody()->getVelocity() != vec3(0) || volume2->getRigidBody()->getVelocity() != vec3(0))
-    {
-        colPair.atRest = false;
-    }
-    else
-    {
-        colPair.atRest = true;
-    }
+    colPair.collisionPoints = collisions; // erreur de conversion
+    colPair.atRest = volume1->getRigidBody()->getVelocity() == vec3(0) && volume2->getRigidBody()->getVelocity() ==
+        vec3(0);
 
-    if (!colPair.PointCollisions.empty())
+    if (!colPair.collisionPoints.empty())
     {
         *cp = colPair;
         return true;

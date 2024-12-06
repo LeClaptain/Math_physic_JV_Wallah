@@ -33,9 +33,9 @@ namespace maths {
 
 	mat3 quaternion::toMat3()
 	{
-		return mat3(1-2*(_v.y()*_v.y()+_v.z()*_v.z()), 2*(_v.x()*_v.y() + _v.z()*_w),     2*(_v.x()*_v.z() - _v.y()*_w),
-					2*(_v.x()*_v.y() - _v.z()*_w), 	   1-2*(_v.x()*_v.x()+_v.z()*_v.z()), 2*(_v.y()*_v.z()+_v.x()*_w),
-					2*(_v.x()*_v.z() + _v.y()*_w),     2*(_v.y()*_v.z()-_v.x()*_w),       1-2*(_v.x()*_v.x()+_v.y()*_v.y()));
+		return mat3(1.f-2.f*(_v.y()*_v.y()+_v.z()*_v.z()), 2.f*(_v.x()*_v.y() + _v.z()*_w),     2.f*(_v.x()*_v.z() - _v.y()*_w),
+					2.f*(_v.x()*_v.y() - _v.z()*_w), 	   1.f-2.f*(_v.x()*_v.x()+_v.z()*_v.z()), 2.f*(_v.y()*_v.z()+_v.x()*_w),
+					2.f*(_v.x()*_v.z() + _v.y()*_w),     2.f*(_v.y()*_v.z()-_v.x()*_w),       1.f-2.f*(_v.x()*_v.x()+_v.y()*_v.y()));
 	}
 
 	float quaternion::magnitude() const
@@ -75,9 +75,14 @@ namespace maths {
 
 	void quaternion::normalize()
 	{
-		vec4 intermidiate = vec4(_v, _w).normalized();
-		_w = intermidiate.w();
-		_v = vec3(intermidiate.x(), intermidiate.y(), intermidiate.z());
+		float m = magnitude();
+		_w /= m;
+		_v/= m;
+	}
+
+	quaternion quaternion::normalized()
+	{
+		return *this / magnitude();
 	}
 
 	quaternion quaternion::operator-() const

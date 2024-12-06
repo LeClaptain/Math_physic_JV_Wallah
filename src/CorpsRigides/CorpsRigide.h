@@ -39,7 +39,7 @@ public:
     }
 
     quaternion getOrientation() const { return orientation; }
-    void setOrientation(quaternion orientation) { this->orientation = orientation; }
+    void setOrientation(quaternion orientation) { this->orientation = orientation.normalized(); }
 
     vec3 getAngularVelocity() const { return angularVelocity; }
     void setAngularVelocity(const vec3& angularVelocity) { this->angularVelocity = angularVelocity; }

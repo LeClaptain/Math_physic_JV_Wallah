@@ -1,5 +1,6 @@
 ﻿#include "Integrateur.h"
 
+#include <iostream>
 
 void Integrateur::integrer(double dt, CorpsRigide* corpsRigide)
 {
@@ -17,8 +18,7 @@ void Integrateur::integrer(double dt, CorpsRigide* corpsRigide)
 
     // mise a jour de la velocite puis de l'orientation
     corpsRigide->setAngularVelocity(corpsRigide->getAngularVelocity() + corpsRigide->getAngularAcceleration() * dt);
-    corpsRigide->setOrientation(corpsRigide->getOrientation() + quaternion(0, corpsRigide->getAngularVelocity()) * 1/2 * corpsRigide->getOrientation() * dt);
-    corpsRigide->getOrientation().normalize(); // on s'assure que le quaternion represente une rotation
+    corpsRigide->setOrientation(corpsRigide->getOrientation() + quaternion(0, corpsRigide->getAngularVelocity()) * 1.f/2.f * corpsRigide->getOrientation() * dt);
     
     corpsRigide->getRigidBody()->setOrientation(corpsRigide->getOrientation());
     corpsRigide->getRigidBody()->setPosition(corpsRigide->getPosition());
@@ -26,6 +26,4 @@ void Integrateur::integrer(double dt, CorpsRigide* corpsRigide)
     // reset force accumulation
     corpsRigide->setForces(vec3(0));
     corpsRigide->setTau(vec3(0));
-
-    
 }

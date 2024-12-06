@@ -36,6 +36,7 @@ namespace maths
 		bool isRotation() const;
 
 		void normalize();
+		quaternion normalized();
 
 		quaternion operator-() const;
 
