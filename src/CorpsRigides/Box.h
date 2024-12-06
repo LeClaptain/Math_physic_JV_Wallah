@@ -10,7 +10,7 @@ public:
         this->extent = extent;
         rigidBody.setPosition(position);
         rigidBody.set(extent.x(), extent.y(), extent.z());
-    };
+    }
 
     void draw() override
     {
@@ -23,6 +23,11 @@ public:
     }
 
     of3dPrimitive* getRigidBody() override { return &rigidBody; }
+
+    float getContainingRadius() const override
+    {
+        return (extent / 2).magnitude();
+    }
 
 private:
     vec3 extent;

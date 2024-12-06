@@ -5,8 +5,8 @@
 
 struct PointCollision
 {
-    maths::vec3 point;
-    maths::vec3 normal;
+    vec3 point;
+    vec3 normal;
     float penetration;
 };
 
@@ -20,17 +20,16 @@ struct CollisionPair
 };
 
 
-
 struct Face
 {
-    maths::vec3 point;
-    maths::vec3 normal;
+    vec3 point;
+    vec3 normal;
 };
 
 class GeneralCollisionDetector
 {
 public:
-    GeneralCollisionDetector(maths::vec3 octreePosition, maths::vec3 octreeExtent);
+    GeneralCollisionDetector(vec3 octreePosition, vec3 octreeExtent);
 
     /* 
         TO DO: ajouter une méthode d'ajout de CorpsRigide.
@@ -40,21 +39,18 @@ public:
         qu'il faut créer les BoundingVolume ici aussi. D'ou le besoin d'une méthode dédiée.
     */
 
-    void draw();
-    std::vector<CollisionPair> DetectAllCollisions();
-    void setDebug(bool debug){this->debug = debug;}
+    std::vector<CollisionPair> FindAllCollisions();
+    void setDebug(bool debug) { this->debug = debug; }
     void addBody(CorpsRigide* body);
-    
+
 private:
     bool debug = false;
-    std::vector<BoundingVolume*> volumes;
-    std::vector<CollisionPair> collisionPairs;
-    octree::Octree* octree;
+    vec3 position, extent;
+    std::vector<CorpsRigide*> bodies;
 
-    void detectCollisionForOneBoundingVolume(BoundingVolume *volume);
-    std::vector<BoundingVolume*> octreeComputation(BoundingVolume* volume);
-    bool doBoundingVolumesCollide(BoundingVolume* volume1, BoundingVolume* volume2);
+    std::vector<CollisionPair> FindCollisionsForOneBoundingVolume(const octree::Octree& o, BoundingVolume* volume);
+    std::vector<BoundingVolume*> FindPotientialCollidingColliders(const octree::Octree& o, BoundingVolume* volume);
+    bool BoundingVolumesMightCollide(BoundingVolume* volume1, BoundingVolume* volume2);
 
-    void checkCollision(BoundingVolume* volume1, BoundingVolume* volume2);
+    bool FindCollisionPointsIfAny(BoundingVolume* volume1, BoundingVolume* volume2, CollisionPair* cp);
 };
-

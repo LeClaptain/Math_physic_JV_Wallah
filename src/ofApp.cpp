@@ -23,18 +23,19 @@ void ofApp::setup()
 
     // DEBUG OCTREE DELETE LATER
     
-    octree = new octree::Octree(octree::OTBox(0.0f, 0.0f, 0.0f, 1000.0f, 1000.0f, 1000.0f));
-    for (int i = 0; i < 100; i++)
-    {
-        auto position = maths::vec3((std::rand() % 1000) - 500, (std::rand() % 1000) - 500, (std::rand() % 1000) - 500);
-        
-        octree->add(new BoundingVolume(5.0f, position));
-    }
+    // octree = new octree::Octree(octree::OTBox(0.0f, 0.0f, 0.0f, 1000.0f, 1000.0f, 1000.0f));
+    // for (int i = 0; i < 100; i++)
+    // {
+    //     auto position = maths::vec3((std::rand() % 1000) - 500, (std::rand() % 1000) - 500, (std::rand() % 1000) - 500);
+    //     
+    //     octree->add(new BoundingVolume(5.0f, position));
+    // }
 
     camera.setPosition(vec3(0, 0, 500));
     camera.setFarClip(10000.0f);
     camera.lookAt(vec3(0));
-    
+
+    collisionDetector.setDebug(true);
 }
 
 //--------------------------------------------------------------
@@ -43,8 +44,6 @@ void ofApp::update()
     double lastFrame = ofGetLastFrameTime(); //gets Δt since last frame
     Integrateur integrateur = Integrateur();
     
-    
-
     // euler integration
     for (auto& CorpsRigide : rigidBodies)
     {
@@ -64,22 +63,35 @@ void ofApp::draw()
     // Draw scene
     camera.begin();
     ofEnableDepthTest();
-    for (const auto& CorpsRigide : rigidBodies)
+    for (const auto& corps : rigidBodies)
     {
-        CorpsRigide->draw();
+        corps->draw();
+
+        // ofDrawSphere(corps->getPosition(), corps->getContainingRadius());
     }
 
     // DEBUG OCTREE DELETE LATER
     
-    octree->draw();
-    octree::OTBox queryBox(maths::vec3(125.0f, 125.0f, 125.0f), maths::vec3(300.0f));
-    queryBox.draw();
-    auto values = octree->query(queryBox);
-    if (!values.empty())
+    // octree->draw();
+    // octree::OTBox queryBox(maths::vec3(125.0f, 125.0f, 125.0f), maths::vec3(300.0f));
+    // queryBox.draw();
+    // auto values = octree->query(queryBox);
+    // if (!values.empty())
+    // {
+    //     for (auto& value : values)
+    //     {
+    //         value->draw(ofColor(255, 255, 255), 5);
+    //     }
+    // }
+
+    
+
+    auto collisions = collisionDetector.FindAllCollisions();
+    for (auto& collision : collisions)
     {
-        for (auto& value : values)
+        for (auto& point : collision.PointCollisions)
         {
-            value->draw(ofColor(255, 255, 255), 5);
+            // ofDrawSphere(point.point, .1f);
         }
     }
 
@@ -243,7 +255,7 @@ void ofApp::setupLight()
 void ofApp::setupThingsToDraw()
 {
     // mise en place de la scène (murs, sol et plafond)
-    Box* sol = new Box(vec3(1000, 1, 1000), vec3(0,0,0), ofColor::lightGray);
+    Box* sol = new Box(vec3(1000, 100, 1000), vec3(0,-50,0), ofColor::lightGray);
     rigidBodies.push_back(sol);
     Box* mur1 = new Box(vec3(1000, 400, 1), vec3(0, 200, 500), ofColor::lightGray);
     rigidBodies.push_back(mur1);
@@ -257,8 +269,17 @@ void ofApp::setupThingsToDraw()
     rigidBodies.push_back(plafond);
 
     //Trucs a placer dans la scène
-    Box* cube2 = new Box(vec3(50, 50, 50), vec3(-100,50,0), ofColor::green);
+    Box* cube2 = new Box(vec3(50, 50, 50), vec3(-100,0,0), ofColor::green);
     rigidBodies.push_back(cube2);
+
+    collisionDetector.addBody(sol);
+    collisionDetector.addBody(mur1);
+    collisionDetector.addBody(mur2);
+    collisionDetector.addBody(mur3);
+    collisionDetector.addBody(mur4);
+    collisionDetector.addBody(plafond);
+    
+    collisionDetector.addBody(cube2);
 }
 
 void ofApp::onToggleChanged(bool& value)

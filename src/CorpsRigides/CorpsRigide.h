@@ -6,8 +6,6 @@
 #include "../maths/vec4.h"
 #include "../maths/Quaternion.h"
 #include "ofMaterial.h"
-#include "collisionUtility/BoundingVolume.h"
-
 
 using namespace maths;
 
@@ -17,9 +15,15 @@ public:
     CorpsRigide(vec3 position, ofColor color);
 
     virtual ~CorpsRigide() = default;
-    
+
     double getMass() const { return mass; }
-    void setMass(double mass) { this->mass = mass; inverseMass = 1.0 / mass; calcJminusOne(); }
+
+    void setMass(double mass)
+    {
+        this->mass = mass;
+        inverseMass = 1.0 / mass;
+        calcJminusOne();
+    }
 
     double getOneOverMass() const { return inverseMass; }
 
@@ -27,7 +31,12 @@ public:
     void setPosition(const vec3& position) { this->position = position; }
 
     vec3 getExtent() const { return extent; }
-    void setExtent(const vec3& extent) { this->extent = extent; calcJminusOne(); }
+
+    void setExtent(const vec3& extent)
+    {
+        this->extent = extent;
+        calcJminusOne();
+    }
 
     quaternion getOrientation() const { return orientation; }
     void setOrientation(quaternion orientation) { this->orientation = orientation; }
@@ -50,7 +59,7 @@ public:
     vec3 getForces() const { return forces; }
     void setForces(const vec3& forces) { this->forces = forces; }
     void addForce(vec3 f) { forces += f; }
-    
+
     bool getunmoovable() const { return unmoovable; }
     void setUnmoovable(bool newValue) { this->unmoovable = newValue; }
 
@@ -65,13 +74,11 @@ public:
     void setTau(const vec3& tau) { this->tau = tau; }
 
     virtual void draw() = 0;
-    virtual of3dPrimitive* getRigidBody() =0;
-
-    BoundingVolume* generateBoundingVolume();
+    virtual of3dPrimitive* getRigidBody() = 0;
+    virtual float getContainingRadius() const = 0;
 
     ofColor color;
     ofMaterial material;
-    
 
 private:
     // Calcule la matrice d'inertie inverse
@@ -99,17 +106,16 @@ private:
         JminusOne = 1.f / 12.f * mass * (abc[1] * abc[1] + abc[2] * abc[2]) * mat3::identity();
         JminusOne = JminusOne.inverse();
     }
-    
+
     double mass = 0.0;
     double inverseMass = 0.0;
     vec3 position;
     vec3 extent{100, 100, 100};
 
-    BoundingVolume* boundingVolume;
     bool unmoovable = false;
 
     // angular
-    quaternion orientation; 
+    quaternion orientation;
     vec3 tau{0, 0, 0};
     vec3 angularVelocity{0, 0, 0};
     vec3 angularAcceleration{0, 0, 0};
@@ -119,7 +125,6 @@ private:
     vec3 velocity = vec3(0);
     vec3 acceleration = vec3(0);
     vec3 forces = vec3(0);
-    
-    void applyRotationFromQuaternion();
 
+    void applyRotationFromQuaternion();
 };
