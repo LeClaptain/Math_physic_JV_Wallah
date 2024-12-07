@@ -2,7 +2,7 @@
 
 #include "../maths/vec3.h"
 #include "ofColor.h"
-#include "CorpsRigides/CorpsRigide.h"
+#include "../CorpsRigides/CorpsRigide.h"
 
 class BoundingVolume
 {

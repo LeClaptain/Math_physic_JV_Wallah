@@ -41,7 +41,7 @@ namespace octree
 		bool contains(OTBox& other);
 		bool intersects(OTBox& other);
 
-		void draw();
+		void draw(ofColor color = ofColor(0,0,255));
 
 	private:
 		maths::vec3 position;

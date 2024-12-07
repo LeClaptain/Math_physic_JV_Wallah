@@ -26,7 +26,7 @@ namespace octree
               );
     }
     
-    void OTBox::draw()
+    void OTBox::draw(ofColor color)
     {
         ofMaterial material;
         ofBoxPrimitive primitive;
@@ -37,7 +37,7 @@ namespace octree
         primitive.setDepth(extent.z());
         primitive.setResolution(1);
 
-        material.setDiffuseColor(ofColor(0, 0, 255));
+        material.setDiffuseColor(color);
 
         material.begin();
         primitive.drawWireframe();

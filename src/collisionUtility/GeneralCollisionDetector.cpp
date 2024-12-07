@@ -1,9 +1,9 @@
 ﻿#include "GeneralCollisionDetector.h"
 
-#include "CollisionDetector.h"
+#include "../CollisionDetector.h"
 #include "of3dGraphics.h"
 #include "ofGraphics.h"
-#include "CorpsRigides/Box.h"
+#include "../CorpsRigides/Box.h"
 
 GeneralCollisionDetector::GeneralCollisionDetector(vec3 octreePosition, vec3 octreeExtent) : position(octreePosition),
     extent(octreeExtent)
@@ -16,35 +16,19 @@ std::vector<CollisionPair> GeneralCollisionDetector::FindAllCollisions()
 
     auto otbox = octree::OTBox(position, extent);
     octree::Octree o = octree::Octree(otbox);
-    std::vector<BoundingVolume> volumes;
+    std::vector<BoundingVolume*> volumes;
 
     for (auto& body : bodies)
     {
-        volumes.push_back(BoundingVolume(body));
-        o.add(&volumes.back());
+        volumes.push_back( new BoundingVolume(body));
+        o.add(volumes.back());
     }
 
     for (auto& volume : volumes)
     {
-        auto collisions = FindCollisionsForOneBoundingVolume(o, &volume);
+        auto collisions = FindCollisionsForOneBoundingVolume(o, volume);
         pairs.insert(pairs.end(), collisions.begin(), collisions.end());
     }
-
-    // for (int i = 0; i < volumes.size(); i++)
-    // {
-    //     for (int j = i + 1; j < volumes.size(); j++)
-    //     {
-    //         if (volumes[i].getRigidBody() == volumes[j].getRigidBody()) { continue; }
-    //         if (BoundingVolumesMightCollide(&volumes[i], &volumes[j]))
-    //         {
-    //             CollisionPair cp;
-    //             if (FindCollisionPointsIfAny(&volumes[i], &volumes[j], &cp))
-    //             {
-    //                 pairs.push_back(cp);
-    //             }
-    //         }
-    //     }
-    // }
 
     return pairs;
 }
@@ -60,7 +44,6 @@ std::vector<CollisionPair> GeneralCollisionDetector::FindCollisionsForOneBoundin
     std::vector<BoundingVolume*> potentialColliders = FindPotientialCollidingColliders(o, volume);
     std::vector<CollisionPair> result;
     if (potentialColliders.size() <= 1) { return {}; }
-
     for (auto& potentialCollider : potentialColliders)
     {
         if (potentialCollider->getRigidBody() == volume->getRigidBody()) { continue; }
@@ -81,9 +64,9 @@ std::vector<CollisionPair> GeneralCollisionDetector::FindCollisionsForOneBoundin
 std::vector<BoundingVolume*> GeneralCollisionDetector::FindPotientialCollidingColliders(
     const octree::Octree& o, BoundingVolume* volume)
 {
-    float radius = volume->getRadius();
+    float diameter = volume->getRadius() * 2.f;
     vec3 position = volume->getCenter();
-    octree::OTBox queryBox = octree::OTBox(vec3(radius), position); // 1.5 was here
+    octree::OTBox queryBox = octree::OTBox(position, vec3(diameter * 1.3)); // 1.5 was here
     std::vector<BoundingVolume*> potentialCollisions = o.query(queryBox);
     return potentialCollisions;
 }
@@ -105,7 +88,6 @@ bool GeneralCollisionDetector::FindCollisionPointsIfAny(BoundingVolume* volume1,
     auto v1Orientation = volume1->getRigidBody()->getOrientation().inverse().toMat3();
     auto v2Center = volume2->getRigidBody()->getPosition();
     auto v2HalfExtent = volume2->getRigidBody()->getExtent() / 2.f;
-    // std::cout << std::string(volume2->getRigidBody()->getExtent()) << std::endl;
     auto v2Orientation = volume2->getRigidBody()->getOrientation().inverse().toMat3();
 
     vec3 rightTopFront_vertex = v2Center + v2Orientation * v2HalfExtent;
@@ -119,12 +101,12 @@ bool GeneralCollisionDetector::FindCollisionPointsIfAny(BoundingVolume* volume1,
     faces.push_back({leftBottomBack_vertex, v2Orientation * vec3(0, -1, 0)});
     faces.push_back({leftBottomBack_vertex, v2Orientation * vec3(0, 0, -1)});
 
-    // draw each normal
-    for (auto& face : faces)
-    {
-        ofDrawSphere(face.point, 5);
-        ofDrawLine(face.point, face.point + face.normal * 100);
-    }
+    //// draw each normal
+    //for (auto& face : faces)
+    //{
+    //    ofDrawSphere(face.point, 5);
+    //    ofDrawLine(face.point, face.point + face.normal * 100);
+    //}
 
     std::vector<vec3> vertices;
     vertices.push_back(v1Center + v1Orientation * vec3(v1HalfExtent.x(), v1HalfExtent.y(), v1HalfExtent.z()));

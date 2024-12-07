@@ -1,7 +1,7 @@
 #include "BoundingVolume.h"
-#include <CorpsRigides/CorpsRigide.h>
+#include "../CorpsRigides/CorpsRigide.h"
 
-#include "CorpsRigides/Box.h"
+#include "../CorpsRigides/Box.h"
 
 BoundingVolume::BoundingVolume(CorpsRigide* rb)
 {

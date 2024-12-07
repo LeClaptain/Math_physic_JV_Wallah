@@ -1,4 +1,4 @@
-#include "CorpsRigides/CorpsRigide.h"
+#include "../CorpsRigides/CorpsRigide.h"
 
 #include "ofMaterial.h"
 #include "ofxColorPicker.h"
