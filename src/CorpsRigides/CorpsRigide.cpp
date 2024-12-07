@@ -3,10 +3,10 @@
 #include "ofMaterial.h"
 #include "ofxColorPicker.h"
 
-CorpsRigide::CorpsRigide(vec3 position, ofColor color)
+CorpsRigide::CorpsRigide(vec3 extent, vec3 position, ofColor color)
 {
     this->position = position;
-    // this->extent = extent;
+    this->extent = extent;
     this->color = color;
     setMass(1);
     // rigidBody.set(extent.x(), extent.y(), extent.z());

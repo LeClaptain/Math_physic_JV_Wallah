@@ -12,7 +12,7 @@ using namespace maths;
 class CorpsRigide
 {
 public:
-    CorpsRigide(vec3 position, ofColor color);
+    CorpsRigide(vec3 extent, vec3 position, ofColor color);
 
     virtual ~CorpsRigide() = default;
 
@@ -30,9 +30,9 @@ public:
     vec3 getPosition() const { return position; }
     void setPosition(const vec3& position) { this->position = position; }
 
-    vec3 getExtent() const { return extent; }
+    virtual vec3 getExtent() const { return extent; }
 
-    void setExtent(const vec3& extent)
+    virtual void setExtent(const vec3& extent)
     {
         this->extent = extent;
         calcJminusOne();
@@ -75,7 +75,11 @@ public:
 
     virtual void draw() = 0;
     virtual of3dPrimitive* getRigidBody() = 0;
-    virtual float getContainingRadius() const = 0;
+
+    float getContainingRadius() const
+    {
+        return (extent / 2).magnitude();
+    }
 
     ofColor color;
     ofMaterial material;

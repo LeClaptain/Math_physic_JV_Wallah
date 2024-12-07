@@ -89,7 +89,7 @@ void ofApp::draw()
     auto collisions = collisionDetector.FindAllCollisions();
     for (auto& collision : collisions)
     {
-        std::cout << "Collision detected between " << collision.body1 << " and " << collision.body2 << std::endl;
+        // std::cout << "Collision detected between " << collision.body1 << " and " << collision.body2 << std::endl;
         for (auto& point : collision.collisionPoints)
         {
             ofDrawSphere(point.point, 5.f);
@@ -275,11 +275,11 @@ void ofApp::setupThingsToDraw()
 
     collisionDetector.addBody(cube2);
     collisionDetector.addBody(sol);
-    // collisionDetector.addBody(mur1);
-    // collisionDetector.addBody(mur2);
-    // collisionDetector.addBody(mur3);
-    // collisionDetector.addBody(mur4);
-    // collisionDetector.addBody(plafond);
+    collisionDetector.addBody(mur1);
+    collisionDetector.addBody(mur2);
+    collisionDetector.addBody(mur3);
+    collisionDetector.addBody(mur4);
+    collisionDetector.addBody(plafond);
 }
 
 void ofApp::onToggleChanged(bool& value)

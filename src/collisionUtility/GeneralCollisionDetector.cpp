@@ -14,43 +14,37 @@ std::vector<CollisionPair> GeneralCollisionDetector::FindAllCollisions()
 {
     auto pairs = std::vector<CollisionPair>();
 
-    // auto otbox = octree::OTBox(position, extent);
-    // octree::Octree o = octree::Octree(otbox);
+    auto otbox = octree::OTBox(position, extent);
+    octree::Octree o = octree::Octree(otbox);
     std::vector<BoundingVolume> volumes;
 
     for (auto& body : bodies)
     {
         volumes.push_back(BoundingVolume(body));
-        // o.add(&volumes.back());
-        // volumes.back().draw();
+        o.add(&volumes.back());
     }
 
-    // if (debug)
-    // {
-    //     o.draw();
-    // }
-
-    // for (auto& volume : volumes)
-    // {
-    //     auto collisions = FindCollisionsForOneBoundingVolume(o, &volume);
-    //     pairs.insert(pairs.end(), collisions.begin(), collisions.end());
-    // }
-
-    for (int i = 0; i < volumes.size(); i++)
+    for (auto& volume : volumes)
     {
-        for (int j = i + 1; j < volumes.size(); j++)
-        {
-            if (volumes[i].getRigidBody() == volumes[j].getRigidBody()) { continue; }
-            if (BoundingVolumesMightCollide(&volumes[i], &volumes[j]))
-            {
-                CollisionPair cp;
-                if (FindCollisionPointsIfAny(&volumes[i], &volumes[j], &cp))
-                {
-                    pairs.push_back(cp);
-                }
-            }
-        }
+        auto collisions = FindCollisionsForOneBoundingVolume(o, &volume);
+        pairs.insert(pairs.end(), collisions.begin(), collisions.end());
     }
+
+    // for (int i = 0; i < volumes.size(); i++)
+    // {
+    //     for (int j = i + 1; j < volumes.size(); j++)
+    //     {
+    //         if (volumes[i].getRigidBody() == volumes[j].getRigidBody()) { continue; }
+    //         if (BoundingVolumesMightCollide(&volumes[i], &volumes[j]))
+    //         {
+    //             CollisionPair cp;
+    //             if (FindCollisionPointsIfAny(&volumes[i], &volumes[j], &cp))
+    //             {
+    //                 pairs.push_back(cp);
+    //             }
+    //         }
+    //     }
+    // }
 
     return pairs;
 }
@@ -108,10 +102,11 @@ bool GeneralCollisionDetector::FindCollisionPointsIfAny(BoundingVolume* volume1,
 {
     auto v1Center = volume1->getRigidBody()->getPosition();
     auto v1HalfExtent = volume1->getRigidBody()->getExtent() / 2.f;
-    auto v1Orientation = volume1->getRigidBody()->getOrientation().toMat3();
+    auto v1Orientation = volume1->getRigidBody()->getOrientation().inverse().toMat3();
     auto v2Center = volume2->getRigidBody()->getPosition();
     auto v2HalfExtent = volume2->getRigidBody()->getExtent() / 2.f;
-    auto v2Orientation = volume2->getRigidBody()->getOrientation().toMat3();
+    // std::cout << std::string(volume2->getRigidBody()->getExtent()) << std::endl;
+    auto v2Orientation = volume2->getRigidBody()->getOrientation().inverse().toMat3();
 
     vec3 rightTopFront_vertex = v2Center + v2Orientation * v2HalfExtent;
     vec3 leftBottomBack_vertex = v2Center + v2Orientation * -v2HalfExtent;
