@@ -358,7 +358,7 @@ namespace octree
             {
                 for (auto& value : node->values)
                 {
-                    value->draw();
+                    // value->draw();
                 }
             }
 

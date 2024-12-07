@@ -41,8 +41,7 @@ void CollisionResolver::resolveOneCollision(CollisionData data)
 
     // Impulse resolution
     vec3 vrel = data.particle1->getVelocity() - (data.particle2 == nullptr ? vec3() : data.particle2->getVelocity());
-
-
+    
     float k = (vrel * (elasticity + 1)).dot(normal) / (inverseMass1 + inverseMass2);
 
     particle1->setVelocity(particle1->getVelocity() - normal * k * inverseMass1);

@@ -14,7 +14,6 @@ struct CollisionPair
 {
     CorpsRigide* body1;
     CorpsRigide* body2;
-    vec3 normal;
     std::vector<PointCollision> collisionPoints;
     bool atRest;
 };

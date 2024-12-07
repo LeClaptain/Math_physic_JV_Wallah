@@ -65,7 +65,8 @@ public:
 
     void addForce(const vec3& force, const vec3& point)
     {
-        tau += point.cross(force);
+        vec3 r = point - position;
+        tau += r.cross(force);
         forces += force;
     }
 

@@ -1,9 +1,9 @@
 ﻿#include "GeneralCollisionDetector.h"
 
-#include "../CollisionDetector.h"
+#include "CollisionDetector.h"
 #include "of3dGraphics.h"
 #include "ofGraphics.h"
-#include "../CorpsRigides/Box.h"
+#include "CorpsRigides/Box.h"
 
 GeneralCollisionDetector::GeneralCollisionDetector(vec3 octreePosition, vec3 octreeExtent) : position(octreePosition),
     extent(octreeExtent)
@@ -150,8 +150,7 @@ bool GeneralCollisionDetector::FindCollisionPointsIfAny(BoundingVolume* volume1,
     colPair.body1 = volume1->getRigidBody();
     colPair.body2 = volume2->getRigidBody();
     colPair.collisionPoints = collisions; // erreur de conversion
-    colPair.atRest = volume1->getRigidBody()->getVelocity() == vec3(0) && volume2->getRigidBody()->getVelocity() ==
-        vec3(0);
+    colPair.atRest = volume1->getRigidBody()->getVelocity().magnitude() <= 0.0001f && volume2->getRigidBody()->getVelocity().magnitude() <= 0.0001f;
 
     if (!colPair.collisionPoints.empty())
     {

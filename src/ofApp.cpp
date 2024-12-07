@@ -22,7 +22,7 @@ void ofApp::setup()
     setupThingsToDraw();
 
     // DEBUG OCTREE DELETE LATER
-    
+
     // octree = new octree::Octree(octree::OTBox(0.0f, 0.0f, 0.0f, 1000.0f, 1000.0f, 1000.0f));
     // for (int i = 0; i < 100; i++)
     // {
@@ -36,6 +36,7 @@ void ofApp::setup()
     camera.lookAt(vec3(0));
 
     // collisionDetector.setDebug(true);
+    collisionSolver.setElasticity(0.01f);
 }
 
 //--------------------------------------------------------------
@@ -43,7 +44,16 @@ void ofApp::update()
 {
     double lastFrame = ofGetLastFrameTime(); //gets Δt since last frame
     Integrateur integrateur = Integrateur();
-    
+
+    // debug , todo remove
+    for (auto& corpsRigide : gravityAffectedBodies)
+    {
+        corpsRigide->addForce(vec3(0, -9.81f * 4.f, 0));
+    }
+
+    auto collisions = collisionDetector.FindAllCollisions();
+    collisionSolver.ResolveCollisions(collisions);
+
     // euler integration
     for (auto& CorpsRigide : rigidBodies)
     {
@@ -55,59 +65,25 @@ void ofApp::update()
 //--------------------------------------------------------------
 void ofApp::draw()
 {
-    //Arrow to symbolize the initial velocity
-    // drawArrow();
-
     light.enable();
 
     // Draw scene
     camera.begin();
     ofEnableDepthTest();
+
     for (const auto& corps : rigidBodies)
     {
         corps->draw();
-
-        // ofDrawSphere(corps->getPosition(), corps->getContainingRadius());
-    }
-
-    // DEBUG OCTREE DELETE LATER
-    
-    // octree->draw();
-    // octree::OTBox queryBox(maths::vec3(125.0f, 125.0f, 125.0f), maths::vec3(300.0f));
-    // queryBox.draw();
-    // auto values = octree->query(queryBox);
-    // if (!values.empty())
-    // {
-    //     for (auto& value : values)
-    //     {
-    //         value->draw(ofColor(255, 255, 255), 5);
-    //     }
-    // }
-
-    
-
-    auto collisions = collisionDetector.FindAllCollisions();
-    for (auto& collision : collisions)
-    {
-        // std::cout << "Collision detected between " << collision.body1 << " and " << collision.body2 << std::endl;
-        for (auto& point : collision.collisionPoints)
-        {
-            ofDrawSphere(point.point, 5.f);
-        }
     }
 
     ofDrawGrid(25.f, 1000, false, false, true, false);
     ofDisableDepthTest();
 
+    ofDrawAxis(50.f);
     camera.end();
 
     //Drawing UI
-
     controlGui.draw();
-    // if (isDebugEnabled)
-    // {
-    //     drawDebugGui();
-    // }
     light.disable();
 }
 
@@ -150,13 +126,11 @@ void ofApp::mouseDragged(int x, int y, int button)
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button)
 {
-    
 }
 
 //--------------------------------------------------------------
 void ofApp::mouseReleased(int x, int y, int button)
 {
-    
 }
 
 //--------------------------------------------------------------
@@ -200,7 +174,7 @@ void ofApp::setupControlGui()
     //controlGui.add(debugToggle.setup("Debug Toggle", false));
     controlGui.add(changeProjectileButton.setup("Change Projectile"));
     controlGui.add(launchProjectileButton.setup("Launch Projectile"));
-    
+
     //Listeners
     resetButton.addListener(this, &ofApp::onResetButtonPressed);
     changeProjectileButton.addListener(this, &ofApp::onChangeProjectilePressed);
@@ -256,30 +230,42 @@ void ofApp::setupLight()
 void ofApp::setupThingsToDraw()
 {
     // mise en place de la scène (murs, sol et plafond)
-    Box* sol = new Box(vec3(1000, 100, 1000), vec3(0,-50,0), ofColor::lightGray);
+    Box* sol = new Box(vec3(1500, 100, 1500), vec3(0, -50, 0), ofColor::lightGray);
+    sol->setUnmoovable(true);
     rigidBodies.push_back(sol);
-    Box* mur1 = new Box(vec3(1000, 400, 1), vec3(0, 200, 500), ofColor::lightGray);
+    Box* mur1 = new Box(vec3(1000, 500, 50), vec3(0, 200, 500), ofColor::lightGray);
+    mur1->setUnmoovable(true);
     rigidBodies.push_back(mur1);
-    Box* mur2 = new Box(vec3(1000, 400, 1), vec3(0, 200, -500), ofColor::lightGray);
+    Box* mur2 = new Box(vec3(1000, 500, 50), vec3(0, 200, -500), ofColor::lightGray);
+    mur2->setUnmoovable(true);
     rigidBodies.push_back(mur2);
-    Box* mur3 = new Box(vec3(1, 400, 1000), vec3(500, 200, 0), ofColor::lightGray);
+    Box* mur3 = new Box(vec3(50, 500, 1000), vec3(500, 200, 0), ofColor::lightGray);
+    mur3->setUnmoovable(true);
     rigidBodies.push_back(mur3);
-    Box* mur4 = new Box(vec3(1, 400, 1000), vec3(-500, 200, 0), ofColor::lightGray);
+    Box* mur4 = new Box(vec3(50, 500, 1000), vec3(-500, 200, 0), ofColor::lightGray);
+    mur4->setUnmoovable(true);
     rigidBodies.push_back(mur4);
-    Box* plafond = new Box(vec3(1000, 1, 1000), vec3(0,400,0), ofColor::lightGray);
-    rigidBodies.push_back(plafond);
+    // Box* plafond = new Box(vec3(1000, 50, 1000), vec3(0, 400, 0), ofColor::lightGray);
+    // plafond->setUnmoovable(true);
+    // rigidBodies.push_back(plafond);
 
     //Trucs a placer dans la scène
-    Box* cube2 = new Box(vec3(50, 50, 50), vec3(-100,0,0), ofColor::green);
+    Box* cube2 = new Box(vec3(50, 50, 50), vec3(-100, 200, 0), ofColor::green);
     rigidBodies.push_back(cube2);
+    Box* cube3 = new Box(vec3(40, 60, 40), vec3(-100, 400, 0), ofColor::red);
+    rigidBodies.push_back(cube3);
 
-    collisionDetector.addBody(cube2);
+    gravityAffectedBodies.push_back(cube2);
+    gravityAffectedBodies.push_back(cube3);
+
     collisionDetector.addBody(sol);
     collisionDetector.addBody(mur1);
     collisionDetector.addBody(mur2);
     collisionDetector.addBody(mur3);
     collisionDetector.addBody(mur4);
-    collisionDetector.addBody(plafond);
+    // collisionDetector.addBody(plafond);
+    collisionDetector.addBody(cube2);
+    collisionDetector.addBody(cube3);
 }
 
 void ofApp::onToggleChanged(bool& value)
@@ -289,30 +275,28 @@ void ofApp::onToggleChanged(bool& value)
 
 void ofApp::onResetButtonPressed()
 {
-    CorpsRigide* rigidBody = rigidBodies[0];
+    CorpsRigide* rigidBody = rigidBodies.back();
     rigidBody->setVelocity(vec3(0, 0, 0));
     rigidBody->setAngularVelocity(vec3(0, 0, 0));
     rigidBody->setPosition(vec3(0, 50, 0));
-    rigidBody->setOrientation(quaternion(0, vec3(0, 50, 0)));
+    rigidBody->setOrientation(quaternion(0, vec3(0, 1, 0)));
 }
 
- void ofApp::onChangeProjectilePressed()
- {
-//     CorpsRigide* rigidBody = rigidBodies[0];
-//     rigidBody->setVelocity(vec3(0, 0, 0));
-//     rigidBody->setAngularVelocity(vec3(0, 0, 0));
-//     rigidBody->setPosition(vec3(0, 50, 0));
-//     rigidBody->setOrientation(quaternion(0, vec3(0, 50, 0)));
-//     currentRigidBody = (currentRigidBody + 1) % RigidBodiesChoice.size();
-//     rigidBodies.clear();
-//     rigidBodies.emplace_back(RigidBodiesChoice[currentRigidBody]);
- }
+void ofApp::onChangeProjectilePressed()
+{
+    //     CorpsRigide* rigidBody = rigidBodies[0];
+    //     rigidBody->setVelocity(vec3(0, 0, 0));
+    //     rigidBody->setAngularVelocity(vec3(0, 0, 0));
+    //     rigidBody->setPosition(vec3(0, 50, 0));
+    //     rigidBody->setOrientation(quaternion(0, vec3(0, 50, 0)));
+    //     currentRigidBody = (currentRigidBody + 1) % RigidBodiesChoice.size();
+    //     rigidBodies.clear();
+    //     rigidBodies.emplace_back(RigidBodiesChoice[currentRigidBody]);
+}
+
 void ofApp::onLaunchProjectilePressed()
 {
-    CorpsRigide* rigidBody = rigidBodies[0];
-    // rigidBody->setVelocity(vec3(50, 50, 20));
-    // rigidBody->setAngularVelocity(vec3(1000, 1000, 0));
-    rigidBody->addForce(vec3(5000, 0, 0), vec3(10,100,0));
+    rigidBodies.back()->addForce(vec3(0, 2000, 2000), rigidBodies.back()->getPosition() + vec3(0, 0, 10));
 }
 
 

@@ -12,6 +12,7 @@
 #include "Particle.h"
 #include "ofxGui.h"
 #include "collisionUtility/GeneralCollisionDetector.h"
+#include "collisionUtility/GeneralCollisionSolver.h"
 #include "forces/TwoParticleSpringForceGenerator.h"
 #include "CorpsRigides/Box.h"
 #include "particlesTypes/bullet.h"
@@ -66,7 +67,9 @@ private:
 	
 	// RigidBodies
 	std::vector<CorpsRigide*> rigidBodies;
+	std::vector<CorpsRigide*> gravityAffectedBodies;
 	GeneralCollisionDetector collisionDetector = GeneralCollisionDetector(maths::vec3(0,200,0), maths::vec3(3000));
+	GeneralCollisionSolver collisionSolver;
 	
 	// Display
 	ofEasyCam camera;
