@@ -48,7 +48,7 @@ void ofApp::update()
     // debug , todo remove
     for (auto& corpsRigide : gravityAffectedBodies)
     {
-        corpsRigide->addForce(vec3(0, -9.81f * 4.f, 0));
+        corpsRigide->addForce(vec3(0, -9.81f * 4.f * corpsRigide->getMass(), 0));
     }
 
     auto collisions = collisionDetector.FindAllCollisions();
@@ -250,10 +250,12 @@ void ofApp::setupThingsToDraw()
     // rigidBodies.push_back(plafond);
 
     //Trucs a placer dans la scène
-    Box* cube2 = new Box(vec3(50, 50, 50), vec3(-100, 200, 0), ofColor::green);
-    rigidBodies.push_back(cube2);
-    Box* cube3 = new Box(vec3(40, 60, 40), vec3(-100, 400, 0), ofColor::red);
+    Box* cube2 = new Box(vec3(50, 50, 50), vec3(0, 200, 0), ofColor::green);
+    Box* cube3 = new Box(vec3(20, 40, 20), vec3(0, 400, 0), ofColor::red);
     rigidBodies.push_back(cube3);
+    rigidBodies.push_back(cube2);
+    cube2->setMass(50.0f);
+    cube3->setMass(10.0f);
 
     gravityAffectedBodies.push_back(cube2);
     gravityAffectedBodies.push_back(cube3);
@@ -278,8 +280,8 @@ void ofApp::onResetButtonPressed()
     CorpsRigide* rigidBody = rigidBodies.back();
     rigidBody->setVelocity(vec3(0, 0, 0));
     rigidBody->setAngularVelocity(vec3(0, 0, 0));
-    rigidBody->setPosition(vec3(0, 50, 0));
-    rigidBody->setOrientation(quaternion(0, vec3(0, 1, 0)));
+    rigidBody->setPosition(vec3(0, 400, 0));
+    rigidBody->setOrientation(quaternion(0, vec3(.5, .5, 0)));
 }
 
 void ofApp::onChangeProjectilePressed()
