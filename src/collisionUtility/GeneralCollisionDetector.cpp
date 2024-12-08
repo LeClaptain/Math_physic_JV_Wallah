@@ -20,7 +20,9 @@ std::vector<CollisionPair> GeneralCollisionDetector::FindAllCollisions()
 
     for (auto& body : bodies)
     {
-        volumes.push_back( new BoundingVolume(body));
+        // TOO LATE BUT SHOULDNT HAVE USED POINTERS HERE
+        // Can cause memory leaks, isn't optimal cause we dont need pointers later on, etc
+        volumes.push_back(new BoundingVolume(body));
         o.add(volumes.back());
     }
 
@@ -28,6 +30,12 @@ std::vector<CollisionPair> GeneralCollisionDetector::FindAllCollisions()
     {
         auto collisions = FindCollisionsForOneBoundingVolume(o, volume);
         pairs.insert(pairs.end(), collisions.begin(), collisions.end());
+    }
+
+    // Fix memory leak
+    for (auto volume : volumes)
+    {
+        delete volume;
     }
 
     return pairs;
@@ -150,7 +158,8 @@ bool GeneralCollisionDetector::FindCollisionPointsIfAny(BoundingVolume* volume1,
     colPair.body1 = volume1->getRigidBody();
     colPair.body2 = volume2->getRigidBody();
     colPair.collisionPoints = collisions; // erreur de conversion
-    colPair.atRest = volume1->getRigidBody()->getVelocity().magnitude() <= 0.0001f && volume2->getRigidBody()->getVelocity().magnitude() <= 0.0001f;
+    colPair.atRest = volume1->getRigidBody()->getVelocity().magnitude() <= 0.0001f && volume2->getRigidBody()->
+        getVelocity().magnitude() <= 0.0001f;
 
     if (!colPair.collisionPoints.empty())
     {

@@ -39,8 +39,8 @@ void GeneralCollisionSolver::ResolveOneCollision(const CollisionPair& cp)
             float deltap1 = mass2 / (mass1 + mass2) * displacement.magnitude();
             float deltap2 = mass1 / (mass1 + mass2) * displacement.magnitude();
 
-            cp.body1->setPosition(cp.body1->getPosition() + displacement.normalize() * deltap1);
-            cp.body2->setPosition(cp.body2->getPosition() - displacement.normalize() * deltap2);
+            cp.body1->setPosition(cp.body1->getPosition() + displacement.normalized() * deltap1);
+            cp.body2->setPosition(cp.body2->getPosition() - displacement.normalized() * deltap2);
         }
     }
 
@@ -86,7 +86,7 @@ void GeneralCollisionSolver::ResolveOneCollision(const CollisionPair& cp)
             mat3 JminusOnePrim = orientationMatrix * cp.body1->getJminusOne() * orientationMatrix.inverse();
             cp.body1->setAngularVelocity(cp.body1->getAngularVelocity() - torque1 * k * JminusOnePrim);
         }
-        else if (!cp.body2->getunmoovable())
+        if (!cp.body2->getunmoovable())
         {
             mat3 orientationMatrix = cp.body2->getOrientation().toMat3();
             mat3 JminusOnePrim = orientationMatrix * cp.body2->getJminusOne() * orientationMatrix.inverse();

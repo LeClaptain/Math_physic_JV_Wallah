@@ -6,7 +6,7 @@ void Integrateur::integrer(double dt, CorpsRigide* corpsRigide)
 {
     //Euler
     corpsRigide->setAcceleration(corpsRigide->getForces() * corpsRigide->getInverseMass());
-    corpsRigide->setVelocity(corpsRigide->getVelocity() + corpsRigide->getAcceleration() * dt);
+    corpsRigide->setVelocity(corpsRigide->getVelocity() * pow(1.f - damping, dt) + corpsRigide->getAcceleration() * dt);
     corpsRigide->setPosition(corpsRigide->getPosition() + corpsRigide->getVelocity() * dt);
 
     // on calcule le jminusone actuel pour prendre en compte l'orientation
@@ -17,9 +17,12 @@ void Integrateur::integrer(double dt, CorpsRigide* corpsRigide)
     corpsRigide->setAngularAcceleration(corpsRigide->getTau() * JminusOnePrim);
 
     // mise a jour de la velocite puis de l'orientation
-    corpsRigide->setAngularVelocity(corpsRigide->getAngularVelocity() + corpsRigide->getAngularAcceleration() * dt);
-    corpsRigide->setOrientation(corpsRigide->getOrientation() + quaternion(0, corpsRigide->getAngularVelocity()) * 1.f/2.f * corpsRigide->getOrientation() * dt);
-    
+    corpsRigide->setAngularVelocity(
+        corpsRigide->getAngularVelocity() * pow(1.f - damping, dt) + corpsRigide->getAngularAcceleration() * dt);
+    corpsRigide->setOrientation(
+        corpsRigide->getOrientation() + quaternion(0, corpsRigide->getAngularVelocity()) * 1.f / 2.f * corpsRigide->
+        getOrientation() * dt);
+
     corpsRigide->getRigidBody()->setOrientation(corpsRigide->getOrientation());
     corpsRigide->getRigidBody()->setPosition(corpsRigide->getPosition());
 

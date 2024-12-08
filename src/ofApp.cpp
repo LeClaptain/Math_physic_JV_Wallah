@@ -15,27 +15,15 @@ void ofApp::setup()
     //GUI
     setupControlGui();
     setupDebugGui();
-    setupFont();
 
     //SCENE
     setupLight();
     setupThingsToDraw();
 
-    // DEBUG OCTREE DELETE LATER
-
-    // octree = new octree::Octree(octree::OTBox(0.0f, 0.0f, 0.0f, 1000.0f, 1000.0f, 1000.0f));
-    // for (int i = 0; i < 100; i++)
-    // {
-    //     auto position = maths::vec3((std::rand() % 1000) - 500, (std::rand() % 1000) - 500, (std::rand() % 1000) - 500);
-    //     
-    //     octree->add(new BoundingVolume(5.0f, position));
-    // }
-
     camera.setPosition(vec3(0, 0, 500));
     camera.setFarClip(10000.0f);
     camera.lookAt(vec3(0));
 
-    // collisionDetector.setDebug(true);
     collisionSolver.setElasticity(0.01f);
 }
 
@@ -44,13 +32,15 @@ void ofApp::update()
 {
     double lastFrame = ofGetLastFrameTime(); //gets Δt since last frame
     Integrateur integrateur = Integrateur();
+    integrateur.setDamping(0.1f);
 
-    // debug , todo remove
+    // gravity hack
     for (auto& corpsRigide : gravityAffectedBodies)
     {
-        corpsRigide->addForce(vec3(0, -9.81f * 4.f * corpsRigide->getMass(), 0));
+        corpsRigide->addForce(vec3(0, -9.81f * 8.f * corpsRigide->getMass(), 0));
     }
 
+    // resolve collisions
     auto collisions = collisionDetector.FindAllCollisions();
     collisionSolver.ResolveCollisions(collisions);
 
@@ -77,13 +67,44 @@ void ofApp::draw()
     }
 
     ofDrawGrid(25.f, 1000, false, false, true, false);
+    
+
+    // Ugly but it's because we can't copy an octree due to the way it's implemented (and we dont have time to fix it)
+    if (drawOctree)
+    {
+        auto otbox = octree::OTBox(maths::vec3(0, 200, 0), maths::vec3(3000));
+        octree::Octree o = octree::Octree(otbox);
+        std::vector<BoundingVolume*> volumes;
+
+        for (auto& body : rigidBodies)
+        {
+            // TOO LATE BUT SHOULDNT HAVE USED POINTERS HERE
+            // Can cause memory leaks, isn't optimal cause we dont need pointers later on, etc
+            volumes.push_back(new BoundingVolume(body));
+            o.add(volumes.back());
+        }
+
+        o.draw();
+
+        // Fix memory leak
+        for (auto volume : volumes)
+        {
+            delete volume;
+        }
+    }
+    
     ofDisableDepthTest();
 
-    ofDrawAxis(50.f);
     camera.end();
 
     //Drawing UI
     controlGui.draw();
+
+    if (isDebugEnabled)
+    {
+        drawDebugGui();
+    }
+
     light.disable();
 }
 
@@ -98,14 +119,6 @@ ofApp::~ofApp()
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key)
 {
-    // if F key
-    if (key == 102)
-    {
-        for (auto rb : rigidBodies)
-        {
-            rb->addForce(vec3(0, 500, 0), vec3(1, 1, 1));
-        }
-    }
 }
 
 //--------------------------------------------------------------
@@ -170,15 +183,16 @@ void ofApp::setupControlGui()
     controlGui.setWidthElements(350);
     controlGui.setPosition(10, ofGetHeight() - 120);
     // controlGui.add(nextProjectileLabel.setup("Next projectile", activeProjectile->getName()));
-    controlGui.add(resetButton.setup("Reset the scene"));
-    //controlGui.add(debugToggle.setup("Debug Toggle", false));
-    controlGui.add(changeProjectileButton.setup("Change Projectile"));
-    controlGui.add(launchProjectileButton.setup("Launch Projectile"));
+    controlGui.add(resetButton.setup("Reset green block"));
+    controlGui.add(launchProjectileButton.setup("Launch green block"));
+    controlGui.add(debugToggle.setup("Debug Toggle", false));
+    controlGui.add(drawOctreeToggle.setup("Draw Octree", false));
 
     //Listeners
     resetButton.addListener(this, &ofApp::onResetButtonPressed);
-    changeProjectileButton.addListener(this, &ofApp::onChangeProjectilePressed);
     launchProjectileButton.addListener(this, &ofApp::onLaunchProjectilePressed);
+    debugToggle.addListener(this, &ofApp::onToggleDebug);
+    drawOctreeToggle.addListener(this, &ofApp::onToggleDrawOctree);
 }
 
 void ofApp::setupDebugGui()
@@ -189,32 +203,10 @@ void ofApp::setupDebugGui()
     debugGui.setWidthElements(400);
     debugGui.add(fpsLabel.setup("fpsLabel", ""));
     debugGui.add(frameDurationLabel.setup("frameDurationLabel", ""));
-    debugGui.add(blobNumberLabel.setup("blobNumberLabel", ""));
-
-    //debugGui.add(particlePosition.setup("Particle Position", ""));
-    //debugGui.add(particleVelocity.setup("Particle Velocity", ""));
-    //debugGui.add(speedLabel.setup("greenParticleSpeedLabel", ""));
 
     //Listeners
     fpsLabel.setSize(debugGui.getWidth(), fpsLabel.getHeight());
     frameDurationLabel.setSize(debugGui.getWidth(), frameDurationLabel.getHeight());
-    particlePosition.setSize(debugGui.getWidth(), frameDurationLabel.getHeight());
-    particleVelocity.setSize(debugGui.getWidth(), frameDurationLabel.getHeight());
-}
-
-void ofApp::setupFont()
-{
-    //Font related shenaningans for displaying vectors
-    string path = ofFilePath::getEnclosingDirectory(ofFilePath::getCurrentWorkingDirectory()) +
-        "src/externalressources/Fonts/LatinModern.otf";
-    // TODO : find a font that supports both characters mentioned bellow
-    ofTrueTypeFontSettings settings(path, 32);
-    ofUnicode::range vectorArrow(0x20D7, 0x20D7); //adds the unicode character for a vector
-    ofUnicode::range underZero(0x2080, 0x2089); //adds the unicode charactor for all numbers as indexes
-    settings.addRange(vectorArrow);
-    settings.addRange(underZero);
-    settings.addRanges(ofAlphabet::Latin);
-    vectorFont.load(settings);
 }
 
 void ofApp::setupLight()
@@ -254,8 +246,8 @@ void ofApp::setupThingsToDraw()
     Box* cube3 = new Box(vec3(20, 40, 20), vec3(0, 400, 0), ofColor::red);
     rigidBodies.push_back(cube3);
     rigidBodies.push_back(cube2);
-    cube2->setMass(50.0f);
-    cube3->setMass(10.0f);
+    // cube2->setMass(10.0f);
+    // cube3->setMass(1.0f);
 
     gravityAffectedBodies.push_back(cube2);
     gravityAffectedBodies.push_back(cube3);
@@ -270,9 +262,14 @@ void ofApp::setupThingsToDraw()
     collisionDetector.addBody(cube3);
 }
 
-void ofApp::onToggleChanged(bool& value)
+void ofApp::onToggleDebug(bool& value)
 {
     isDebugEnabled = value;
+}
+
+void ofApp::onToggleDrawOctree(bool& value)
+{
+    drawOctree = value;
 }
 
 void ofApp::onResetButtonPressed()
@@ -284,21 +281,10 @@ void ofApp::onResetButtonPressed()
     rigidBody->setOrientation(quaternion(0, vec3(.5, .5, 0)));
 }
 
-void ofApp::onChangeProjectilePressed()
-{
-    //     CorpsRigide* rigidBody = rigidBodies[0];
-    //     rigidBody->setVelocity(vec3(0, 0, 0));
-    //     rigidBody->setAngularVelocity(vec3(0, 0, 0));
-    //     rigidBody->setPosition(vec3(0, 50, 0));
-    //     rigidBody->setOrientation(quaternion(0, vec3(0, 50, 0)));
-    //     currentRigidBody = (currentRigidBody + 1) % RigidBodiesChoice.size();
-    //     rigidBodies.clear();
-    //     rigidBodies.emplace_back(RigidBodiesChoice[currentRigidBody]);
-}
-
 void ofApp::onLaunchProjectilePressed()
 {
-    rigidBodies.back()->addForce(vec3(0, 2000, 2000), rigidBodies.back()->getPosition() + vec3(0, 0, 10));
+    rigidBodies.back()->addForce(vec3(0, 2000, 2000) * rigidBodies.back()->getMass(),
+                                 rigidBodies.back()->getPosition() + vec3(0, 0, 10));
 }
 
 
