@@ -4,6 +4,7 @@
 
 #include "forces/TwoParticleSpringForceGenerator.h"
 #include "forces/FrictionForceGenerator.h"
+#include "collisionUtility/GeneralCollisionSolver.h"
 
 
 vec3 defaultGravity = vec3(0, 9.81 * 50, 0);
@@ -41,7 +42,7 @@ void ofApp::update()
     }
 
     // resolve collisions
-    auto collisions = collisionDetector.FindAllCollisions();
+    std::vector<CollisionPair> collisions = collisionDetector.FindAllCollisions();
     collisionSolver.ResolveCollisions(collisions);
 
     // euler integration
